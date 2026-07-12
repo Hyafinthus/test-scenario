@@ -1,0 +1,825 @@
+I am working on a DPC++/SYCL-based distributed data-parallel runtime system. Please treat the following as the initial background context for future benchmark design, analysis, or code generation.
+
+The system is built by modifying the SYCL runtime. The main control switches are in `define.hpp`. When `SCHEDULE_OFFLINE` is enabled, SYCL kernel submissions are not immediately treated as isolated kernels. Instead, the runtime recognizes explicit SYCL synchronization points such as `event::wait()` / queue waits and treats all kernels submitted before a required wait as one scheduling batch. The batch is converted into a DAG and scheduled as a group. `SNMD_OFFLINE` enables single-node multi-device data parallel execution, where one kernel may be split across several GPUs on the same node.
+
+The runtime has several layers:
+
+1. SYCL handler layer:
+   - Intercepts submitted command groups.
+   - Records kernel metadata before execution.
+   - Collects accessor requirements, access modes, element size, buffer size, memory range, and kernel NDRange.
+   - Defers execution until the wait boundary.
+   - Sends the batch metadata to the daemon.
+   - Receives scheduling decisions and resubmits kernels to selected devices.
+   - For split kernels, prepares per-device queues, performs required data movement, launches split sub-kernels, and merges results before a dependent consumer or batch end.
+
+2. DAG construction layer:
+   - Builds a DAG from SYCL accessor dependencies.
+   - RAW dependencies are treated as true data dependencies.
+   - WAR/WAW dependencies preserve correctness and ordering.
+   - Kernels before the same wait form a batch-level DAG.
+   - The scheduler should preserve independent-kernel parallelism inside the batch; split kernels should not introduce artificial serialization unless a later dependent kernel needs their merged output.
+
+3. Daemon scheduling layer:
+   - Runs an improved HEFT-style scheduler.
+   - Uses DAG rank/order to prioritize kernels.
+   - Evaluates candidate placements for each kernel:
+     - single device on local node,
+     - same-node multi-GPU split,
+     - possibly another rank/node when distributed scaling is enabled.
+   - Uses device available time as the HEFT scheduling state.
+   - Runtime monitor information is used as a filter and penalty, not as a replacement for HEFT available time.
+   - Memory-fit checks prevent obviously impossible placements.
+
+4. Cost model layer:
+   - Cold-start estimates use data size, precision, DAG structure, communication volume, device capability, and heuristic arithmetic-intensity factors.
+   - Runtime profiling updates costs dynamically using EWMA.
+   - Profile keys include kernel requirement patterns, access modes, data sizes, memory ranges, NDRange shape, device index, and number of split parts.
+   - Communication profiles model H2D, D2H, D2D, same-node staged copy, and cross-rank transfer.
+   - Split profiling should use end-to-end wall time, including pre-copy, kernel execution, and merge, not only device event kernel time.
+
+5. Data movement layer:
+   - Data should remain on the device across waits when possible.
+   - A wait boundary does not necessarily mean all data must be copied back to host.
+   - D2D copy should be preferred when available.
+   - If D2D is unavailable, fallback may be GPU-host-GPU.
+   - Host copies are required for real host access or cross-rank shared-memory/MPI exchange.
+
+6. Split execution constraints:
+   - Current split support is primarily along NDRange dimension 0.
+   - Split is only safe when the written memory region can be represented as contiguous dim0 chunks.
+   - The number of split parts must divide the kernel global size and the written memory range.
+   - Odd or non-divisible split choices should be rejected.
+   - Kernels whose NDRange is `range(N, 1)` but write a 2D matrix such as `A[i, j]` by column are not safe for the current dim0-contiguous split model.
+   - Such kernels should be scheduled on a single device unless the runtime is extended with column/block-aware partitioning.
+
+Important scenario lessons from previous analysis:
+
+- FDTD-like iterative stencil benchmarks:
+  - Often have repeated kernels per iteration.
+  - If each iteration has the same DAG shape, runtime profiling should quickly converge.
+  - Because repeated cross-device movement can dominate, the scheduler should learn to keep dependent kernels on the same GPU unless split or distribution gives a clear end-to-end benefit.
+  - Good benchmark variants should expose repeated wait batches and meaningful producer-consumer chains.
+
+- 2mm/3mm matrix multiplication benchmarks:
+  - Good candidates for the system.
+  - They have large regular data-parallel kernels.
+  - Independent kernels, such as the first two matrix multiplications in 3mm, should run concurrently if their dependencies allow it.
+  - Later dependent kernels should trigger merge only when needed.
+  - Row-block or tile-block outputs are well-suited to the current split model if the written range matches dim0 partitioning.
+
+- Gram-Schmidt:
+  - Not an ideal split benchmark for the current split implementation.
+  - `kernel1` has `range(1,1)` and should be single-device.
+  - `kernel2` and `kernel3` may use `range(N,1)` but operate on columns of 2D buffers.
+  - Since current split/merge assumes dim0-contiguous memory regions, splitting these kernels can be unsafe or misleading.
+  - This benchmark is useful as a negative/control case showing that the scheduler must reject unsafe split choices.
+
+- Benchmarks that best demonstrate this system should have:
+  - Multiple kernels per wait batch.
+  - A nontrivial DAG with both independent and dependent kernels.
+  - Large enough data to amortize scheduling and copy overhead.
+  - Clear opportunities for:
+    - distributed logical parallelism across independent kernels,
+    - same-node multi-GPU split for large kernels,
+    - profile-guided convergence over repeated iterations,
+    - avoiding unnecessary host round-trips,
+    - communication-aware placement.
+  - Output/write regions that align with the current split dimension, preferably row-major dim0 block partitioning.
+
+- Benchmarks that are less suitable:
+  - Single tiny kernels.
+  - Kernels with `range(1,1)` and heavy internal serial loops.
+  - Kernels whose apparent NDRange split dimension does not match the memory write layout.
+  - Workloads where every split requires whole-buffer replication and whole-buffer merge.
+  - Workloads dominated by host synchronization or unavoidable host access after every kernel.
+
+When proposing or constructing future benchmarks, prefer scenarios where the system’s advantages are visible:
+- batching at wait boundaries,
+- DAG-aware scheduling,
+- independent kernel overlap,
+- profile-guided placement convergence,
+- communication-aware GPU/node selection,
+- safe and profitable same-node multi-GPU split,
+- data staying resident on devices across iterations,
+- cross-rank scaling only when communication cost is justified.
+
+Avoid designing benchmarks that accidentally reward native SYCL simplicity or penalize this system with unsafe split layouts. If a benchmark uses split, explicitly describe the NDRange, memory layout, written region, and whether dim0 block partitioning is semantically correct.
+
+================================================================================
+Comparison context: Celerity
+================================================================================
+
+Celerity is the main comparison system for this work. Treat it as a serious
+high-level distributed SYCL runtime with genuine strengths, not as a strawman.
+
+Celerity extends the SYCL buffer/accessor model to distributed GPU clusters.
+Its core execution model can be summarized as range-driven deterministic
+dataflow execution.
+
+1. Task and command graphs
+
+   - A Celerity queue submission creates a high-level task.
+   - The task graph represents application-level operations and dependencies.
+   - During task-to-command lowering, a data-parallel task is divided into
+     execution chunks assigned to participating workers/devices.
+   - A chunk is a subdivision of the kernel execution/index range. It is not
+     itself a subdivision of a buffer.
+   - For each accessor, a range mapper maps the execution chunk to the buffer
+     subrange read or written by that chunk.
+   - The runtime then generates device execution commands and the local or
+     remote data-transfer commands required to satisfy those subrange needs.
+
+   Conceptually:
+
+       submitted kernel task
+         -> split execution range into chunks
+         -> apply each range mapper to each chunk
+         -> obtain read/write buffer subranges
+         -> locate latest producers/replicas
+         -> generate copy, push, await-push, allocation, and kernel commands
+
+2. Range mappers
+
+   - Range mappers are access-region contracts.
+   - They describe which buffer subrange an arbitrary execution subrange reads
+     or writes.
+   - They are designed to remain composable under arbitrary subdivisions of
+     the execution range.
+   - Write mappings must not create overlapping producers for the same buffer
+     elements.
+   - Common forms include one_to_one, neighborhood, slice, fixed, all, and
+     transposed mappings.
+   - User effort and mapper accuracy matter, but mapper-writing difficulty is
+     not the primary research criticism in this work.
+   - The deeper limitation is semantic: Celerity consumes range mappers as
+     data-access metadata, not as compute-cost models.
+
+   A correct range mapper can tell the runtime:
+
+       which data a chunk requires
+
+   It does not tell the runtime:
+
+       how much computation the chunk performs
+       whether equally sized chunks have equal work
+       whether the kernel is worth splitting
+       how many devices should participate
+       which devices are currently loaded
+       whether communication outweighs compute speedup
+       whether a previous iteration showed that splitting was unprofitable
+
+3. Deterministic work distribution
+
+   - Celerity commonly assigns work by dividing a global execution range into
+     near-equally sized subranges over the participating worker/device set.
+   - The assignment is predetermined/configurable rather than a profile-guided
+     global search over device subsets and split factors.
+   - This is not a theoretical requirement of dataflow programming.
+   - It is a deliberate scalability trade-off.
+
+   Deterministic assignment allows distributed nodes to independently and
+   consistently derive:
+
+       which execution chunks they own
+       which data subranges they require
+       which data they must send
+       which incoming data they must await
+
+   A global placement search would require globally consistent knowledge of:
+
+       the complete kernel DAG
+       predicted kernel costs
+       current device availability
+       current data placement
+       candidate split factors
+       communication costs
+       device-subset choices
+
+   That would introduce centralized decision making or additional coordination.
+   Celerity instead prioritizes scalable distributed command generation.
+
+4. Virtual buffers and coherence
+
+   - Celerity presents each buffer as a global logical or virtual buffer.
+   - A virtual buffer is not necessarily backed by one full physical allocation
+     on every device.
+   - Actual host/device backing allocations may cover only the subregions
+     required on a given worker/device.
+   - This can reduce per-device memory use and support data sets larger than
+     one GPU's memory.
+   - The runtime tracks which buffer subranges are current in which memories,
+     which operation last wrote them, and where valid replicas exist.
+   - Before a kernel reads a region, the runtime ensures that a current copy is
+     available in the target memory.
+   - After a kernel writes a region, producer and replica state is updated.
+   - Allocation growth can require alloc-copy-free or resize-like operations.
+   - Cross-node dataflow has historically been lowered to push/await-push
+     point-to-point operations. Later work may recover collectives or add more
+     explicit instruction-level scheduling.
+
+5. Later Celerity improvements
+
+   Do not describe all Celerity versions as identical.
+
+   Depending on the exact version, Celerity may include:
+
+       distributed command-graph generation
+       Horizons for coalescing old dependency/tracking state
+       collective communication pattern discovery
+       an instruction graph representing allocation, copy, send, receive,
+       synchronization, and kernel operations
+       scheduler lookahead for allocation/coherence planning
+       task hints or split constraints
+
+   These mechanisms mitigate specific costs but do not automatically turn
+   Celerity into a profile-guided global search over kernel placement, split
+   degree, resource participation, and data placement.
+
+   Before making a version-specific claim, inspect the exact Celerity source,
+   release, configuration, and enabled optimizations.
+
+================================================================================
+Three-layer application parallelization framework
+================================================================================
+
+Analyze every target application through three distinct layers:
+
+    Layer A: abstract computation and cost requirements
+    Layer B: computation partitioning and scheduling decisions
+    Layer C: satisfying data requirements and maintaining visibility
+
+Do not mix the three layers. Each layer asks a different question.
+
+--------------------------------------------------------------------------------
+Layer A: Abstract requirements and compute-cost semantics
+--------------------------------------------------------------------------------
+
+Question:
+
+    What computations and dependencies exist, and how expensive are they?
+
+Celerity approach:
+
+    Accessors and range mappers describe data requirements and correctness.
+    They provide access-region semantics.
+
+Celerity limitation:
+
+    Access-region semantics are not compute-cost semantics.
+
+    Equal execution-range sizes do not imply equal work. This matters for:
+
+        triangular loops
+        data-dependent inner loops
+        irregular sparse rows
+        ray queries
+        adaptive iteration depth
+        growing orthogonalization work
+        kernels whose arithmetic intensity changes by phase
+        devices with heterogeneous performance
+        transient device load
+
+    Without additional compiler analysis, user cost annotations, or runtime
+    profiling, such cost information cannot be inferred from range mappers
+    alone.
+
+Our corresponding design:
+
+    A separate cost model supplies scheduling weights.
+
+    Cold-start estimation uses:
+
+        accessed data size
+        access modes
+        precision
+        NDRange shape
+        estimated communication volume
+        device capability
+        heuristic arithmetic intensity
+        DAG position and producer/consumer structure
+
+    Runtime correction uses:
+
+        end-to-end profiling
+        EWMA updates
+        device-specific profile keys
+        split-part-specific profiles
+        runtime monitor penalties
+        observed communication costs
+
+    Profiling belongs to this layer. It estimates cost. It does not itself
+    decide placement or splitting.
+
+Existing motif evidence:
+
+    - Correlation-like triangular work demonstrates that correct access ranges
+      do not guarantee balanced chunks.
+    - Repeated Krylov/Arnoldi phases demonstrate that stage cost changes as the
+      basis or iteration depth grows.
+
+--------------------------------------------------------------------------------
+Layer B: Computation partitioning and scheduling decisions
+--------------------------------------------------------------------------------
+
+Question:
+
+    Given estimated costs and the DAG, where and how should each computation run?
+
+Celerity approach:
+
+    Treat each submitted data-parallel kernel as a splittable task.
+    Deterministically divide the execution range over the participating
+    worker/device set, then derive and satisfy the resulting data requirements.
+
+Celerity limitation:
+
+    Per-task deterministic splitting is not equivalent to global DAG scheduling.
+
+    The following decisions are not jointly searched as first-class dynamic
+    variables in the basic Celerity model:
+
+        whether a kernel should be distributed at all
+        how many devices should participate
+        which device subset should participate
+        whether multiple independent kernels should run concurrently
+        whether one large kernel should be split while another stays local
+        whether a consumer should remain near its producer
+        whether additional ranks should be activated
+        whether a reduction or tiny kernel should stay on one device
+
+    Device-subset selection is not an optimization goal by itself.
+    Its purpose is to avoid unprofitable distributed execution.
+
+    A kernel should be distributed only when:
+
+        predicted compute-time reduction
+            >
+        additional data movement
+        + split preparation
+        + merge/writeback
+        + synchronization
+        + runtime metadata/command overhead
+        + expected waiting or imbalance
+
+Our corresponding design:
+
+    Wait-window DAG scheduling.
+
+    At a semantically required synchronization boundary, the runtime considers
+    the complete pending DAG and jointly decides:
+
+        inter-kernel parallelism
+        intra-kernel data-parallel splitting
+        split degree
+        device subset
+        rank participation
+        dynamic rank expansion
+        producer-consumer placement
+        whether a kernel should remain single-device
+
+    HEFT available-time state remains the primary scheduling state.
+    Runtime monitoring filters or penalizes candidates but does not replace
+    HEFT device availability.
+
+    Avoiding unprofitable splitting belongs to this layer.
+    It is a scheduling decision made using Layer A costs and Layer C movement
+    estimates.
+
+Existing motif evidence:
+
+    - Large regular GEMM-like kernels show that deterministic splitting can be
+      adequate.
+    - 3mm-like DAGs expose independent producer kernels followed by a dependent
+      consumer, but their DAG may be too small to show a large advantage.
+    - A stronger application should contain enough real DAG width to expose
+      joint inter-kernel and intra-kernel scheduling.
+    - Gram-Schmidt is a useful negative/control case because some kernels are
+      unsafe or unprofitable to split under a dim0-contiguous model.
+
+--------------------------------------------------------------------------------
+Layer C: Satisfying data requirements and maintaining visibility
+--------------------------------------------------------------------------------
+
+Question:
+
+    Once placement is chosen, how does each kernel obtain current input data and
+    expose its outputs to later consumers?
+
+Celerity approach:
+
+    Virtual-buffer coherence.
+
+    The runtime:
+
+        evaluates mapped subranges
+        queries last-writer state
+        tracks replicas
+        creates or resizes backing allocations
+        generates local copies or remote transfers
+        packs data where required
+        updates coherence metadata
+        creates dependency edges
+        materializes host-visible state when requested
+
+Celerity limitation:
+
+    Fine-grained coherence exposes overlap and avoids unnecessary full
+    replication, but it has a maintenance cost.
+
+    The cost can include:
+
+        range-mapper evaluation
+        subrange last-writer lookup
+        subrange last-writer update
+        replica tracking
+        command/instruction generation
+        backing allocation
+        allocation resize
+        copy and free operations
+        dense packing
+        pinned-host staging
+        D2D or staged transfer
+        dependency maintenance
+        host/device coherence
+        host materialization
+
+    This cost is often amortized by large regular kernels, but can dominate:
+
+        many-small-task applications
+        short iterative kernels
+        changing/growing subranges
+        large multi-buffer fan-in
+        repeated reductions
+        workloads with high synchronization frequency
+        cases where a precise mapper creates many small tracked regions
+
+    A coarse mapper can create excessive communication.
+    A very precise mapper can reduce communication but increase tracking,
+    allocation, command-generation, and fragmentation costs.
+
+    These are two sides of the same data-maintenance trade-off.
+
+Our corresponding design:
+
+    Coarser, cost-aware data-placement and data-visibility policies.
+
+    Possible policies include:
+
+        keep device-resident data across waits
+        preserve producer output location
+        plan consumer input movement before launch
+        prefer D2D copies
+        batch or coarsen transfers
+        replicate read-only/read-mostly data when profitable
+        partition write-heavy data by dim0 blocks
+        avoid unnecessary per-subrange metadata
+        place consumers near producers when movement is expensive
+        materialize only host-requested regions
+        avoid full-buffer host round-trips for sparse checks or scalar results
+
+    Layer C exposes data locations and movement costs.
+    Layer B uses that information to decide consumer placement.
+    Do not describe producer-aware placement as two separate contributions.
+
+Existing motif evidence:
+
+    - FDTD with a correct neighborhood mapping is a strong Celerity case:
+      local halo exchange is regular and compact.
+    - FDTD with an all mapping demonstrates over-approximation cost, but mapper
+      misuse is not the main research claim.
+    - Many-small-kernel Gram-Schmidt demonstrates maintenance overhead that may
+      not be amortized.
+    - A nine-large-buffer fan-in demonstrates that even exact one-to-one access
+      and uniform computation can create expensive data-visibility and host
+      materialization behavior.
+    - Such microbenchmarks are motif evidence, not substitutes for one complete
+      motivating application.
+
+================================================================================
+Celerity strengths and fair-comparison requirements
+================================================================================
+
+Always acknowledge Celerity's strengths.
+
+Celerity is well suited to:
+
+    large regular data-parallel kernels
+    uniform work proportional to execution-range size
+    stencil computations with accurate neighborhood mappings
+    local halo exchanges
+    applications whose output partition matches execution partition
+    asynchronous computation/communication overlap
+    distributed buffers where only required subregions need backing memory
+    problems whose total data exceed one device's memory
+    low-effort migration from SYCL to distributed GPU execution
+
+Do not claim that Celerity is generally slow or fundamentally incorrect.
+
+The intended comparison is:
+
+    Celerity:
+        range-driven deterministic dataflow distribution
+
+    This runtime:
+        cost-aware wait-window DAG scheduling with joint resource and data
+        decisions
+
+A fair main application should contain both:
+
+    Celerity-friendly phases
+        e.g. a regular stencil/operator application
+
+    phases that require cost-aware decisions
+        e.g. growing orthogonalization, reductions, small dependent kernels,
+        multiple independent branches, read-mostly basis data, and fan-in
+
+The goal is not to construct an application where every phase is hostile to
+Celerity.
+
+================================================================================
+Main-application selection principles
+================================================================================
+
+The main performance story must come from one coherent application.
+
+Do not build the primary argument from three unrelated microbenchmarks.
+
+A candidate application should expose all three layers within one workflow:
+
+    1. cost information not captured by access regions
+    2. nontrivial computation-partitioning decisions
+    3. nontrivial data-placement/visibility requirements
+
+The current leading candidate is a restarted Krylov/Arnoldi/GMRES-style
+application with:
+
+    regular stencil or sparse-operator application
+    growing modified Gram-Schmidt orthogonalization
+    dot and norm reductions
+    vector updates
+    read-mostly Krylov basis storage
+    restart/projection fan-in
+    repeated restart cycles
+    optionally multiple RHS or block/pseudo-block Krylov branches
+
+Possible mapping:
+
+    operator application
+        Celerity-friendly large regular phase
+
+    orthogonalization
+        changing cost and many dependent kernels
+
+    multiple RHS or block branches
+        real inter-kernel parallelism
+
+    restart projection x += Q*y
+        algorithmically meaningful multi-vector fan-in
+
+    repeated cycles
+        cold-start to profile-guided convergence
+
+Microbenchmarks such as correlation, Gram-Schmidt, 3mm, FDTD, and test_copy
+should be used to isolate and explain mechanisms after the full-application
+result, not as three disconnected motivating applications.
+
+================================================================================
+Scheduling-window guidance
+================================================================================
+
+Use semantic synchronization boundaries, not arbitrary kernel-count boundaries.
+
+Appropriate examples:
+
+    one complete restart cycle
+    one complete time step
+    one full nonlinear iteration
+    one complete producer-consumer phase
+    final host-required result access
+
+For a repeated application:
+
+    cycle 0:
+        cold-start estimate
+
+    cycle 1 and later:
+        profile-corrected scheduling
+
+A complete application run may also be submitted as one large stress window to
+test graph scalability, but this prevents later cycles in the same window from
+benefiting from profiles generated during that execution.
+
+Do not divide a graph every N kernels merely because of an IPC message-size
+limit. That is an implementation workaround, not an application or scheduling
+principle.
+
+================================================================================
+Current prototype limitations: do not bake them into benchmarks
+================================================================================
+
+Treat the following as implementation limitations to fix in the runtime, not as
+requirements that benchmark code should accommodate:
+
+    only event::wait() triggering offline scheduling while queue.wait() does not
+    fixed-size 8192-byte message queues for whole-DAG serialization
+    signed-int or 2-GiB buffer-size metadata
+    dependency tracking by buffer identity while ignoring accessor offsets
+    whole-buffer transfer when only one subrange is required
+    split merge assuming kernel range equals full buffer range
+    requiring a user-provided host pointer through getUserPtr()
+    inserting artificial guard buffers to make kernels unsplittable
+    forcing waits every fixed number of kernels
+    changing precise Q/H subrange accessors into whole-buffer accessors
+
+Future code generation should preserve normal SYCL semantics:
+
+    queue.wait()
+    event.wait()
+    wait_and_throw()
+    host access
+    buffer destruction/write-back
+
+should all interact correctly with pending deferred work.
+
+The runtime should be changed to support valid applications, rather than
+changing valid applications to fit runtime bugs.
+
+In particular:
+
+    - Preserve accessor offset, range, mode, dimensionality, and element size.
+    - Split and merge according to the written accessor region.
+    - Use 64-bit sizes and offsets.
+    - Use dynamically sized shared-memory or chunked IPC serialization.
+    - Allocate internal staging memory when no user host pointer exists.
+    - Let the scheduler reject unprofitable or unsafe splits.
+    - Do not encode scheduling decisions through fake data dependencies.
+
+================================================================================
+Benchmark construction requirements
+================================================================================
+
+For every proposed benchmark or application phase, explicitly state:
+
+1. Kernel DAG
+
+       list kernels
+       list RAW/WAR/WAW dependencies
+       identify independent branches
+       estimate critical path and DAG width
+
+2. Synchronization boundaries
+
+       why each wait is algorithmically necessary
+       which kernels belong to one scheduling batch
+       whether the batch repeats
+
+3. Compute geometry
+
+       NDRange dimensions
+       global and local range
+       work per item
+       whether work is uniform
+       whether cost changes by iteration or data
+
+4. Memory geometry
+
+       buffer dimensions
+       row-major or column-major layout
+       accessor offset/range
+       written region
+       read region
+       contiguous or non-contiguous access
+
+5. Split safety
+
+       proposed split dimension
+       number of parts
+       divisibility requirements
+       correspondence between execution chunks and written memory chunks
+       whether merge is required before the next consumer
+
+6. Scheduling opportunities
+
+       which kernels should remain single-device
+       which kernels may be split
+       which independent kernels may overlap
+       which placements avoid communication
+       whether rank expansion is potentially profitable
+
+7. Data movement
+
+       initial placement
+       producer output placement
+       consumer input requirements
+       D2D/H2D/D2H/cross-rank volume
+       merge/writeback volume
+       whether data can remain resident across waits
+
+8. Celerity mapping
+
+       task decomposition
+       mapper for each accessor
+       expected execution chunks
+       expected halo or full-read behavior
+       expected virtual-buffer backing regions
+       expected coherence/communication operations
+       version-specific optimizations that may apply
+
+9. Expected evidence
+
+       Layer A hypothesis
+       Layer B hypothesis
+       Layer C hypothesis
+       metric that would confirm or reject each hypothesis
+
+================================================================================
+Interpretation rules
+================================================================================
+
+Do not conflate these causes:
+
+    mapper is inaccurate
+    mapper is accurate but lacks cost semantics
+    deterministic split creates load imbalance
+    splitting is not profitable
+    data movement dominates
+    metadata/tracking dominates
+    host materialization dominates
+    split layout is unsafe
+    runtime implementation has a bug
+
+A slowdown must be attributed using evidence.
+
+Examples:
+
+    Correlation:
+        primarily compute-cost imbalance, not mapper-writing difficulty.
+
+    3mm:
+        demonstrates DAG structure and independent kernels, but may not contain
+        enough kernels to produce a large scheduling advantage.
+
+    Gram-Schmidt:
+        useful for many-small-task and unsafe-split analysis, but current
+        column-oriented writes are not a fair positive split case.
+
+    FDTD with neighborhood access:
+        Celerity-friendly control case.
+
+    Large fan-in:
+        primarily data visibility/coherence/materialization stress, not
+        triangular load imbalance.
+
+Do not assume that a collective operation removes all data-maintenance cost.
+Collectives may reduce point-to-point operation count, but they do not eliminate:
+
+    required data volume
+    last-writer/replica state
+    backing allocations
+    host/device coherence
+    consumer-local visibility
+    host materialization
+
+Do not describe device-subset selection as the fundamental contribution.
+The fundamental decision is whether distributed execution is profitable.
+
+================================================================================
+Expected behavior in future conversations
+================================================================================
+
+When assisting with this project:
+
+    - Use the three-layer framework:
+          compute cost
+          scheduling decision
+          data maintenance
+
+    - Keep each issue and corresponding design contribution distinct.
+
+    - Analyze application/DAG structure before generating code.
+
+    - Prefer one coherent application over disconnected synthetic kernels.
+
+    - Preserve standard buffer/accessor semantics.
+
+    - Do not modify applications merely to hide runtime limitations.
+
+    - Distinguish intended runtime design from current prototype bugs.
+
+    - Be explicit about which claims are proven by measurement and which are
+      hypotheses requiring instrumentation.
+
+    - Recommend instrumentation when overhead attribution is uncertain.
+
+    - Do not automatically write paper-ready paragraphs, introductions, or
+      contribution statements unless explicitly requested.
+
+    - For code generation, provide:
+          DAG description
+          wait-boundary rationale
+          split-safety analysis
+          expected data movement
+          expected Celerity behavior
+          expected behavior of this runtime
+      before or alongside the code.

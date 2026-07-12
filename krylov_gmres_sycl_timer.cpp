@@ -1,7 +1,7 @@
 // Standalone restarted GMRES / Arnoldi-inspired SYCL buffer benchmark.
 //
-// H uses a column-major Arnoldi layout:
-//   H[k * (m + 1) + i] == h(i, k), 0 <= i <= k + 1.
+// H uses a 2-D Arnoldi layout:
+//   H[column, row] == h(row, column), 0 <= row <= column + 1.
 //
 // The default is deliberately safe for a single GPU.  For large-memory runs,
 // useful starting points are --nx 8192 --ny 8192 --m 8, or --nx 16384
@@ -29,8 +29,15 @@ using data_t = float;
 
 // Keep named kernels at global scope so older SYCL toolchains can give each
 // device kernel a stable name.
-class KrylovDeviceInitKernel;
-class KrylovStencilApplyKernel;
+class KrylovFieldInitKernel;
+class KrylovBasisInitKernel;
+class KrylovBranchInitKernel;
+class KrylovHInitKernel;
+class KrylovCoefficientInitKernel;
+class KrylovScalarInitKernel;
+class KrylovStencilBasisToFieldKernel;
+class KrylovStencilFieldToFieldKernel;
+class KrylovStencilFieldToBasisKernel;
 class KrylovOrthogonalizationSeedKernel;
 class KrylovIndependentBranchKernel;
 class KrylovDotStage1Kernel;
@@ -38,7 +45,9 @@ class KrylovDotStage2Kernel;
 class KrylovAxpyUpdateKernel;
 class KrylovNormStage1Kernel;
 class KrylovNormStage2Kernel;
-class KrylovNormalizeKernel;
+class KrylovNormStage2ScalarKernel;
+class KrylovNormalizeHKernel;
+class KrylovNormalizeRestartKernel;
 class KrylovRestartMarkerKernel;
 class KrylovFinalProjectionKernel;
 class KrylovResidualKernel;
@@ -52,9 +61,14 @@ constexpr std::size_t kDefaultNy = 2048;
 constexpr std::size_t kDefaultM = 8;
 constexpr std::size_t kDefaultCycles = 2;
 constexpr std::size_t kDefaultPartials = 1024;
+constexpr std::size_t kBranchSlots = 3;
 constexpr data_t kNormFloor = static_cast<data_t>(1.0e-20);
 
-using buffer_t = sycl::buffer<data_t, 1>;
+using field_buffer_t = sycl::buffer<data_t, 2>;
+using basis_buffer_t = sycl::buffer<data_t, 2>;
+using branch_buffer_t = sycl::buffer<data_t, 2>;
+using vector_buffer_t = sycl::buffer<data_t, 1>;
+using h_buffer_t = sycl::buffer<data_t, 2>;
 
 enum class Mode {
   Full,
@@ -83,28 +97,31 @@ struct Dimensions {
   std::size_t n = 0;
   std::size_t basis_slots = 0;
   std::size_t basis_elements = 0;
+  std::size_t branch_slots = kBranchSlots;
+  std::size_t branch_elements = 0;
   std::size_t h_elements = 0;
 };
 
 struct MemoryEstimate {
   std::size_t vector_bytes = 0;
   std::size_t basis_bytes = 0;
+  std::size_t branch_bytes = 0;
   std::size_t total_bytes = 0;
 };
 
 struct Buffers {
-  buffer_t &x;
-  buffer_t &b;
-  buffer_t &basis;
-  buffer_t &w;
-  buffer_t &residual;
-  buffer_t &auxiliary;
-  buffer_t &partials;
-  buffer_t &h;
-  buffer_t &coefficients;
-  buffer_t &restart_norm;
-  buffer_t &cycle_token;
-  buffer_t &samples;
+  field_buffer_t &x;
+  field_buffer_t &b;
+  basis_buffer_t &basis;
+  field_buffer_t &w;
+  field_buffer_t &residual;
+  branch_buffer_t &branches;
+  vector_buffer_t &partials;
+  h_buffer_t &h;
+  vector_buffer_t &coefficients;
+  vector_buffer_t &restart_norm;
+  vector_buffer_t &cycle_token;
+  vector_buffer_t &samples;
 };
 
 const char *mode_name(Mode mode) {
@@ -280,25 +297,30 @@ bool derive_dimensions_and_memory(Config &config, Dimensions &dimensions,
   }
   if (!checked_multiply(dimensions.basis_slots, dimensions.n,
                         dimensions.basis_elements) ||
+      !checked_multiply(dimensions.branch_slots, dimensions.n,
+                        dimensions.branch_elements) ||
       !checked_multiply(dimensions.basis_slots, config.m,
                         dimensions.h_elements)) {
-    error = "basis or Hessenberg allocation overflows size_t";
+    error = "basis, branch, or Hessenberg allocation overflows size_t";
     return false;
   }
 
   if (!checked_multiply(dimensions.n, sizeof(data_t), memory.vector_bytes) ||
       !checked_multiply(dimensions.basis_elements, sizeof(data_t),
-                        memory.basis_bytes)) {
+                        memory.basis_bytes) ||
+      !checked_multiply(dimensions.branch_elements, sizeof(data_t),
+                        memory.branch_bytes)) {
     error = "byte estimate overflows size_t";
     return false;
   }
 
-  // x, b, w, residual, and auxiliary are the five full-length work vectors.
+  // x, b, w, residual, and each branch plane are full 2-D fields.
   std::size_t total_elements = 0;
   std::size_t full_vector_elements = 0;
-  if (!checked_multiply(dimensions.n, std::size_t{5}, full_vector_elements) ||
+  if (!checked_multiply(dimensions.n, std::size_t{4}, full_vector_elements) ||
       !checked_add(full_vector_elements, dimensions.basis_elements,
                    total_elements) ||
+      !checked_add(total_elements, dimensions.branch_elements, total_elements) ||
       !checked_add(total_elements, dimensions.h_elements, total_elements) ||
       !checked_add(total_elements, config.m, total_elements) ||
       !checked_add(total_elements, config.partials, total_elements) ||
@@ -312,25 +334,16 @@ bool derive_dimensions_and_memory(Config &config, Dimensions &dimensions,
   return true;
 }
 
-inline std::size_t h_index(std::size_t column, std::size_t row,
-                           std::size_t m) {
-  return column * (m + 1) + row;
-}
-
 // These arithmetic-only functions are callable from both host initialization
 // and the optional device initializer.  They deliberately avoid random input.
-inline data_t rhs_value(std::size_t index, std::size_t ny) {
-  const std::size_t row = index / ny;
-  const std::size_t col = index - row * ny;
+inline data_t rhs_value(std::size_t row, std::size_t col) {
   return static_cast<data_t>(0.75) +
          static_cast<data_t>(row % 97) * static_cast<data_t>(0.0025) +
          static_cast<data_t>(col % 89) * static_cast<data_t>(0.0015);
 }
 
-inline data_t basis_seed(std::size_t basis_index, std::size_t index,
-                         std::size_t ny) {
-  const std::size_t row = index / ny;
-  const std::size_t col = index - row * ny;
+inline data_t basis_seed(std::size_t basis_index, std::size_t row,
+                         std::size_t col) {
   const std::size_t mixed =
       (row * std::size_t{17} + col * std::size_t{29} +
        basis_index * std::size_t{31}) %
@@ -355,41 +368,52 @@ void initialize_on_host(Buffers &buffers, const Config &config,
   sycl::host_accessor basis_acc{buffers.basis, sycl::write_only};
   sycl::host_accessor w_acc{buffers.w, sycl::write_only};
   sycl::host_accessor residual_acc{buffers.residual, sycl::write_only};
-  sycl::host_accessor auxiliary_acc{buffers.auxiliary, sycl::write_only};
+  sycl::host_accessor branch_acc{buffers.branches, sycl::write_only};
   sycl::host_accessor h_acc{buffers.h, sycl::write_only};
   sycl::host_accessor coefficient_acc{buffers.coefficients, sycl::write_only};
   sycl::host_accessor restart_norm_acc{buffers.restart_norm, sycl::write_only};
   sycl::host_accessor cycle_token_acc{buffers.cycle_token, sycl::write_only};
 
   double q0_squared_norm = 0.0;
-  for (std::size_t index = 0; index < dimensions.n; ++index) {
-    const double value = static_cast<double>(basis_seed(0, index, config.ny));
-    q0_squared_norm += value * value;
+  for (std::size_t row = 0; row < config.nx; ++row) {
+    for (std::size_t col = 0; col < config.ny; ++col) {
+      const double value = static_cast<double>(basis_seed(0, row, col));
+      q0_squared_norm += value * value;
+    }
   }
   const data_t q0_scale =
       static_cast<data_t>(1.0 / std::sqrt(q0_squared_norm));
   const data_t other_basis_scale = static_cast<data_t>(
       1.0 / std::sqrt(static_cast<double>(dimensions.n)));
 
-  for (std::size_t index = 0; index < dimensions.n; ++index) {
-    const data_t rhs = rhs_value(index, config.ny);
-    x_acc[index] = static_cast<data_t>(0);
-    b_acc[index] = rhs;
-    w_acc[index] = static_cast<data_t>(0);
-    residual_acc[index] = rhs;
-    auxiliary_acc[index] = static_cast<data_t>(0.001) * rhs;
+  for (std::size_t row = 0; row < config.nx; ++row) {
+    for (std::size_t col = 0; col < config.ny; ++col) {
+      const sycl::id<2> cell(row, col);
+      const data_t rhs = rhs_value(row, col);
+      x_acc[cell] = static_cast<data_t>(0);
+      b_acc[cell] = rhs;
+      w_acc[cell] = static_cast<data_t>(0);
+      residual_acc[cell] = rhs;
+      for (std::size_t branch = 0; branch < dimensions.branch_slots; ++branch) {
+        branch_acc[sycl::id<2>(branch * config.nx + row, col)] =
+            static_cast<data_t>(0.001 * static_cast<double>(branch + 1)) * rhs;
+      }
+    }
   }
   for (std::size_t basis_index = 0; basis_index < dimensions.basis_slots;
        ++basis_index) {
     const data_t scale = basis_index == 0 ? q0_scale : other_basis_scale;
-    const std::size_t offset = basis_index * dimensions.n;
-    for (std::size_t index = 0; index < dimensions.n; ++index) {
-      basis_acc[offset + index] =
-          scale * basis_seed(basis_index, index, config.ny);
+    for (std::size_t row = 0; row < config.nx; ++row) {
+      for (std::size_t col = 0; col < config.ny; ++col) {
+        basis_acc[sycl::id<2>(basis_index * config.nx + row, col)] =
+            scale * basis_seed(basis_index, row, col);
+      }
     }
   }
-  for (std::size_t index = 0; index < dimensions.h_elements; ++index) {
-    h_acc[index] = static_cast<data_t>(0);
+  for (std::size_t column = 0; column < config.m; ++column) {
+    for (std::size_t row = 0; row < dimensions.basis_slots; ++row) {
+      h_acc[sycl::id<2>(column, row)] = static_cast<data_t>(0);
+    }
   }
   for (std::size_t index = 0; index < config.m; ++index) {
     coefficient_acc[index] = coefficient_value(index);
@@ -401,63 +425,100 @@ void initialize_on_host(Buffers &buffers, const Config &config,
 void initialize_on_device(sycl::queue &queue, Buffers &buffers,
                           const Config &config,
                           const Dimensions &dimensions) {
-  const std::size_t init_items =
-      std::max(std::max(dimensions.n, dimensions.basis_elements),
-               std::max(dimensions.h_elements, config.m));
+  double q0_squared_norm = 0.0;
+  for (std::size_t row = 0; row < config.nx; ++row) {
+    for (std::size_t col = 0; col < config.ny; ++col) {
+      const double value = static_cast<double>(basis_seed(0, row, col));
+      q0_squared_norm += value * value;
+    }
+  }
+  const data_t q0_scale =
+      static_cast<data_t>(1.0 / std::sqrt(q0_squared_norm));
   const data_t basis_scale = static_cast<data_t>(
       1.0 / std::sqrt(static_cast<double>(dimensions.n)));
 
   queue.submit([&](sycl::handler &cgh) {
-    // discard_write is the portable native-SYCL no-initialization spelling:
-    // this kernel overwrites every element in each accessor's declared range.
     auto x_acc =
         buffers.x.get_access<sycl::access::mode::discard_write>(cgh);
     auto b_acc =
         buffers.b.get_access<sycl::access::mode::discard_write>(cgh);
-    auto basis_acc =
-        buffers.basis.get_access<sycl::access::mode::discard_write>(cgh);
     auto w_acc =
         buffers.w.get_access<sycl::access::mode::discard_write>(cgh);
     auto residual_acc =
         buffers.residual.get_access<sycl::access::mode::discard_write>(cgh);
-    auto auxiliary_acc =
-        buffers.auxiliary.get_access<sycl::access::mode::discard_write>(cgh);
+    cgh.parallel_for<KrylovFieldInitKernel>(
+        sycl::range<2>(config.nx, config.ny), [=](sycl::item<2> item) {
+      const std::size_t row = item[0];
+      const std::size_t col = item[1];
+      const sycl::id<2> cell(row, col);
+      const data_t rhs = rhs_value(row, col);
+      x_acc[cell] = static_cast<data_t>(0);
+      b_acc[cell] = rhs;
+      w_acc[cell] = static_cast<data_t>(0);
+      residual_acc[cell] = rhs;
+    });
+  });
+
+  queue.submit([&](sycl::handler &cgh) {
+    auto branch_acc =
+        buffers.branches.get_access<sycl::access::mode::discard_write>(cgh);
+    cgh.parallel_for<KrylovBranchInitKernel>(
+        sycl::range<2>(dimensions.branch_slots * config.nx, config.ny),
+        [=](sycl::item<2> item) {
+      const std::size_t stacked_row = item[0];
+      const std::size_t branch = stacked_row / config.nx;
+      const std::size_t row = stacked_row - branch * config.nx;
+      const std::size_t col = item[1];
+      const data_t rhs = rhs_value(row, col);
+      branch_acc[sycl::id<2>(stacked_row, col)] =
+          static_cast<data_t>(0.001 * static_cast<double>(branch + 1)) * rhs;
+    });
+  });
+
+  queue.submit([&](sycl::handler &cgh) {
+    auto basis_acc =
+        buffers.basis.get_access<sycl::access::mode::discard_write>(cgh);
+    cgh.parallel_for<KrylovBasisInitKernel>(
+        sycl::range<2>(dimensions.basis_slots * config.nx, config.ny),
+        [=](sycl::item<2> item) {
+      const std::size_t stacked_row = item[0];
+      const std::size_t basis_index = stacked_row / config.nx;
+      const std::size_t row = stacked_row - basis_index * config.nx;
+      const std::size_t col = item[1];
+      const data_t scale = basis_index == 0 ? q0_scale : basis_scale;
+      basis_acc[sycl::id<2>(stacked_row, col)] =
+          scale * basis_seed(basis_index, row, col);
+    });
+  });
+
+  queue.submit([&](sycl::handler &cgh) {
     auto h_acc =
         buffers.h.get_access<sycl::access::mode::discard_write>(cgh);
+    cgh.parallel_for<KrylovHInitKernel>(
+        sycl::range<2>(config.m, dimensions.basis_slots),
+        [=](sycl::item<2> item) {
+      h_acc[sycl::id<2>(item[0], item[1])] = static_cast<data_t>(0);
+    });
+  });
+
+  queue.submit([&](sycl::handler &cgh) {
     auto coefficient_acc = buffers.coefficients.get_access<
         sycl::access::mode::discard_write>(cgh);
+    cgh.parallel_for<KrylovCoefficientInitKernel>(
+        sycl::range<1>(config.m), [=](sycl::item<1> item) {
+      coefficient_acc[item[0]] = coefficient_value(item[0]);
+    });
+  });
+
+  queue.submit([&](sycl::handler &cgh) {
     auto restart_norm_acc = buffers.restart_norm.get_access<
         sycl::access::mode::discard_write>(cgh);
     auto cycle_token_acc = buffers.cycle_token.get_access<
         sycl::access::mode::discard_write>(cgh);
-
-    cgh.parallel_for<KrylovDeviceInitKernel>(sycl::range<1>(init_items),
-                                             [=](sycl::item<1> item) {
-      const std::size_t index = item[0];
-      if (index < dimensions.n) {
-        const data_t rhs = rhs_value(index, config.ny);
-        x_acc[index] = static_cast<data_t>(0);
-        b_acc[index] = rhs;
-        w_acc[index] = static_cast<data_t>(0);
-        residual_acc[index] = rhs;
-        auxiliary_acc[index] = static_cast<data_t>(0.001) * rhs;
-      }
-      if (index < dimensions.basis_elements) {
-        const std::size_t basis_index = index / dimensions.n;
-        const std::size_t local_index = index - basis_index * dimensions.n;
-        basis_acc[index] =
-            basis_scale * basis_seed(basis_index, local_index, config.ny);
-      }
-      if (index < dimensions.h_elements) {
-        h_acc[index] = static_cast<data_t>(0);
-      }
-      if (index < config.m) {
-        coefficient_acc[index] = coefficient_value(index);
-      }
-      if (index == 0) {
-        restart_norm_acc[0] = static_cast<data_t>(1);
-        cycle_token_acc[0] = static_cast<data_t>(1);
-      }
+    cgh.parallel_for<KrylovScalarInitKernel>(sycl::range<1>(1),
+                                             [=](sycl::item<1>) {
+      restart_norm_acc[0] = static_cast<data_t>(1);
+      cycle_token_acc[0] = static_cast<data_t>(1);
     });
   });
 
@@ -475,87 +536,173 @@ void submit_command(sycl::queue &queue, bool wait_each_kernel,
   }
 }
 
-void submit_stencil(sycl::queue &queue, bool wait_each_kernel,
-                    buffer_t &input, std::size_t input_offset,
-                    buffer_t &output, std::size_t output_offset,
-                    std::size_t nx, std::size_t ny, std::size_t n) {
+void wait_cycle_boundary(sycl::queue &queue) {
+  queue.wait();
+}
+
+void submit_stencil_basis_to_field(sycl::queue &queue, bool wait_each_kernel,
+                                   basis_buffer_t &input,
+                                   std::size_t input_slot,
+                                   field_buffer_t &output,
+                                   std::size_t nx, std::size_t ny) {
   submit_command(queue, wait_each_kernel, [&](sycl::handler &cgh) {
     auto input_acc = input.get_access<sycl::access::mode::read>(
-        cgh, sycl::range<1>(n), sycl::id<1>(input_offset));
+        cgh, sycl::range<2>(nx, ny), sycl::id<2>(input_slot * nx, 0));
     auto output_acc = output.get_access<sycl::access::mode::discard_write>(
-        cgh, sycl::range<1>(n), sycl::id<1>(output_offset));
-    cgh.parallel_for<KrylovStencilApplyKernel>(sycl::range<1>(n),
-                                                [=](sycl::item<1> item) {
-      const std::size_t index = item[0];
-      const std::size_t row = index / ny;
-      const std::size_t col = index - row * ny;
-      const data_t center = input_acc[index];
-      const data_t north = row > 0 ? input_acc[index - ny]
-                                   : static_cast<data_t>(0);
-      const data_t south = row + 1 < nx ? input_acc[index + ny]
-                                         : static_cast<data_t>(0);
-      const data_t west = col > 0 ? input_acc[index - 1]
-                                   : static_cast<data_t>(0);
-      const data_t east = col + 1 < ny ? input_acc[index + 1]
-                                        : static_cast<data_t>(0);
-      output_acc[index] = static_cast<data_t>(4) * center - north - south -
-                          west - east;
+        cgh);
+    cgh.parallel_for<KrylovStencilBasisToFieldKernel>(
+        sycl::range<2>(nx, ny), [=](sycl::item<2> item) {
+      const std::size_t row = item[0];
+      const std::size_t col = item[1];
+      const sycl::id<2> center_id(row, col);
+      const data_t center = input_acc[center_id];
+      const data_t north =
+          row > 0 ? input_acc[sycl::id<2>(row - 1, col)]
+                  : static_cast<data_t>(0);
+      const data_t south =
+          row + 1 < nx ? input_acc[sycl::id<2>(row + 1, col)]
+                       : static_cast<data_t>(0);
+      const data_t west =
+          col > 0 ? input_acc[sycl::id<2>(row, col - 1)]
+                  : static_cast<data_t>(0);
+      const data_t east =
+          col + 1 < ny ? input_acc[sycl::id<2>(row, col + 1)]
+                       : static_cast<data_t>(0);
+      output_acc[sycl::id<2>(row, col)] =
+          static_cast<data_t>(4) * center - north - south - west - east;
+    });
+  });
+}
+
+void submit_stencil_field_to_field(sycl::queue &queue, bool wait_each_kernel,
+                                   field_buffer_t &input,
+                                   field_buffer_t &output,
+                                   std::size_t nx, std::size_t ny) {
+  submit_command(queue, wait_each_kernel, [&](sycl::handler &cgh) {
+    auto input_acc = input.get_access<sycl::access::mode::read>(cgh);
+    auto output_acc = output.get_access<sycl::access::mode::discard_write>(
+        cgh);
+    cgh.parallel_for<KrylovStencilFieldToFieldKernel>(
+        sycl::range<2>(nx, ny), [=](sycl::item<2> item) {
+      const std::size_t row = item[0];
+      const std::size_t col = item[1];
+      const data_t center = input_acc[sycl::id<2>(row, col)];
+      const data_t north =
+          row > 0 ? input_acc[sycl::id<2>(row - 1, col)]
+                  : static_cast<data_t>(0);
+      const data_t south =
+          row + 1 < nx ? input_acc[sycl::id<2>(row + 1, col)]
+                       : static_cast<data_t>(0);
+      const data_t west =
+          col > 0 ? input_acc[sycl::id<2>(row, col - 1)]
+                  : static_cast<data_t>(0);
+      const data_t east =
+          col + 1 < ny ? input_acc[sycl::id<2>(row, col + 1)]
+                       : static_cast<data_t>(0);
+      output_acc[sycl::id<2>(row, col)] =
+          static_cast<data_t>(4) * center - north - south - west - east;
+    });
+  });
+}
+
+void submit_stencil_field_to_basis(sycl::queue &queue, bool wait_each_kernel,
+                                   field_buffer_t &input,
+                                   basis_buffer_t &output,
+                                   std::size_t output_slot,
+                                   std::size_t nx, std::size_t ny) {
+  submit_command(queue, wait_each_kernel, [&](sycl::handler &cgh) {
+    auto input_acc = input.get_access<sycl::access::mode::read>(cgh);
+    auto output_acc = output.get_access<sycl::access::mode::discard_write>(
+        cgh, sycl::range<2>(nx, ny), sycl::id<2>(output_slot * nx, 0));
+    cgh.parallel_for<KrylovStencilFieldToBasisKernel>(
+        sycl::range<2>(nx, ny), [=](sycl::item<2> item) {
+      const std::size_t row = item[0];
+      const std::size_t col = item[1];
+      const data_t center = input_acc[sycl::id<2>(row, col)];
+      const data_t north =
+          row > 0 ? input_acc[sycl::id<2>(row - 1, col)]
+                  : static_cast<data_t>(0);
+      const data_t south =
+          row + 1 < nx ? input_acc[sycl::id<2>(row + 1, col)]
+                       : static_cast<data_t>(0);
+      const data_t west =
+          col > 0 ? input_acc[sycl::id<2>(row, col - 1)]
+                  : static_cast<data_t>(0);
+      const data_t east =
+          col + 1 < ny ? input_acc[sycl::id<2>(row, col + 1)]
+                       : static_cast<data_t>(0);
+      output_acc[sycl::id<2>(row, col)] =
+          static_cast<data_t>(4) * center - north - south - west - east;
     });
   });
 }
 
 void submit_orthogonalization_seed(sycl::queue &queue, bool wait_each_kernel,
-                                   buffer_t &rhs, buffer_t &basis,
-                                   std::size_t basis_offset, buffer_t &w,
-                                   std::size_t n) {
+                                   field_buffer_t &rhs, basis_buffer_t &basis,
+                                   std::size_t basis_slot, field_buffer_t &w,
+                                   std::size_t nx, std::size_t ny) {
   submit_command(queue, wait_each_kernel, [&](sycl::handler &cgh) {
     auto rhs_acc = rhs.get_access<sycl::access::mode::read>(cgh);
     auto basis_acc = basis.get_access<sycl::access::mode::read>(
-        cgh, sycl::range<1>(n), sycl::id<1>(basis_offset));
+        cgh, sycl::range<2>(nx, ny), sycl::id<2>(basis_slot * nx, 0));
     auto w_acc = w.get_access<sycl::access::mode::discard_write>(cgh);
     cgh.parallel_for<KrylovOrthogonalizationSeedKernel>(
-        sycl::range<1>(n), [=](sycl::item<1> item) {
-          const std::size_t index = item[0];
+        sycl::range<2>(nx, ny), [=](sycl::item<2> item) {
+          const std::size_t row = item[0];
+          const std::size_t col = item[1];
+          const std::size_t index = row * ny + col;
+          const sycl::id<2> cell(row, col);
           const data_t perturbation = static_cast<data_t>(index % 31) *
                                       static_cast<data_t>(0.0001);
-          w_acc[index] = rhs_acc[index] - static_cast<data_t>(0.125) *
-                                             basis_acc[index] +
-                         perturbation;
+          w_acc[cell] = rhs_acc[cell] - static_cast<data_t>(0.125) *
+                                           basis_acc[sycl::id<2>(row, col)] +
+                        perturbation;
         });
   });
 }
 
 void submit_independent_branch(sycl::queue &queue, bool wait_each_kernel,
-                               buffer_t &rhs, buffer_t &basis,
-                               std::size_t basis_offset, buffer_t &auxiliary,
-                               std::size_t n) {
+                               field_buffer_t &rhs, basis_buffer_t &basis,
+                               std::size_t basis_slot,
+                               branch_buffer_t &branches,
+                               std::size_t branch_slot,
+                               std::size_t nx, std::size_t ny) {
   submit_command(queue, wait_each_kernel, [&](sycl::handler &cgh) {
     auto rhs_acc = rhs.get_access<sycl::access::mode::read>(cgh);
     auto basis_acc = basis.get_access<sycl::access::mode::read>(
-        cgh, sycl::range<1>(n), sycl::id<1>(basis_offset));
-    auto auxiliary_acc =
-        auxiliary.get_access<sycl::access::mode::read_write>(cgh);
+        cgh, sycl::range<2>(nx, ny), sycl::id<2>(basis_slot * nx, 0));
+    auto branch_acc = branches.get_access<sycl::access::mode::read_write>(
+        cgh, sycl::range<2>(nx, ny), sycl::id<2>(branch_slot * nx, 0));
     cgh.parallel_for<KrylovIndependentBranchKernel>(
-        sycl::range<1>(n), [=](sycl::item<1> item) {
-          const std::size_t index = item[0];
-          // A lightweight residual-monitor branch.  It is independent of the
-          // stencil/w path for this iteration, but is sampled at the end.
-          auxiliary_acc[index] =
-              static_cast<data_t>(0.997) * auxiliary_acc[index] +
-              static_cast<data_t>(0.003) * (rhs_acc[index] - basis_acc[index]);
+        sycl::range<2>(nx, ny), [=](sycl::item<2> item) {
+          const std::size_t row = item[0];
+          const std::size_t col = item[1];
+          const sycl::id<2> cell(row, col);
+          const sycl::id<2> branch_id(row, col);
+          const data_t branch_weight =
+              static_cast<data_t>(0.002 + 0.001 * branch_slot);
+          const data_t spatial =
+              static_cast<data_t>((row + branch_slot * 13 + col * 3) % 37) *
+              static_cast<data_t>(0.00001);
+          branch_acc[branch_id] =
+              static_cast<data_t>(0.995) * branch_acc[branch_id] +
+              branch_weight *
+                  (rhs_acc[cell] - basis_acc[sycl::id<2>(row, col)]) +
+              spatial;
         });
   });
 }
 
 void submit_dot_stage1(sycl::queue &queue, bool wait_each_kernel,
-                       buffer_t &basis, std::size_t basis_offset, buffer_t &w,
-                       buffer_t &partials, std::size_t n,
+                       basis_buffer_t &basis, std::size_t basis_slot,
+                       field_buffer_t &w, vector_buffer_t &partials,
+                       std::size_t nx, std::size_t ny, std::size_t n,
                        std::size_t partial_count) {
   const std::size_t chunk =
       n / partial_count + (n % partial_count == 0 ? 0 : 1);
   submit_command(queue, wait_each_kernel, [&](sycl::handler &cgh) {
     auto basis_acc = basis.get_access<sycl::access::mode::read>(
-        cgh, sycl::range<1>(n), sycl::id<1>(basis_offset));
+        cgh, sycl::range<2>(nx, ny), sycl::id<2>(basis_slot * nx, 0));
     auto w_acc = w.get_access<sycl::access::mode::read>(cgh);
     auto partial_acc =
         partials.get_access<sycl::access::mode::discard_write>(cgh);
@@ -567,7 +714,10 @@ void submit_dot_stage1(sycl::queue &queue, bool wait_each_kernel,
           const std::size_t end = unclamped_end < n ? unclamped_end : n;
           data_t sum = static_cast<data_t>(0);
           for (std::size_t index = begin; index < end; ++index) {
-            sum += basis_acc[index] * w_acc[index];
+            const std::size_t row = index / ny;
+            const std::size_t col = index - row * ny;
+            sum += basis_acc[sycl::id<2>(row, col)] *
+                   w_acc[sycl::id<2>(row, col)];
           }
           partial_acc[partial_index] = sum;
         });
@@ -575,14 +725,14 @@ void submit_dot_stage1(sycl::queue &queue, bool wait_each_kernel,
 }
 
 void submit_dot_stage2(sycl::queue &queue, bool wait_each_kernel,
-                       buffer_t &partials, std::size_t partial_count,
-                       buffer_t &scalar_output,
-                       std::size_t scalar_output_offset) {
+                       vector_buffer_t &partials, std::size_t partial_count,
+                       h_buffer_t &scalar_output, std::size_t h_column,
+                       std::size_t h_row) {
   submit_command(queue, wait_each_kernel, [&](sycl::handler &cgh) {
     auto partial_acc = partials.get_access<sycl::access::mode::read>(cgh);
     auto scalar_acc = scalar_output.get_access<
         sycl::access::mode::discard_write>(
-        cgh, sycl::range<1>(1), sycl::id<1>(scalar_output_offset));
+        cgh, sycl::range<2>(1, 1), sycl::id<2>(h_column, h_row));
     cgh.parallel_for<KrylovDotStage2Kernel>(
         sycl::range<1>(1), [=](sycl::item<1>) {
           data_t sum = static_cast<data_t>(0);
@@ -590,38 +740,40 @@ void submit_dot_stage2(sycl::queue &queue, bool wait_each_kernel,
                ++partial_index) {
             sum += partial_acc[partial_index];
           }
-          scalar_acc[0] = sum;
+          scalar_acc[sycl::id<2>(0, 0)] = sum;
         });
   });
 }
 
 void submit_axpy_update(sycl::queue &queue, bool wait_each_kernel,
-                        buffer_t &w, buffer_t &basis,
-                        std::size_t basis_offset, buffer_t &h,
-                        std::size_t h_offset, std::size_t n) {
+                        field_buffer_t &w, basis_buffer_t &basis,
+                        std::size_t basis_slot, h_buffer_t &h,
+                        std::size_t h_column, std::size_t h_row,
+                        std::size_t nx, std::size_t ny) {
   submit_command(queue, wait_each_kernel, [&](sycl::handler &cgh) {
     auto w_acc = w.get_access<sycl::access::mode::read_write>(cgh);
     auto basis_acc = basis.get_access<sycl::access::mode::read>(
-        cgh, sycl::range<1>(n), sycl::id<1>(basis_offset));
+        cgh, sycl::range<2>(nx, ny), sycl::id<2>(basis_slot * nx, 0));
     auto h_acc = h.get_access<sycl::access::mode::read>(
-        cgh, sycl::range<1>(1), sycl::id<1>(h_offset));
-    cgh.parallel_for<KrylovAxpyUpdateKernel>(sycl::range<1>(n),
-                                              [=](sycl::item<1> item) {
-      const std::size_t index = item[0];
-      w_acc[index] -= h_acc[0] * basis_acc[index];
+        cgh, sycl::range<2>(1, 1), sycl::id<2>(h_column, h_row));
+    cgh.parallel_for<KrylovAxpyUpdateKernel>(sycl::range<2>(nx, ny),
+                                              [=](sycl::item<2> item) {
+      const std::size_t row = item[0];
+      const std::size_t col = item[1];
+      w_acc[sycl::id<2>(row, col)] -=
+          h_acc[sycl::id<2>(0, 0)] * basis_acc[sycl::id<2>(row, col)];
     });
   });
 }
 
 void submit_norm_stage1(sycl::queue &queue, bool wait_each_kernel,
-                        buffer_t &input, std::size_t input_offset,
-                        buffer_t &partials, std::size_t n,
+                        field_buffer_t &input, vector_buffer_t &partials,
+                        std::size_t nx, std::size_t ny, std::size_t n,
                         std::size_t partial_count) {
   const std::size_t chunk =
       n / partial_count + (n % partial_count == 0 ? 0 : 1);
   submit_command(queue, wait_each_kernel, [&](sycl::handler &cgh) {
-    auto input_acc = input.get_access<sycl::access::mode::read>(
-        cgh, sycl::range<1>(n), sycl::id<1>(input_offset));
+    auto input_acc = input.get_access<sycl::access::mode::read>(cgh);
     auto partial_acc =
         partials.get_access<sycl::access::mode::discard_write>(cgh);
     cgh.parallel_for<KrylovNormStage1Kernel>(
@@ -632,7 +784,9 @@ void submit_norm_stage1(sycl::queue &queue, bool wait_each_kernel,
           const std::size_t end = unclamped_end < n ? unclamped_end : n;
           data_t sum = static_cast<data_t>(0);
           for (std::size_t index = begin; index < end; ++index) {
-            const data_t value = input_acc[index];
+            const std::size_t row = index / ny;
+            const std::size_t col = index - row * ny;
+            const data_t value = input_acc[sycl::id<2>(row, col)];
             sum += value * value;
           }
           partial_acc[partial_index] = sum;
@@ -641,14 +795,14 @@ void submit_norm_stage1(sycl::queue &queue, bool wait_each_kernel,
 }
 
 void submit_norm_stage2(sycl::queue &queue, bool wait_each_kernel,
-                        buffer_t &partials, std::size_t partial_count,
-                        buffer_t &scalar_output,
-                        std::size_t scalar_output_offset) {
+                        vector_buffer_t &partials, std::size_t partial_count,
+                        h_buffer_t &scalar_output, std::size_t h_column,
+                        std::size_t h_row) {
   submit_command(queue, wait_each_kernel, [&](sycl::handler &cgh) {
     auto partial_acc = partials.get_access<sycl::access::mode::read>(cgh);
     auto scalar_acc = scalar_output.get_access<
         sycl::access::mode::discard_write>(
-        cgh, sycl::range<1>(1), sycl::id<1>(scalar_output_offset));
+        cgh, sycl::range<2>(1, 1), sycl::id<2>(h_column, h_row));
     cgh.parallel_for<KrylovNormStage2Kernel>(
         sycl::range<1>(1), [=](sycl::item<1>) {
           data_t sum = static_cast<data_t>(0);
@@ -656,53 +810,103 @@ void submit_norm_stage2(sycl::queue &queue, bool wait_each_kernel,
                ++partial_index) {
             sum += partial_acc[partial_index];
           }
-          scalar_acc[0] = sycl::sqrt(sum > static_cast<data_t>(0)
-                                         ? sum
-                                         : static_cast<data_t>(0));
+          scalar_acc[sycl::id<2>(0, 0)] =
+              sycl::sqrt(sum > static_cast<data_t>(0) ? sum
+                                                       : static_cast<data_t>(0));
         });
   });
 }
 
-void submit_normalize(sycl::queue &queue, bool wait_each_kernel,
-                      buffer_t &input, std::size_t input_offset,
-                      buffer_t &norm, std::size_t norm_offset,
-                      buffer_t &output, std::size_t output_offset,
-                      std::size_t n) {
+void submit_norm_stage2_scalar(sycl::queue &queue, bool wait_each_kernel,
+                               vector_buffer_t &partials,
+                               std::size_t partial_count,
+                               vector_buffer_t &scalar_output) {
   submit_command(queue, wait_each_kernel, [&](sycl::handler &cgh) {
-    auto input_acc = input.get_access<sycl::access::mode::read>(
-        cgh, sycl::range<1>(n), sycl::id<1>(input_offset));
+    auto partial_acc = partials.get_access<sycl::access::mode::read>(cgh);
+    auto scalar_acc = scalar_output.get_access<
+        sycl::access::mode::discard_write>(cgh);
+    cgh.parallel_for<KrylovNormStage2ScalarKernel>(
+        sycl::range<1>(1), [=](sycl::item<1>) {
+          data_t sum = static_cast<data_t>(0);
+          for (std::size_t partial_index = 0; partial_index < partial_count;
+               ++partial_index) {
+            sum += partial_acc[partial_index];
+          }
+          scalar_acc[0] =
+              sycl::sqrt(sum > static_cast<data_t>(0) ? sum
+                                                       : static_cast<data_t>(0));
+        });
+  });
+}
+
+void submit_normalize_h_to_basis(sycl::queue &queue, bool wait_each_kernel,
+                                 field_buffer_t &input, h_buffer_t &norm,
+                                 std::size_t h_column, std::size_t h_row,
+                                 basis_buffer_t &output,
+                                 std::size_t output_slot,
+                                 std::size_t nx, std::size_t ny) {
+  submit_command(queue, wait_each_kernel, [&](sycl::handler &cgh) {
+    auto input_acc = input.get_access<sycl::access::mode::read>(cgh);
     auto norm_acc = norm.get_access<sycl::access::mode::read>(
-        cgh, sycl::range<1>(1), sycl::id<1>(norm_offset));
+        cgh, sycl::range<2>(1, 1), sycl::id<2>(h_column, h_row));
     auto output_acc = output.get_access<sycl::access::mode::discard_write>(
-        cgh, sycl::range<1>(n), sycl::id<1>(output_offset));
-    cgh.parallel_for<KrylovNormalizeKernel>(sycl::range<1>(n),
-                                             [=](sycl::item<1> item) {
-      const std::size_t index = item[0];
+        cgh, sycl::range<2>(nx, ny), sycl::id<2>(output_slot * nx, 0));
+    cgh.parallel_for<KrylovNormalizeHKernel>(sycl::range<2>(nx, ny),
+                                             [=](sycl::item<2> item) {
+      const std::size_t row = item[0];
+      const std::size_t col = item[1];
+      const data_t denominator = norm_acc[sycl::id<2>(0, 0)];
+      output_acc[sycl::id<2>(row, col)] =
+          denominator > kNormFloor
+              ? input_acc[sycl::id<2>(row, col)] / denominator
+              : static_cast<data_t>(0);
+    });
+  });
+}
+
+void submit_normalize_scalar_to_basis(sycl::queue &queue, bool wait_each_kernel,
+                                      field_buffer_t &input,
+                                      vector_buffer_t &norm,
+                                      basis_buffer_t &output,
+                                      std::size_t output_slot,
+                                      std::size_t nx, std::size_t ny) {
+  submit_command(queue, wait_each_kernel, [&](sycl::handler &cgh) {
+    auto input_acc = input.get_access<sycl::access::mode::read>(cgh);
+    auto norm_acc = norm.get_access<sycl::access::mode::read>(cgh);
+    auto output_acc = output.get_access<sycl::access::mode::discard_write>(
+        cgh, sycl::range<2>(nx, ny), sycl::id<2>(output_slot * nx, 0));
+    cgh.parallel_for<KrylovNormalizeRestartKernel>(sycl::range<2>(nx, ny),
+                                                  [=](sycl::item<2> item) {
+      const std::size_t row = item[0];
+      const std::size_t col = item[1];
       const data_t denominator = norm_acc[0];
-      output_acc[index] = denominator > kNormFloor
-                              ? input_acc[index] / denominator
-                              : static_cast<data_t>(0);
+      output_acc[sycl::id<2>(row, col)] =
+          denominator > kNormFloor
+              ? input_acc[sycl::id<2>(row, col)] / denominator
+              : static_cast<data_t>(0);
     });
   });
 }
 
 void submit_restart_marker(sycl::queue &queue, bool wait_each_kernel,
-                           buffer_t &h, std::size_t last_norm_offset,
-                           buffer_t &basis, std::size_t last_basis_offset,
-                           buffer_t &cycle_token, std::size_t n) {
+                           h_buffer_t &h, std::size_t h_column,
+                           std::size_t h_row, basis_buffer_t &basis,
+                           std::size_t last_basis_slot,
+                           vector_buffer_t &cycle_token,
+                           std::size_t nx, std::size_t ny) {
   submit_command(queue, wait_each_kernel, [&](sycl::handler &cgh) {
     auto h_acc = h.get_access<sycl::access::mode::read>(
-        cgh, sycl::range<1>(1), sycl::id<1>(last_norm_offset));
+        cgh, sycl::range<2>(1, 1), sycl::id<2>(h_column, h_row));
     // Reading q_m gives the marker a dependency on the final normalize too,
     // even when the correction itself only consumes q_0 through q_(m-1).
     auto last_basis_acc = basis.get_access<sycl::access::mode::read>(
-        cgh, sycl::range<1>(n), sycl::id<1>(last_basis_offset));
+        cgh, sycl::range<2>(nx, ny), sycl::id<2>(last_basis_slot * nx, 0));
     auto token_acc = cycle_token.get_access<
         sycl::access::mode::discard_write>(cgh);
     cgh.parallel_for<KrylovRestartMarkerKernel>(
         sycl::range<1>(1), [=](sycl::item<1>) {
-          const data_t h_value = h_acc[0];
-          const data_t q_value = last_basis_acc[0];
+          const data_t h_value = h_acc[sycl::id<2>(0, 0)];
+          const data_t q_value = last_basis_acc[sycl::id<2>(0, 0)];
           const data_t h_abs = h_value < static_cast<data_t>(0) ? -h_value
                                                                   : h_value;
           const data_t q_abs = q_value < static_cast<data_t>(0) ? -q_value
@@ -717,60 +921,71 @@ void submit_restart_marker(sycl::queue &queue, bool wait_each_kernel,
 }
 
 void submit_final_projection(sycl::queue &queue, bool wait_each_kernel,
-                             buffer_t &x, buffer_t &basis,
-                             buffer_t &coefficients, buffer_t &cycle_token,
-                             std::size_t fanout, std::size_t n) {
+                             field_buffer_t &x, basis_buffer_t &basis,
+                             vector_buffer_t &coefficients,
+                             vector_buffer_t &cycle_token,
+                             std::size_t fanout,
+                             std::size_t nx, std::size_t ny) {
   submit_command(queue, wait_each_kernel, [&](sycl::handler &cgh) {
     auto x_acc = x.get_access<sycl::access::mode::read_write>(cgh);
     // This single contiguous range represents the read-mostly block of
     // Krylov vectors consumed by x += Q*y.
     auto basis_acc = basis.get_access<sycl::access::mode::read>(
-        cgh, sycl::range<1>(fanout * n), sycl::id<1>(0));
+        cgh, sycl::range<2>(fanout * nx, ny), sycl::id<2>(0, 0));
     auto coefficient_acc = coefficients.get_access<sycl::access::mode::read>(
         cgh, sycl::range<1>(fanout), sycl::id<1>(0));
     auto token_acc =
         cycle_token.get_access<sycl::access::mode::read>(cgh);
     cgh.parallel_for<KrylovFinalProjectionKernel>(
-        sycl::range<1>(n), [=](sycl::item<1> item) {
-          const std::size_t index = item[0];
+        sycl::range<2>(nx, ny), [=](sycl::item<2> item) {
+          const std::size_t row = item[0];
+          const std::size_t col = item[1];
           data_t correction = static_cast<data_t>(0);
           for (std::size_t basis_index = 0; basis_index < fanout;
                ++basis_index) {
             correction += coefficient_acc[basis_index] *
-                          basis_acc[basis_index * n + index];
+                          basis_acc[sycl::id<2>(basis_index * nx + row, col)];
           }
-          x_acc[index] += token_acc[0] * correction;
+          x_acc[sycl::id<2>(row, col)] += token_acc[0] * correction;
         });
   });
 }
 
-void submit_residual(sycl::queue &queue, bool wait_each_kernel, buffer_t &b,
-                     buffer_t &ax, buffer_t &residual, std::size_t n) {
+void submit_residual(sycl::queue &queue, bool wait_each_kernel,
+                     field_buffer_t &b, field_buffer_t &ax,
+                     field_buffer_t &residual,
+                     std::size_t nx, std::size_t ny) {
   submit_command(queue, wait_each_kernel, [&](sycl::handler &cgh) {
     auto b_acc = b.get_access<sycl::access::mode::read>(cgh);
     auto ax_acc = ax.get_access<sycl::access::mode::read>(cgh);
     auto residual_acc =
         residual.get_access<sycl::access::mode::discard_write>(cgh);
-    cgh.parallel_for<KrylovResidualKernel>(sycl::range<1>(n),
-                                            [=](sycl::item<1> item) {
-      const std::size_t index = item[0];
-      residual_acc[index] = b_acc[index] - ax_acc[index];
+    cgh.parallel_for<KrylovResidualKernel>(sycl::range<2>(nx, ny),
+                                            [=](sycl::item<2> item) {
+      const std::size_t row = item[0];
+      const std::size_t col = item[1];
+      const sycl::id<2> cell(row, col);
+      residual_acc[cell] = b_acc[cell] - ax_acc[cell];
     });
   });
 }
 
 void submit_copy_basis(sycl::queue &queue, bool wait_each_kernel,
-                       buffer_t &basis, std::size_t source_offset,
-                       std::size_t destination_offset, std::size_t n) {
+                       basis_buffer_t &basis, std::size_t source_slot,
+                       std::size_t destination_slot,
+                       std::size_t nx, std::size_t ny) {
   submit_command(queue, wait_each_kernel, [&](sycl::handler &cgh) {
     auto source_acc = basis.get_access<sycl::access::mode::read>(
-        cgh, sycl::range<1>(n), sycl::id<1>(source_offset));
+        cgh, sycl::range<2>(nx, ny), sycl::id<2>(source_slot * nx, 0));
     auto destination_acc = basis.get_access<
         sycl::access::mode::discard_write>(
-        cgh, sycl::range<1>(n), sycl::id<1>(destination_offset));
-    cgh.parallel_for<KrylovCopyBasisKernel>(sycl::range<1>(n),
-                                             [=](sycl::item<1> item) {
-      destination_acc[item[0]] = source_acc[item[0]];
+        cgh, sycl::range<2>(nx, ny), sycl::id<2>(destination_slot * nx, 0));
+    cgh.parallel_for<KrylovCopyBasisKernel>(sycl::range<2>(nx, ny),
+                                             [=](sycl::item<2> item) {
+      const std::size_t row = item[0];
+      const std::size_t col = item[1];
+      destination_acc[sycl::id<2>(row, col)] =
+          source_acc[sycl::id<2>(row, col)];
     });
   });
 }
@@ -779,95 +994,98 @@ void submit_arnoldi_cycle(sycl::queue &queue, const Config &config,
                            const Dimensions &dimensions, Buffers &buffers,
                            bool use_stencil) {
   for (std::size_t k = 0; k < config.m; ++k) {
-    const std::size_t qk_offset = k * dimensions.n;
     if (use_stencil) {
       // Large regular phase: Celerity-friendly in a later neighborhood-mapped
       // implementation and worthwhile for a multi-device scheduler to split.
-      submit_stencil(queue, config.wait_each_kernel, buffers.basis, qk_offset,
-                     buffers.w, 0, config.nx, config.ny, dimensions.n);
+      submit_stencil_basis_to_field(queue, config.wait_each_kernel,
+                                    buffers.basis, k, buffers.w, config.nx,
+                                    config.ny);
     } else {
       submit_orthogonalization_seed(
-          queue, config.wait_each_kernel, buffers.b, buffers.basis, qk_offset,
-          buffers.w, dimensions.n);
+          queue, config.wait_each_kernel, buffers.b, buffers.basis, k,
+          buffers.w, config.nx, config.ny);
     }
 
-    // It shares q_k and b with the main path but does not touch w, so it is a
-    // real independent branch for a DAG-aware runtime.
-    submit_independent_branch(queue, config.wait_each_kernel, buffers.b,
-                              buffers.basis, qk_offset, buffers.auxiliary,
-                              dimensions.n);
+    // These branches share q_k and b with the main path but do not touch w or
+    // each other.  Distinct branch planes make the logical parallelism visible
+    // through accessor subranges instead of through artificial buffers.
+    for (std::size_t branch = 0; branch < dimensions.branch_slots; ++branch) {
+      submit_independent_branch(queue, config.wait_each_kernel, buffers.b,
+                                buffers.basis, k, buffers.branches, branch,
+                                config.nx, config.ny);
+    }
 
     // Modified Gram-Schmidt: the amount of dot/update work grows from one to
     // m passes across a restart cycle, exposing changing compute cost.
     for (std::size_t i = 0; i <= k; ++i) {
-      const std::size_t qi_offset = i * dimensions.n;
-      const std::size_t h_offset = h_index(k, i, config.m);
       submit_dot_stage1(queue, config.wait_each_kernel, buffers.basis,
-                        qi_offset, buffers.w, buffers.partials, dimensions.n,
-                        config.partials);
+                        i, buffers.w, buffers.partials, config.nx, config.ny,
+                        dimensions.n, config.partials);
       submit_dot_stage2(queue, config.wait_each_kernel, buffers.partials,
-                        config.partials, buffers.h, h_offset);
+                        config.partials, buffers.h, k, i);
       submit_axpy_update(queue, config.wait_each_kernel, buffers.w,
-                         buffers.basis, qi_offset, buffers.h, h_offset,
-                         dimensions.n);
+                         buffers.basis, i, buffers.h, k, i, config.nx,
+                         config.ny);
     }
 
-    const std::size_t norm_offset = h_index(k, k + 1, config.m);
-    submit_norm_stage1(queue, config.wait_each_kernel, buffers.w, 0,
-                       buffers.partials, dimensions.n, config.partials);
+    submit_norm_stage1(queue, config.wait_each_kernel, buffers.w,
+                       buffers.partials, config.nx, config.ny, dimensions.n,
+                       config.partials);
     submit_norm_stage2(queue, config.wait_each_kernel, buffers.partials,
-                       config.partials, buffers.h, norm_offset);
-    submit_normalize(queue, config.wait_each_kernel, buffers.w, 0, buffers.h,
-                     norm_offset, buffers.basis, (k + 1) * dimensions.n,
-                     dimensions.n);
+                       config.partials, buffers.h, k, k + 1);
+    submit_normalize_h_to_basis(queue, config.wait_each_kernel, buffers.w,
+                                buffers.h, k, k + 1, buffers.basis, k + 1,
+                                config.nx, config.ny);
   }
 }
 
 void submit_full_mode(sycl::queue &queue, const Config &config,
                       const Dimensions &dimensions, Buffers &buffers) {
-  const std::size_t last_norm_offset = h_index(config.m - 1, config.m, config.m);
-  const std::size_t last_basis_offset = config.m * dimensions.n;
   for (std::size_t cycle = 0; cycle < config.cycles; ++cycle) {
     submit_arnoldi_cycle(queue, config, dimensions, buffers, true);
     // Device-side marker closes the restart before the Q*y fan-in without a
     // host scalar read or a queue wait.
     submit_restart_marker(queue, config.wait_each_kernel, buffers.h,
-                          last_norm_offset, buffers.basis, last_basis_offset,
-                          buffers.cycle_token, dimensions.n);
+                          config.m - 1, config.m, buffers.basis, config.m,
+                          buffers.cycle_token, config.nx, config.ny);
     submit_final_projection(queue, config.wait_each_kernel, buffers.x,
                             buffers.basis, buffers.coefficients,
-                            buffers.cycle_token, config.fanout, dimensions.n);
+                            buffers.cycle_token, config.fanout, config.nx,
+                            config.ny);
 
     if (cycle + 1 < config.cycles) {
       // Form an approximate restarted residual r = b - A*x and normalize it
       // into q_0.  All scalar flow remains in small device buffers.
-      submit_stencil(queue, config.wait_each_kernel, buffers.x, 0, buffers.w,
-                     0, config.nx, config.ny, dimensions.n);
+      submit_stencil_field_to_field(queue, config.wait_each_kernel, buffers.x,
+                                    buffers.w, config.nx, config.ny);
       submit_residual(queue, config.wait_each_kernel, buffers.b, buffers.w,
-                      buffers.residual, dimensions.n);
-      submit_norm_stage1(queue, config.wait_each_kernel, buffers.residual, 0,
-                         buffers.partials, dimensions.n, config.partials);
-      submit_norm_stage2(queue, config.wait_each_kernel, buffers.partials,
-                         config.partials, buffers.restart_norm, 0);
-      submit_normalize(queue, config.wait_each_kernel, buffers.residual, 0,
-                       buffers.restart_norm, 0, buffers.basis, 0,
-                       dimensions.n);
+                      buffers.residual, config.nx, config.ny);
+      submit_norm_stage1(queue, config.wait_each_kernel, buffers.residual,
+                         buffers.partials, config.nx, config.ny, dimensions.n,
+                         config.partials);
+      submit_norm_stage2_scalar(queue, config.wait_each_kernel,
+                                buffers.partials, config.partials,
+                                buffers.restart_norm);
+      submit_normalize_scalar_to_basis(queue, config.wait_each_kernel,
+                                       buffers.residual, buffers.restart_norm,
+                                       buffers.basis, 0, config.nx, config.ny);
     }
+    wait_cycle_boundary(queue);
   }
 }
 
 void submit_no_fanin_mode(sycl::queue &queue, const Config &config,
                           const Dimensions &dimensions, Buffers &buffers,
                           bool use_stencil) {
-  const std::size_t last_basis_offset = config.m * dimensions.n;
   for (std::size_t cycle = 0; cycle < config.cycles; ++cycle) {
     submit_arnoldi_cycle(queue, config, dimensions, buffers, use_stencil);
     if (cycle + 1 < config.cycles) {
       // Carry a deterministic device-produced seed into the next stress cycle
       // without accidentally adding the projection fan-in to this mode.
       submit_copy_basis(queue, config.wait_each_kernel, buffers.basis,
-                        last_basis_offset, 0, dimensions.n);
+                        config.m, 0, config.nx, config.ny);
     }
+    wait_cycle_boundary(queue);
   }
 }
 
@@ -878,14 +1096,17 @@ void submit_operator_only_mode(sycl::queue &queue, const Config &config,
   for (std::size_t cycle = 0; cycle < config.cycles; ++cycle) {
     for (std::size_t step = 0; step < config.m; ++step) {
       if (last_result_in_basis) {
-        submit_stencil(queue, config.wait_each_kernel, buffers.basis, 0,
-                       buffers.w, 0, config.nx, config.ny, dimensions.n);
+        submit_stencil_basis_to_field(queue, config.wait_each_kernel,
+                                      buffers.basis, 0, buffers.w, config.nx,
+                                      config.ny);
       } else {
-        submit_stencil(queue, config.wait_each_kernel, buffers.w, 0,
-                       buffers.basis, 0, config.nx, config.ny, dimensions.n);
+        submit_stencil_field_to_basis(queue, config.wait_each_kernel,
+                                      buffers.w, buffers.basis, 0, config.nx,
+                                      config.ny);
       }
       last_result_in_basis = !last_result_in_basis;
     }
+    wait_cycle_boundary(queue);
   }
 }
 
@@ -894,64 +1115,85 @@ void submit_fanin_only_mode(sycl::queue &queue, const Config &config,
   for (std::size_t cycle = 0; cycle < config.cycles; ++cycle) {
     submit_final_projection(queue, config.wait_each_kernel, buffers.x,
                             buffers.basis, buffers.coefficients,
-                            buffers.cycle_token, config.fanout, dimensions.n);
+                            buffers.cycle_token, config.fanout, config.nx,
+                            config.ny);
+    wait_cycle_boundary(queue);
   }
 }
 
 void submit_samples(sycl::queue &queue, bool wait_each_kernel, Buffers &buffers,
-                    std::size_t n, std::size_t basis_offset,
-                    int primary_kind) {
+                    const Dimensions &dimensions, const Config &config,
+                    std::size_t basis_slot, int primary_kind) {
   submit_command(queue, wait_each_kernel, [&](sycl::handler &cgh) {
     auto x_acc = buffers.x.get_access<sycl::access::mode::read>(cgh);
     auto basis_acc = buffers.basis.get_access<sycl::access::mode::read>(
-        cgh, sycl::range<1>(n), sycl::id<1>(basis_offset));
+        cgh, sycl::range<2>(config.nx, config.ny),
+        sycl::id<2>(basis_slot * config.nx, 0));
     auto w_acc = buffers.w.get_access<sycl::access::mode::read>(cgh);
-    auto auxiliary_acc =
-        buffers.auxiliary.get_access<sycl::access::mode::read>(cgh);
+    auto branch_acc = buffers.branches.get_access<sycl::access::mode::read>(
+        cgh, sycl::range<2>(dimensions.branch_slots * config.nx, config.ny),
+        sycl::id<2>(0, 0));
     auto sample_acc =
         buffers.samples.get_access<sycl::access::mode::discard_write>(cgh);
     cgh.parallel_for<KrylovSampleKernel>(
         sycl::range<1>(4), [=](sycl::item<1> item) {
           const std::size_t lane = item[0];
-          const std::size_t index = lane == 0 ? 0 : lane == 1 ? n / 2
-                                              : lane == 2 ? n - 1 : n / 3;
-          data_t primary = x_acc[index];
+          const std::size_t index = lane == 0 ? 0
+                                  : lane == 1 ? dimensions.n / 2
+                                  : lane == 2 ? dimensions.n - 1
+                                              : dimensions.n / 3;
+          const std::size_t row = index / config.ny;
+          const std::size_t col = index - row * config.ny;
+          const sycl::id<2> cell(row, col);
+          data_t primary = x_acc[cell];
           if (primary_kind == 1) {
-            primary = basis_acc[index];
+            primary = basis_acc[cell];
           } else if (primary_kind == 2) {
-            primary = w_acc[index];
+            primary = w_acc[cell];
           }
           if (lane < 3) {
             sample_acc[lane] = primary;
           } else {
-            // This mixed lane makes the independent auxiliary branch part of
-            // the observable result without forcing a full host readback.
-            sample_acc[lane] = x_acc[index] +
-                               static_cast<data_t>(0.125) * basis_acc[index] +
-                               static_cast<data_t>(0.0625) * w_acc[index] +
-                               auxiliary_acc[index];
+            data_t branch_mix = static_cast<data_t>(0);
+            for (std::size_t branch = 0; branch < dimensions.branch_slots;
+                 ++branch) {
+              branch_mix +=
+                  static_cast<data_t>(0.25) *
+                  branch_acc[sycl::id<2>(branch * config.nx + row, col)];
+            }
+            sample_acc[lane] =
+                x_acc[cell] +
+                static_cast<data_t>(0.125) * basis_acc[cell] +
+                static_cast<data_t>(0.0625) * w_acc[cell] + branch_mix;
           }
         });
   });
 }
 
-double checksum_full_primary(Buffers &buffers, std::size_t n,
-                             std::size_t basis_offset, int primary_kind) {
+double checksum_full_primary(Buffers &buffers, const Config &config,
+                             std::size_t basis_slot, int primary_kind) {
   double checksum = 0.0;
   if (primary_kind == 0) {
     sycl::host_accessor x_acc{buffers.x, sycl::read_only};
-    for (std::size_t index = 0; index < n; ++index) {
-      checksum += static_cast<double>(x_acc[index]);
+    for (std::size_t row = 0; row < config.nx; ++row) {
+      for (std::size_t col = 0; col < config.ny; ++col) {
+        checksum += static_cast<double>(x_acc[sycl::id<2>(row, col)]);
+      }
     }
   } else if (primary_kind == 1) {
     sycl::host_accessor basis_acc{buffers.basis, sycl::read_only};
-    for (std::size_t index = 0; index < n; ++index) {
-      checksum += static_cast<double>(basis_acc[basis_offset + index]);
+    for (std::size_t row = 0; row < config.nx; ++row) {
+      for (std::size_t col = 0; col < config.ny; ++col) {
+        checksum += static_cast<double>(
+            basis_acc[sycl::id<2>(basis_slot * config.nx + row, col)]);
+      }
     }
   } else {
     sycl::host_accessor w_acc{buffers.w, sycl::read_only};
-    for (std::size_t index = 0; index < n; ++index) {
-      checksum += static_cast<double>(w_acc[index]);
+    for (std::size_t row = 0; row < config.nx; ++row) {
+      for (std::size_t col = 0; col < config.ny; ++col) {
+        checksum += static_cast<double>(w_acc[sycl::id<2>(row, col)]);
+      }
     }
   }
   return checksum;
@@ -988,25 +1230,28 @@ int main(int argc, char **argv) {
             << " init_on_device=" << (config.init_on_device ? 1 : 0) << '\n';
   std::cout << "MEMORY vector_bytes=" << memory.vector_bytes
             << " Q_bytes=" << memory.basis_bytes
+            << " branch_bytes=" << memory.branch_bytes
             << " total_estimated_bytes=" << memory.total_bytes << '\n';
 
   try {
     const auto init_begin = std::chrono::steady_clock::now();
 
-    buffer_t x_buf{sycl::range<1>(dimensions.n)};
-    buffer_t b_buf{sycl::range<1>(dimensions.n)};
-    buffer_t basis_buf{sycl::range<1>(dimensions.basis_elements)};
-    buffer_t w_buf{sycl::range<1>(dimensions.n)};
-    buffer_t residual_buf{sycl::range<1>(dimensions.n)};
-    buffer_t auxiliary_buf{sycl::range<1>(dimensions.n)};
-    buffer_t partial_buf{sycl::range<1>(config.partials)};
-    buffer_t h_buf{sycl::range<1>(dimensions.h_elements)};
-    buffer_t coefficient_buf{sycl::range<1>(config.m)};
-    buffer_t restart_norm_buf{sycl::range<1>(1)};
-    buffer_t cycle_token_buf{sycl::range<1>(1)};
-    buffer_t sample_buf{sycl::range<1>(4)};
+    field_buffer_t x_buf{sycl::range<2>(config.nx, config.ny)};
+    field_buffer_t b_buf{sycl::range<2>(config.nx, config.ny)};
+    basis_buffer_t basis_buf{
+        sycl::range<2>(dimensions.basis_slots * config.nx, config.ny)};
+    field_buffer_t w_buf{sycl::range<2>(config.nx, config.ny)};
+    field_buffer_t residual_buf{sycl::range<2>(config.nx, config.ny)};
+    branch_buffer_t branch_buf{
+        sycl::range<2>(dimensions.branch_slots * config.nx, config.ny)};
+    vector_buffer_t partial_buf{sycl::range<1>(config.partials)};
+    h_buffer_t h_buf{sycl::range<2>(config.m, dimensions.basis_slots)};
+    vector_buffer_t coefficient_buf{sycl::range<1>(config.m)};
+    vector_buffer_t restart_norm_buf{sycl::range<1>(1)};
+    vector_buffer_t cycle_token_buf{sycl::range<1>(1)};
+    vector_buffer_t sample_buf{sycl::range<1>(4)};
     Buffers buffers{x_buf,          b_buf,       basis_buf, w_buf,
-                    residual_buf,   auxiliary_buf, partial_buf, h_buf,
+                    residual_buf,   branch_buf,  partial_buf, h_buf,
                     coefficient_buf, restart_norm_buf, cycle_token_buf,
                     sample_buf};
 
@@ -1020,43 +1265,43 @@ int main(int argc, char **argv) {
 
     const auto run_begin = std::chrono::steady_clock::now();
     int primary_kind = 0;  // 0=x, 1=one basis vector, 2=w.
-    std::size_t sample_basis_offset = config.m * dimensions.n;
+    std::size_t sample_basis_slot = config.m;
     switch (config.mode) {
       case Mode::Full:
         submit_full_mode(queue, config, dimensions, buffers);
         primary_kind = 0;
-        sample_basis_offset = config.m * dimensions.n;
+        sample_basis_slot = config.m;
         break;
       case Mode::NoFanin:
         submit_no_fanin_mode(queue, config, dimensions, buffers, true);
         primary_kind = 1;
-        sample_basis_offset = config.m * dimensions.n;
+        sample_basis_slot = config.m;
         break;
       case Mode::FaninOnly:
         submit_fanin_only_mode(queue, config, dimensions, buffers);
         primary_kind = 0;
-        sample_basis_offset = (config.fanout - 1) * dimensions.n;
+        sample_basis_slot = config.fanout - 1;
         break;
       case Mode::OperatorOnly: {
         bool last_result_in_basis = true;
         submit_operator_only_mode(queue, config, dimensions, buffers,
                                   last_result_in_basis);
         primary_kind = last_result_in_basis ? 1 : 2;
-        sample_basis_offset = 0;
+        sample_basis_slot = 0;
         break;
       }
       case Mode::OrthogonalizationOnly:
         submit_no_fanin_mode(queue, config, dimensions, buffers, false);
         primary_kind = 1;
-        sample_basis_offset = config.m * dimensions.n;
+        sample_basis_slot = config.m;
         break;
     }
 
     // The tiny result buffer provides sparse host materialization by default.
     // It also makes all principal paths, including the independent branch,
     // observable before the final timing wait.
-    submit_samples(queue, config.wait_each_kernel, buffers, dimensions.n,
-                   sample_basis_offset, primary_kind);
+    submit_samples(queue, config.wait_each_kernel, buffers, dimensions, config,
+                   sample_basis_slot, primary_kind);
     queue.wait();
     const auto run_end = std::chrono::steady_clock::now();
 
@@ -1074,8 +1319,9 @@ int main(int argc, char **argv) {
                       static_cast<double>(samples[2]) +
                       static_cast<double>(samples[3]);
     if (config.host_read_full) {
-      checksum = checksum_full_primary(buffers, dimensions.n,
-                                       sample_basis_offset, primary_kind);
+      checksum =
+          checksum_full_primary(buffers, config, sample_basis_slot,
+                                primary_kind);
     }
     const auto host_end = std::chrono::steady_clock::now();
 

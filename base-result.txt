@@ -1,0 +1,21 @@
+heyifu@a6000-docker:~/SYCL/test-scenario$ ./krylov_gmres_sycl_timer 
+CONFIG nx=2048 ny=2048 N=4194304 m=8 cycles=2 partials=1024 fanout=8 mode=full wait_each_kernel=0 host_read_full=0 init_on_device=0
+MEMORY vector_bytes=16777216 Q_bytes=150994944 total_estimated_bytes=234885464
+TIMING init_sec=3.936844
+TIMING run_sec=1.048221
+TIMING host_sec=0.000106
+RESULT checksum=0.038051 sample0=-0.000143 sample1=-0.000257 sample2=-0.000190
+heyifu@a6000-docker:~/SYCL/test-scenario$ ./krylov_gmres_sycl_timer --nx 16384 --ny 16384
+CONFIG nx=16384 ny=16384 N=268435456 m=8 cycles=2 partials=1024 fanout=8 mode=full wait_each_kernel=0 host_read_full=0 init_on_device=0
+MEMORY vector_bytes=1073741824 Q_bytes=9663676416 total_estimated_bytes=15032389976
+TIMING init_sec=87.382974
+TIMING run_sec=13.041783
+TIMING host_sec=0.000145
+RESULT checksum=0.041641 sample0=-0.000001 sample1=-0.000048 sample2=-0.000000
+heyifu@a6000-docker:~/SYCL/test-scenario$ ./krylov_gmres_sycl_timer --nx 16384 --ny 16384 --cycles 10
+CONFIG nx=16384 ny=16384 N=268435456 m=8 cycles=10 partials=1024 fanout=8 mode=full wait_each_kernel=0 host_read_full=0 init_on_device=0
+MEMORY vector_bytes=1073741824 Q_bytes=9663676416 total_estimated_bytes=15032389976
+TIMING init_sec=113.080979
+TIMING run_sec=51.259210
+TIMING host_sec=0.000151
+RESULT checksum=0.186460 sample0=0.000069 sample1=-0.000403 sample2=0.000094

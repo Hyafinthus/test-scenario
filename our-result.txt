@@ -1,0 +1,353 @@
+heyifu@a6000-docker:~$ mpirun -n 1 sycl-daemon
+No protocol specified
+No protocol specified
+MPI_Rank 0: a6000-docker of 1 started
+MPI_Rank 0: Established
+SystemSchedulerMonitor: MONITOR_Rank 0 started.
+MPI_Rank 0: SystemSchedulerSubmit started
+SystemSchedulerSubmit: SUBMIT_Rank 0 started.
+Number of GPUs: 4
+GPU 0: PCI Bus ID: 00000000:3A:00.0 int: 58
+GPU 1: PCI Bus ID: 00000000:3C:00.0 int: 60
+GPU 2: PCI Bus ID: 00000000:AD:00.0 int: 173
+GPU 3: PCI Bus ID: 00000000:BE:00.0 int: 190
+SYCL Device 0 (INTEL(R) XEON(R) GOLD 6530): PCI Bus ID: -1
+SYCL Device 1 (NVIDIA RTX 6000 Ada Generation): PCI Bus ID: 58
+SYCL Device 2 (NVIDIA RTX 6000 Ada Generation): PCI Bus ID: 60
+SYCL Device 3 (NVIDIA RTX 6000 Ada Generation): PCI Bus ID: 173
+SYCL Device 4 (NVIDIA RTX 6000 Ada Generation): PCI Bus ID: 190
+SYCL Device 1 mapped to GPU 1 fp32 capability 11.39 fp64 capability 5.56
+SYCL Device 2 mapped to GPU 2 fp32 capability 11.39 fp64 capability 5.56
+SYCL Device 3 mapped to GPU 3 fp32 capability 11.39 fp64 capability 5.56
+SYCL Device 4 mapped to GPU 4 fp32 capability 11.39 fp64 capability 5.56
+SUBMIT_Rank 0: Received submit path: /home/heyifu/SYCL/test-scenario/krylov_gmres_sycl_timer_our
+SystemSchedulerScale: SUBMIT_Rank 0 SYCLAPP_Rank 0 SYCLAPP_Size 1 DAEMON_Rank 0 DAEMON_Size 1
+SUBMIT_Rank 0 SYCLAPP_Rank 0: Launched binary with PID 3353
+SystemSchedulerScale: SYCLAPP_Rank 0 waiting DAEMON NOTIFY
+EstablishDaemon: Rank 0 created mq_id_daemon: 125
+waiting
+waiting
+waiting
+waiting
+waiting
+waiting
+waiting
+waiting
+Process 3353: ProgramManager SCHEDULE register
+waiting
+waiting
+SystemSchedulerDaemonOffline: Rank 0 for PID 3353 opened mq_id_program: /sycl_mq_program_3353
+SystemSchedulerDaemonOffline: Rank 0 for PID 3353 send to ProgramManager scale_count: 0 ret: 0
+SystemSchedulerDaemonOffline: Rank 0 for PID 3353 started.
+SystemSchedulerDaemonOffline: Rank 0: waiting reqs from handler
+Process 3353: ProgramManager SCHEDULE scale_count = 0
+Process 3353: ProgramManager SCHEDULE waiting mq_id_daemon
+Process 3353: ProgramManager SCHEDULE opened mq_id_daemon
+CONFIG nx=2048 ny=2048 N=4194304 m=8 cycles=2 partials=1024 fanout=8 mode=full wait_each_kernel=0 host_read_full=0 init_on_device=0
+MEMORY vector_bytes=16777216 Q_bytes=150994944 total_estimated_bytes=234885464
+=== handler === Process 3353 === set sycl_kernel_cg: 1 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4d20 0x38c4e20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 2 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4c20 0x38c4d20 0x38c5020 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 3 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 4 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 5 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 6 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 7 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 8 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c5220 0x38c4d20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 9 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4d20 0x38c4e20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 10 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4c20 0x38c4d20 0x38c5020 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 11 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 12 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 13 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 14 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 15 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 16 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 17 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 18 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 19 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c5220 0x38c4d20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 20 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4d20 0x38c4e20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 21 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4c20 0x38c4d20 0x38c5020 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 22 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 23 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 24 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 25 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 26 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 27 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 28 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 29 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 30 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 31 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 32 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 33 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c5220 0x38c4d20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 34 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4d20 0x38c4e20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 35 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4c20 0x38c4d20 0x38c5020 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 36 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 37 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 38 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 39 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 40 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 41 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 42 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 43 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 44 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 45 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 46 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 47 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 48 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 49 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 50 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c5220 0x38c4d20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 51 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4d20 0x38c4e20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 52 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4c20 0x38c4d20 0x38c5020 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 53 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 54 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 55 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 56 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 57 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 58 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 59 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 60 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 61 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 62 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 63 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 64 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 65 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 66 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 67 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 68 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 69 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 70 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c5220 0x38c4d20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 71 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4d20 0x38c4e20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 72 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4c20 0x38c4d20 0x38c5020 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 73 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 74 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 75 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 76 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 77 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 78 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 79 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 80 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 81 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 82 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 83 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 84 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 85 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 86 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 87 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 88 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 89 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 90 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 91 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 92 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 93 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c5220 0x38c4d20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 94 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4d20 0x38c4e20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 95 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4c20 0x38c4d20 0x38c5020 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 96 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 97 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 98 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 99 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 100 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 101 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 102 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 103 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 104 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 105 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 106 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 107 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 108 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 109 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 110 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 111 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 112 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 113 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 114 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 115 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 116 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 117 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 118 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 119 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c5220 0x38c4d20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 120 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4d20 0x38c4e20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 121 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4c20 0x38c4d20 0x38c5020 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 122 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 123 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 124 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 125 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 126 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 127 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 128 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 129 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 130 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 131 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 132 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 133 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 134 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 135 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 136 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 137 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 138 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 139 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 140 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 141 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 142 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 143 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 144 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 145 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 146 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 147 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 148 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c5220 0x38c4d20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 149 MQueue: 0x38c5780 MRequirements: 3 - 0x38c5220 0x38c4d20 0x38c5520 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 150 MQueue: 0x38c5780 MRequirements: 4 - 0x38c4b20 0x38c4d20 0x38c5320 0x38c5520 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 151 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4b20 0x38c4e20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 152 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4c20 0x38c4e20 0x38c4f20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 153 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4f20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 154 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5420 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 155 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4f20 0x38c5420 0x38c4d20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 156 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4d20 0x38c4e20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 157 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4c20 0x38c4d20 0x38c5020 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 158 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 159 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 160 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 161 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 162 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 163 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c5220 0x38c4d20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 164 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4d20 0x38c4e20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 165 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4c20 0x38c4d20 0x38c5020 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 166 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 167 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 168 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 169 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 170 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 171 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 172 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 173 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 174 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c5220 0x38c4d20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 175 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4d20 0x38c4e20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 176 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4c20 0x38c4d20 0x38c5020 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 177 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 178 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 179 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 180 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 181 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 182 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 183 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 184 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 185 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 186 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 187 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 188 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c5220 0x38c4d20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 189 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4d20 0x38c4e20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 190 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4c20 0x38c4d20 0x38c5020 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 191 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 192 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 193 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 194 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 195 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 196 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 197 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 198 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 199 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 200 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 201 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 202 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 203 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 204 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 205 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c5220 0x38c4d20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 206 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4d20 0x38c4e20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 207 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4c20 0x38c4d20 0x38c5020 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 208 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 209 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 210 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 211 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 212 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 213 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 214 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 215 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 216 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 217 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 218 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 219 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 220 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 221 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 222 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 223 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 224 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 225 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c5220 0x38c4d20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 226 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4d20 0x38c4e20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 227 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4c20 0x38c4d20 0x38c5020 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 228 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 229 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 230 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 231 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 232 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 233 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 234 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 235 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 236 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 237 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 238 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 239 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 240 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 241 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 242 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 243 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 244 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 245 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 246 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 247 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 248 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c5220 0x38c4d20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 249 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4d20 0x38c4e20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 250 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4c20 0x38c4d20 0x38c5020 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 251 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 252 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 253 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 254 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 255 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 256 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 257 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 258 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 259 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 260 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 261 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 262 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 263 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 264 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 265 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 266 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 267 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 268 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 269 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 270 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 271 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 272 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 273 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 274 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c5220 0x38c4d20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 275 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4d20 0x38c4e20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 276 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4c20 0x38c4d20 0x38c5020 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 277 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 278 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 279 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 280 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 281 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 282 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 283 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 284 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 285 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 286 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 287 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 288 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 289 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 290 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 291 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 292 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 293 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 294 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 295 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 296 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 297 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 298 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4d20 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 299 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 300 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c4d20 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 301 MQueue: 0x38c5780 MRequirements: 2 - 0x38c4e20 0x38c5120 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 302 MQueue: 0x38c5780 MRequirements: 2 - 0x38c5120 0x38c5220 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 303 MQueue: 0x38c5780 MRequirements: 3 - 0x38c4e20 0x38c5220 0x38c4d20 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 304 MQueue: 0x38c5780 MRequirements: 3 - 0x38c5220 0x38c4d20 0x38c5520 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 305 MQueue: 0x38c5780 MRequirements: 4 - 0x38c4b20 0x38c4d20 0x38c5320 0x38c5520 MEvents: 0
+=== handler === Process 3353 === set sycl_kernel_cg: 306 MQueue: 0x38c5780 MRequirements: 5 - 0x38c4b20 0x38c4d20 0x38c4e20 0x38c5020 0x38c5620 MEvents: 0

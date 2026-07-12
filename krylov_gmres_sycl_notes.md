@@ -16,7 +16,7 @@ the other available solver implementations.
   restart correction. Its `orthogonalize_mgs` helper is the direct source for
   the repeated `h(i,k) = dot(q_i,w)` then `w -= h(i,k) q_i` shape.
 - `base-ginkgo/reference/solver/gmres_kernels.cpp` supplies the meaningful
-  multi-AXPY correction pattern, `correction[idx] = sum_i Q[i*N+idx] * y[i]`.
+  basis-times-coefficient multi-AXPY correction pattern.
 - `base-gmres/Krylov.c` provides a compact textbook Arnoldi loop. Its
   `cuda_GMRES.cu` was useful specifically as a staging reference for matvec,
   partial dot reduction, final reduction, vector update, norm, normalization,
@@ -36,32 +36,50 @@ important GMRES dataflow.
 
 ## Algorithm and DAG shape
 
-`Q` is one flattened buffer with `(m + 1)` contiguous vectors:
+All grid fields are real 2-D SYCL buffers. `x`, `b`, `w`, and `residual` have
+shape `(nx, ny)`. `Q` and the independent branch workspace are also 2-D
+buffers, but they use a row-block layout so each logical vector plane remains a
+proper 2-D subrange:
 
 ```text
-Q[k * N + idx]
-H[k * (m + 1) + i] = h(i, k)
+Q_slot(k)       = basis[k * nx : (k + 1) * nx, 0 : ny]
+branch_slot(b) = branches[b * nx : (b + 1) * nx, 0 : ny]
+H[column,row]  = h(row, column)
 ```
+
+This is intentionally not a 1-D vector pretending to be 2-D. The application
+requests 2-D accessors for 2-D data, and a single basis/branch plane is passed
+to kernels as `range<2>(nx, ny)` with a row-block offset. That shape also
+matches the current handler split model, which reasons about the first buffer
+dimension when partitioning large writes.
 
 For each Arnoldi step, the default/full path submits the following commands
-without a host wait:
+within the current restart cycle:
 
 ```text
-q_k -> 5-point stencil -> w
-  + (q_k, b) -> independent residual-monitor branch -> auxiliary
+Q_k -> 5-point stencil -> w
+  + branch_0 = f(Q_k, b)
+  + branch_1 = f(Q_k, b)
+  + branch_2 = f(Q_k, b)
 
 for i = 0..k:
-  (q_i, w) -> dot stage 1 partials -> dot stage 2 h(i,k) -> w -= h(i,k) q_i
+  (Q_i, w) -> dot stage 1 partials
+    -> dot stage 2 H[column=k,row=i]
+    -> w -= H[column=k,row=i] Q_i
 
-w -> norm stage 1 partials -> norm stage 2 h(k+1,k) -> q_(k+1) = w / h(k+1,k)
+w -> norm stage 1 partials
+  -> norm stage 2 H[column=k,row=k+1]
+  -> Q_(k+1) = w / H[column=k,row=k+1]
 
-(h(m,m-1), q_m) -> restart token -> x += token * sum_i y_i q_i
+(H[column=m-1,row=m], Q_m) -> restart token -> x += token * sum_i y_i Q_i
 ```
 
-The two reduction stages use one work-item per contiguous partial chunk and a
-one-work-item final reduction. This avoids local-memory and `sycl::reduction`
-requirements, while small scalar `H` subranges carry device-side dependencies
-to the AXPY and normalization kernels.
+The branch kernels are independent of the MGS update path and write disjoint
+2-D branch planes, giving the runtime real inter-kernel scheduling freedom.
+The two reduction stages use one work-item per partial chunk and a
+one-work-item final reduction. This keeps the benchmark portable while small
+scalar `H` subranges carry device-side dependencies to the AXPY and
+normalization kernels.
 
 The restart token is deliberate: a correction using `q_0..q_(m-1)` would not,
 by itself, depend on the final `q_m` normalization. The token reads the final
@@ -78,8 +96,8 @@ native examples; it avoids relying on a nonportable no-init property spelling.
 | Research layer | Miniapp mechanism | What a runtime can observe |
 | --- | --- | --- |
 | Compute-cost semantics | MGS performs `k + 1` dot/update pairs at iteration `k`; fan-in cost grows with `--fanout`. | Range metadata alone does not encode the growing number of full-vector passes or dynamic fan-in loop cost. |
-| Scheduling decisions | A large stencil and projection coexist with serial stage-2 reductions, memory-bound AXPY/auxiliary work, and an auxiliary branch independent of `w` for each iteration. | The stencil/projection are candidates for splitting; scalar reductions and short dependency-heavy stages may not be. The auxiliary branch gives real inter-kernel parallelism in addition to intra-kernel data parallelism. |
-| Data maintenance / visibility | `Q` is read-mostly after each vector is produced; restart projection reads a contiguous `fanout * N` basis range plus coefficients to update one `x`. | The projection is a GMRES-style multi-vector fan-in with a large read set and one write target, exposing placement/coherence and virtual-buffer maintenance costs. |
+| Scheduling decisions | A large stencil and projection coexist with serial stage-2 reductions, memory-bound AXPY work, and three independent branch planes for each Arnoldi step. | The stencil/projection are candidates for splitting; scalar reductions and short dependency-heavy stages may not be. The branch planes give real inter-kernel parallelism in addition to intra-kernel data parallelism. |
+| Data maintenance / visibility | `Q` is read-mostly after each vector is produced; restart projection reads the row-block 2-D range covering `fanout` basis planes plus coefficients to update one `x`. | The projection is a GMRES-style multi-vector fan-in with a large read set and one write target, exposing placement/coherence and virtual-buffer maintenance costs. |
 
 The program uses exact per-vector `Q` subranges and one-element `H` subranges
 for the critical Arnoldi commands. Those ranges preserve useful dependency and
@@ -91,7 +109,7 @@ small operation.
 | Mode | Purpose | Celerity expectation later |
 | --- | --- | --- |
 | `full` | Restarted stencil Arnoldi, growing MGS, device-side restart, and projection. | Mixed workload: a good end-to-end comparison. |
-| `operator-only` | Alternating regular stencil applications between `Q[0]` and `w`. | Friendly: a 2-D neighborhood / `one_to_one` mapping should give this phase a fair distributed implementation. |
+| `operator-only` | Alternating regular stencil applications between `Q_0` and `w`. | Friendly: a 2-D neighborhood / `one_to_one` mapping should give this phase a fair distributed implementation. |
 | `orthogonalization-only` | Deterministic `w` seed followed by MGS dots, AXPYs, norms, and normalizations; no stencil or projection. | Unfriendly/diagnostic: many small dependency-heavy reductions and changing MGS depth. |
 | `fanin-only` | Repeated `x += Q*y` correction using initialized basis vectors and coefficients. | Exposes fan-in and data-maintenance/coherence pressure rather than stencil halo handling. |
 | `no-fanin` | Full stencil Arnoldi cycles while skipping the restart correction. | Separates operator/orthogonalization scheduling from final fan-in cost. |
@@ -103,11 +121,13 @@ onto the reduction or fan-in stages.
 
 ## Timing and materialization behavior
 
-The default path uses deterministic host initialization, submits the full
-benchmark DAG, calls `queue.wait()` once at the final timing boundary, and
-materializes only a four-element device-produced sample buffer. Therefore the
-reported `host_sec` is separated from `run_sec` and normally avoids an
-unintended full `Q` or `x` host readback.
+The default path uses deterministic host initialization and submits one restart
+cycle at a time. Each cycle ends with `queue.wait()`, so the daemon observes a
+profile epoch, makes a scheduling decision for the next cycle, and does not
+receive two restart cycles as one opaque batch. After the final cycle, the
+program materializes only a four-element device-produced sample buffer.
+Therefore the reported `host_sec` is separated from `run_sec` and normally
+avoids an unintended full `Q` or `x` host readback.
 
 `--host-read-full 1` instead computes a host checksum over the primary output
 for the selected mode. `--wait-each-kernel 1` is intentionally a debug-only
