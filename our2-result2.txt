@@ -1,0 +1,42 @@
+=== handler === Split step2 SplitReqs_Copy resized to NumParts: 2
+OfflineCommExecInfo: Rank 0: Kernel_order: 144 : Kernel_count: 148
+OfflineCommExecInfo: Rank 0: Kernel_order: 145 : Kernel_count: 149
+ === handler === Split step3 Req:0x2ffd660->0x2ff4400 CurCtx is host
+OfflineCommExecInfo: Rank 0: Kernel_order: 146 : Kernel_count: 150
+OfflineCommExecInfo: Rank 0: Kernel_order: 147 : Kernel_count: 151
+OfflineCommExecInfo: Rank 0: Kernel_order: 148 : Kernel_count: 152
+OfflineCommExecInfo: Rank 0: Kernel_order: 149 : Kernel_count: 153
+OfflineCommExecInfo: Rank 0: Kernel_order: 150 : Kernel_count: 154
+OfflineCommExecInfo: Rank 0: Kernel_order: 151 : Kernel_count: 155
+OfflineCommExecInfo: Rank 0: Kernel_order: 152 : Kernel_count: 156
+OfflineCommExecInfo: Rank 0: Kernel_order: 153 : Kernel_count: 135
+OfflineCommExecInfo: Rank 0: Kernel_order: 154 : Kernel_count: 157
+OfflineCommExecInfo: Rank 0: Kernel_order: 155 : Kernel_count: 158
+OfflineCommExecInfo: Rank 0: Kernel_order: 156 : Kernel_count: 136
+OfflineCommExecInfo: Rank 0: Kernel_order: 157 : Kernel_count: 159
+OfflineCommExecInfo: Rank 0: Kernel_order: 158 : Kernel_count: 137
+OfflineCommExecInfo: Rank 0: Kernel_order: 159 : Kernel_count: 160
+OfflineCommExecInfo: Rank 0: Kernel_order: 160 : Kernel_count: 161
+OfflineCommExecInfo: Rank 0: Kernel_order: 161 : Kernel_count: 162
+OfflineCommExecInfo: Rank 0: Kernel_order: 162 : Kernel_count: 163
+OfflineCommExecInfo: Rank 0: Kernel_order: 163 : Kernel_count: 164
+OfflineCommExecInfo: Rank 0: Kernel_order: 164 : Kernel_count: 165
+OfflineCommExecInfo: Rank 0: Kernel_order: 165 : Kernel_count: 166
+OfflineCommExecInfo: Rank 0: Kernel_order: 166 : Kernel_count: 167
+OfflineCommExecInfo: Rank 0: Kernel_order: 167 : Kernel_count: 168
+OfflineCommExecInfo: Rank 0: Kernel_order: 168 : Kernel_count: 169
+OfflineCommExecInfo: Rank 0: Kernel_order: 169 : Kernel_count: 170
+OfflineCommExecInfo: Rank 0: Kernel_order: 170 : Kernel_count: 171
+SystemSchedulerDaemonOffline: Rank 0: waiting reqs from handler
+=== handler === Split step3 copy to split device
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x2ffee90->0x2ff4500 CurCtx is host
+=== handler === Split step3 copy to split device
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x3000900->0x2ff4800 CurCtx is host
+=== handler === Split step3 copy to split device
+free(): invalid pointer
+=== handler === Split step3 copy to split device
+=== handler === Split step3 Write part 0 begin: 0 end: 1024 range: 1024,2048,1
+=== handler === Split step3 Write part 1 begin: 1024 end: 2048 range: 1024,2048,1
+=== handler === Split step3 onlyRead: 2 hasWrite: 1

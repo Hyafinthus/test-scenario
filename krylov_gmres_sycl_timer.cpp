@@ -671,7 +671,7 @@ void submit_independent_branch(sycl::queue &queue, bool wait_each_kernel,
     auto rhs_acc = rhs.get_access<sycl::access::mode::read>(cgh);
     auto basis_acc = basis.get_access<sycl::access::mode::read>(
         cgh, sycl::range<2>(nx, ny), sycl::id<2>(basis_slot * nx, 0));
-    auto branch_acc = branches.get_access<sycl::access::mode::read_write>(
+    auto branch_acc = branches.get_access<sycl::access::mode::discard_write>(
         cgh, sycl::range<2>(nx, ny), sycl::id<2>(branch_slot * nx, 0));
     cgh.parallel_for<KrylovIndependentBranchKernel>(
         sycl::range<2>(nx, ny), [=](sycl::item<2> item) {
@@ -685,7 +685,6 @@ void submit_independent_branch(sycl::queue &queue, bool wait_each_kernel,
               static_cast<data_t>((row + branch_slot * 13 + col * 3) % 37) *
               static_cast<data_t>(0.00001);
           branch_acc[branch_id] =
-              static_cast<data_t>(0.995) * branch_acc[branch_id] +
               branch_weight *
                   (rhs_acc[cell] - basis_acc[sycl::id<2>(row, col)]) +
               spatial;
