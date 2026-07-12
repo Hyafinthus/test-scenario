@@ -1,0 +1,71 @@
+OfflineCommExecInfo: Rank 0: Kernel_order: 165 : Kernel_count: 166
+OfflineCommExecInfo: Rank 0: Kernel_order: 166 : Kernel_count: 167
+OfflineCommExecInfo: Rank 0: Kernel_order: 167 : Kernel_count: 168
+OfflineCommExecInfo: Rank 0: Kernel_order: 168 : Kernel_count: 169
+OfflineCommExecInfo: Rank 0: Kernel_order: 169 : Kernel_count: 170
+OfflineCommExecInfo: Rank 0: Kernel_order: 170 : Kernel_count: 171
+SystemSchedulerDaemonOffline: Rank 0: waiting reqs from handler
+31266 === handler === resubmitted kernel: 2
+=== handler === Process 31266 === kernel_count: 1
+=== handler === Process 31266 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Process 31266 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Process 31266 === rebind MQueue
+31266 === handler === resubmit kernel: 1
+31266 === handler === resubmitted kernel: 1
+=== handler === Process 31266 === kernel_count: 3
+=== handler === Process 31266 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Process 31266 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Process 31266 === rebind MQueue
+31266 === handler === resubmit kernel: 3
+31266 === handler === resubmitted kernel: 3
+=== handler === Process 31266 === kernel_count: 5
+=== handler === Process 31266 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Process 31266 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Process 31266 === rebind MQueue
+31266 === handler === resubmit kernel: 5
+31266 === handler === resubmitted kernel: 5
+=== handler === Process 31266 === kernel_count: 4
+=== handler === Process 31266 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Process 31266 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Process 31266 === rebind MQueue
+31266 === handler === resubmit kernel: 4
+31266 === handler === resubmitted kernel: 4
+=== handler === Process 31266 === kernel_count: 6
+=== handler === Process 31266 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Process 31266 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Process 31266 === rebind MQueue
+31266 === handler === resubmit kernel: 6
+31266 === handler === resubmitted kernel: 6
+=== handler === Process 31266 === kernel_count: 7
+=== handler === Process 31266 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Process 31266 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Process 31266 === rebind MQueue
+31266 === handler === resubmit kernel: 7
+31266 === handler === resubmitted kernel: 7
+=== handler === Process 31266 === kernel_count: 8
+=== handler === Process 31266 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Process 31266 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Process 31266 === rebind MQueue
+31266 === handler === resubmit kernel: 8
+31266 === handler === resubmitted kernel: 8
+=== handler === Process 31266 === kernel_count: 9
+=== handler === Process 31266 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Process 31266 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Process 31266 === rebind MQueue
+31266 === handler === resubmit kernel: 9
