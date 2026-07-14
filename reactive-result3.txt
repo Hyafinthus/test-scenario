@@ -1,0 +1,233 @@
+81129 === handler === resubmit kernel: 199
+81129 === handler === resubmitted kernel: 199
+=== handler === Process 81129 === kernel_count: 200
+=== handler === Process 81129 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Offline split devices: 1 2 num_parts: 2
+=== handler === Process 81129 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Process 81129 === rebind MQueue
+=== handler === Split NumParts: 2
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Split part 0 uses device_index: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Split part 1 uses device_index: 2
+=== handler === Split step1 hostQ: 0x26108e0 hostCtx: 0x296d030
+=== handler === Split step2 SplitReqs_Copy resized to NumParts: 2
+ === handler === Split step3 Req:0x31e71d0->0x2961ee0 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x296c980
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x3032bc0->0x2962010 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x296c980
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x2d6b900->0x2962140 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x296c980
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x362b8c0->0x2962ac0 CurCtx is host
+=== handler === Split step3 copy to split device
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x2e710f0->0x2962600 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2048 range: 2048,4096,1
+=== handler === Split step3 Write part 1 begin: 2048 end: 4096 range: 2048,4096,1
+ === handler === Split step3 Req:0x314be50->0x2962730 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2048 range: 2048,4096,1
+=== handler === Split step3 Write part 1 begin: 2048 end: 4096 range: 2048,4096,1
+ === handler === Split step3 Req:0x3491b20->0x2962860 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2048 range: 2048,4096,1
+=== handler === Split step3 Write part 1 begin: 2048 end: 4096 range: 2048,4096,1
+=== handler === Split step3 onlyRead: 4 hasWrite: 3
+=== handler === Split submitted async, merge deferred for kernel_count: 200
+81129 === handler === resubmit kernel: 200
+81129 === handler === resubmitted kernel: 200
+=== handler === Process 81129 === kernel_count: 211
+=== handler === Split finalize kernel_count: 199 before wait
+=== handler === Split finalize kernel_count: 199 after wait
+=== handler === Split finalize PartReq 0x362d5d0 Record: 0x2a3ef40 SrcCtx: 0x2998a60 SrcQueue: 0x2a47970 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x3626b60 Record: 0x2a5cff0 SrcCtx: 0x2998a60 SrcQueue: 0x2a47970 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x362be60 Record: 0x2a5e770 SrcCtx: 0x2998a60 SrcQueue: 0x2a47970 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x3450c60 Record: 0x2a3ef40 SrcCtx: 0x2998a60 SrcQueue: 0x2a47970 is host: false
+=== handler === Split finalize merge direct D2D success
+=== handler === Split finalize current context moved to merge device
+=== handler === Split finalize PartReq 0x324d440 Record: 0x2a5cff0 SrcCtx: 0x2998a60 SrcQueue: 0x2a47970 is host: false
+=== handler === Split finalize merge direct D2D success
+=== handler === Split finalize current context moved to merge device
+=== handler === Split finalize PartReq 0x3494aa0 Record: 0x2a5e770 SrcCtx: 0x2998a60 SrcQueue: 0x2a47970 is host: false
+=== handler === Split finalize merge direct D2D success
+=== handler === Split finalize current context moved to merge device
+=== handler === Split finalize kernel_count: 200 before wait
+=== handler === Split finalize kernel_count: 200 after wait
+=== handler === Split finalize PartReq 0x32ad2d0 Record: 0x2976d50 SrcCtx: 0x2998a60 SrcQueue: 0x2b60630 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x31f7230 Record: 0x2b74260 SrcCtx: 0x2998a60 SrcQueue: 0x2b60630 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x3649e00 Record: 0x2b759e0 SrcCtx: 0x2998a60 SrcQueue: 0x2b60630 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x2f89b30 Record: 0x2976d50 SrcCtx: 0x2998a60 SrcQueue: 0x2b60630 is host: false
+=== handler === Split finalize merge direct D2D success
+=== handler === Split finalize current context moved to merge device
+=== handler === Split finalize PartReq 0x32fe8d0 Record: 0x2b74260 SrcCtx: 0x2998a60 SrcQueue: 0x2b60630 is host: false
+=== handler === Split finalize merge direct D2D success
+=== handler === Split finalize current context moved to merge device
+=== handler === Split finalize PartReq 0x364a290 Record: 0x2b759e0 SrcCtx: 0x2998a60 SrcQueue: 0x2b60630 is host: false
+=== handler === Split finalize merge direct D2D success
+=== handler === Split finalize current context moved to merge device
+=== handler === Process 81129 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Offline split devices: 1 2 num_parts: 2
+=== handler === Process 81129 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Process 81129 === rebind MQueue
+=== handler === Split NumParts: 2
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Split part 0 uses device_index: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Split part 1 uses device_index: 2
+=== handler === Split step1 hostQ: 0x26108e0 hostCtx: 0x296d030
+=== handler === Split step2 SplitReqs_Copy resized to NumParts: 2
+ === handler === Split step3 Req:0x3067050->0x2961ee0 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x296c980
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x362d120->0x2962010 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x296c980
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x362d200->0x2962140 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x296c980
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x3519660->0x2962270 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x2a47970
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x3519740->0x29623a0 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x2a47970
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x3491e10->0x29624d0 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x2a47970
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x3491ef0->0x2962600 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x2b60630
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x303cef0->0x2962730 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x2b60630
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x303cfd0->0x2962860 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x2b60630
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x303d0b0->0x2961b50 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2048 range: 2048,4096,1
+=== handler === Split step3 Write part 1 begin: 2048 end: 4096 range: 2048,4096,1
+ === handler === Split step3 Req:0x30545b0->0x2961c80 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2048 range: 2048,4096,1
+=== handler === Split step3 Write part 1 begin: 2048 end: 4096 range: 2048,4096,1
+ === handler === Split step3 Req:0x3054690->0x2961db0 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2048 range: 2048,4096,1
+=== handler === Split step3 Write part 1 begin: 2048 end: 4096 range: 2048,4096,1
+=== handler === Split step3 onlyRead: 9 hasWrite: 3
+=== handler === Split submitted async, merge deferred for kernel_count: 211
+81129 === handler === resubmit kernel: 211
+81129 === handler === resubmitted kernel: 211
+=== handler === Process 81129 === kernel_count: 196
+=== handler === Process 81129 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Process 81129 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Process 81129 === rebind MQueue
+81129 === handler === resubmit kernel: 196
+81129 === handler === resubmitted kernel: 196
+=== handler === Process 81129 === kernel_count: 206
+=== handler === Process 81129 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Offline split devices: 1 2 num_parts: 2
+=== handler === Process 81129 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Process 81129 === rebind MQueue
+=== handler === Split NumParts: 2
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Split part 0 uses device_index: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Split part 1 uses device_index: 2
+=== handler === Split step1 hostQ: 0x26108e0 hostCtx: 0x296d030
+=== handler === Split step2 SplitReqs_Copy resized to NumParts: 2
+ === handler === Split step3 Req:0x313aea0->0x2966a70 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x2c4ae90
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x32c1f90->0x2966ba0 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x2c4ae90
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x32ae520->0x2966cd0 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x2c4ae90
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x3220e00->0x2967650 CurCtx is host
+=== handler === Split step3 copy to split device
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x2ff90c0->0x2967190 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 1432 range: 1432,2864,1
+=== handler === Split step3 Write part 1 begin: 1432 end: 2864 range: 1432,2864,1
+ === handler === Split step3 Req:0x35866a0->0x29672c0 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 1432 range: 1432,2864,1
+=== handler === Split step3 Write part 1 begin: 1432 end: 2864 range: 1432,2864,1
+ === handler === Split step3 Req:0x35869b0->0x29673f0 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 1432 range: 1432,2864,1
+=== handler === Split step3 Write part 1 begin: 1432 end: 2864 range: 1432,2864,1
+=== handler === Split step3 onlyRead: 4 hasWrite: 3
+=== handler === Split submitted async, merge deferred for kernel_count: 206
+81129 === handler === resubmit kernel: 206
+81129 === handler === resubmitted kernel: 206
+=== handler === Process 81129 === kernel_count: 205
+=== handler === Process 81129 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Offline split devices: 1 2 num_parts: 2
+=== handler === Process 81129 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Process 81129 === rebind MQueue
+=== handler === Split NumParts: 2
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Split part 0 uses device_index: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Split part 1 uses device_index: 2
+=== handler === Split step1 hostQ: 0x26108e0 hostCtx: 0x296d030
+=== handler === Split step2 SplitReqs_Copy resized to NumParts: 2
+ === handler === Split step3 Req:0x34922d0->0x2966a70 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x2c4ae90
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x346ed20->0x2966ba0 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x2c4ae90
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x30cab70->0x2966cd0 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x2c4ae90
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x3165b40->0x2967520 CurCtx is host
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        commonEnqueueMemBufferCopyRect
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:4276

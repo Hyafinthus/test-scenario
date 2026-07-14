@@ -1,0 +1,1376 @@
+Rank 0 TEST kernel_sched_order_infos size: 24
+Rank 0 scale_ranks: 0
+SystemSchedulerDaemonOffline: Rank 0 for PID 81094 waiting new daemon, onrun size: 1
+SystemSchedulerDaemonOffline: Rank 0 for PID 81094 onrun size: 1 sent D2DKernelSchedInfos size: 24
+commExecInfo === Rank 0: mq_send kernel_exec_infos size: 24 mqsize: 447
+commExecInfo === Rank 0: kernel_count 97 exec 1 device_index 1 num_parts 1 split_devices 1 req_counts 0
+commExecInfo === Rank 0: kernel_count 103 exec 1 device_index 1 num_parts 2 split_devices 1 2 req_counts 0
+=== handler === Process 81094 === mq_receive kernel_exec_infos
+commExecInfo === Rank 0: kernel_count 104 exec 1 device_index 1 num_parts 2 split_devices 1 2 req_counts 0
+commExecInfo === Rank 0: kernel_count 115 exec 1 device_index 1 num_parts 2 split_devices 1 2 req_counts 0
+commExecInfo === Rank 0: kernel_count 101 exec 1 device_index 1 num_parts 1 split_devices 1 req_counts 0
+commExecInfo === Rank 0: kernel_count 111 exec 1 device_index 1 num_parts 2 split_devices 1 2 req_counts 0
+commExecInfo === Rank 0: kernel_count 112 exec 1 device_index 1 num_parts 2 split_devices 1 2 req_counts 0
+commExecInfo === Rank 0: kernel_count 119 exec 1 device_index 1 num_parts 2 split_devices 1 2 req_counts 0
+commExecInfo === Rank 0: kernel_count 102 exec 1 device_index 1 num_parts 1 split_devices 1 req_counts 0
+commExecInfo === Rank 0: kernel_count 113 exec 1 device_index 1 num_parts 2 split_devices 1 2 req_counts 0
+commExecInfo === Rank 0: kernel_count 114 exec 1 device_index 1 num_parts 2 split_devices 1 2 req_counts 0
+commExecInfo === Rank 0: kernel_count 120 exec 1 device_index 1 num_parts 2 split_devices 1 2 req_counts 0
+commExecInfo === Rank 0: kernel_count 100 exec 1 device_index 1 num_parts 1 split_devices 1 req_counts 0
+=== handler === Process 81094 === mq_receive kernel_exec_info === kernel_count: 97 exec: 1 device_index: 1 num_parts: 1 split_devices: 1 req_size: 0
+commExecInfo === Rank 0: kernel_count 98 exec 1 device_index 2 num_parts 1 split_devices 2 req_counts 0
+=== handler === Process 81094 === mq_receive kernel_exec_info === kernel_count: 103 exec: 1 device_index: 1 num_parts: 2 split_devices: 1 2 req_size: 0
+commExecInfo === Rank 0: kernel_count 110 exec 1 device_index 1 num_parts 1 split_devices 1 req_counts 0
+=== handler === Process 81094 === mq_receive kernel_exec_info === kernel_count: 104 exec: 1 device_index: 1 num_parts: 2 split_devices: 1 2 req_size: 0
+commExecInfo === Rank 0: kernel_count 109 exec 1 device_index 2 num_parts 1 split_devices 2 req_counts 0
+=== handler === Process 81094 === mq_receive kernel_exec_info === kernel_count: 115 exec: 1 device_index: 1 num_parts: 2 split_devices: 1 2 req_size: 0
+commExecInfo === Rank 0: kernel_count 99 exec 1 device_index 1 num_parts 1 split_devices 1 req_counts 0
+=== handler === Process 81094 === mq_receive kernel_exec_info === kernel_count: 101 exec: 1 device_index: 1 num_parts: 1 split_devices: 1 req_size: 0
+commExecInfo === Rank 0: kernel_count 106 exec 1 device_index 2 num_parts 1 split_devices 2 req_counts 0
+=== handler === Process 81094 === mq_receive kernel_exec_info === kernel_count: 111 exec: 1 device_index: 1 num_parts: 2 split_devices: 1 2 req_size: 0
+commExecInfo === Rank 0: kernel_count 105 exec 1 device_index 2 num_parts 1 split_devices 2 req_counts 0
+=== handler === Process 81094 === mq_receive kernel_exec_info === kernel_count: 112 exec: 1 device_index: 1 num_parts: 2 split_devices: 1 2 req_size: 0
+commExecInfo === Rank 0: kernel_count 108 exec 1 device_index 1 num_parts 1 split_devices 1 req_counts 0
+=== handler === Process 81094 === mq_receive kernel_exec_info === kernel_count: 119 exec: 1 device_index: 1 num_parts: 2 split_devices: 1 2 req_size: 0
+commExecInfo === Rank 0: kernel_count 107 exec 1 device_index 1 num_parts 1 split_devices 1 req_counts 0
+=== handler === Process 81094 === mq_receive kernel_exec_info === kernel_count: 102 exec: 1 device_index: 1 num_parts: 1 split_devices: 1 req_size: 0
+commExecInfo === Rank 0: kernel_count 118 exec 1 device_index 2 num_parts 1 split_devices 2 req_counts 0
+=== handler === Process 81094 === mq_receive kernel_exec_info === kernel_count: 113 exec: 1 device_index: 1 num_parts: 2 split_devices: 1 2 req_size: 0
+commExecInfo === Rank 0: kernel_count 116 exec 1 device_index 2 num_parts 1 split_devices 2 req_counts 0
+=== handler === Process 81094 === mq_receive kernel_exec_info === kernel_count: 114 exec: 1 device_index: 1 num_parts: 2 split_devices: 1 2 req_size: 0
+commExecInfo === Rank 0: kernel_count 117 exec 1 device_index 1 num_parts 1 split_devices 1 req_counts 0
+=== handler === Process 81094 === mq_receive kernel_exec_info === kernel_count: 120 exec: 1 device_index: 1 num_parts: 2 split_devices: 1 2 req_size: 0
+=== handler === Process 81094 === mq_receive kernel_exec_info === kernel_count: 100 exec: 1 device_index: 1 num_parts: 1 split_devices: 1 req_size: 0
+=== handler === Process 81094 === mq_receive kernel_exec_info === kernel_count: 98 exec: 1 device_index: 2 num_parts: 1 split_devices: 2 req_size: 0
+=== handler === Process 81094 === mq_receive kernel_exec_info === kernel_count: 110 exec: 1 device_index: 1 num_parts: 1 split_devices: 1 req_size: 0
+=== handler === Process 81094 === mq_receive kernel_exec_info === kernel_count: 109 exec: 1 device_index: 2 num_parts: 1 split_devices: 2 req_size: 0
+=== handler === Process 81094 === mq_receive kernel_exec_info === kernel_count: 99 exec: 1 device_index: 1 num_parts: 1 split_devices: 1 req_size: 0
+SystemSchedulerDaemonOffline: Rank 0: waiting reqs from handler
+=== handler === Process 81094 === mq_receive kernel_exec_info === kernel_count: 106 exec: 1 device_index: 2 num_parts: 1 split_devices: 2 req_size: 0
+=== handler === Process 81094 === mq_receive kernel_exec_info === kernel_count: 105 exec: 1 device_index: 2 num_parts: 1 split_devices: 2 req_size: 0
+=== handler === Process 81094 === mq_receive kernel_exec_info === kernel_count: 108 exec: 1 device_index: 1 num_parts: 1 split_devices: 1 req_size: 0
+=== handler === Process 81094 === mq_receive kernel_exec_info === kernel_count: 107 exec: 1 device_index: 1 num_parts: 1 split_devices: 1 req_size: 0
+=== handler === Process 81094 === mq_receive kernel_exec_info === kernel_count: 118 exec: 1 device_index: 2 num_parts: 1 split_devices: 2 req_size: 0
+=== handler === Process 81094 === mq_receive kernel_exec_info === kernel_count: 116 exec: 1 device_index: 2 num_parts: 1 split_devices: 2 req_size: 0
+=== handler === Process 81094 === mq_receive kernel_exec_info === kernel_count: 117 exec: 1 device_index: 1 num_parts: 1 split_devices: 1 req_size: 0
+=== handler === Process 81094 === kernel_exec_infos.size(): 24
+=== handler === Process 81094 === kernel_count: 97
+=== handler === Process 81094 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Process 81094 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Process 81094 === rebind MQueue
+81094 === handler === resubmit kernel: 97
+81094 === handler === resubmitted kernel: 97
+=== handler === Process 81094 === kernel_count: 103
+=== handler === Process 81094 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Offline split devices: 1 2 num_parts: 2
+=== handler === Process 81094 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Process 81094 === rebind MQueue
+=== handler === Split NumParts: 2
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Split part 0 uses device_index: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Split part 1 uses device_index: 2
+=== handler === Split step1 hostQ: 0x249c8e0 hostCtx: 0x27f9030
+=== handler === Split step2 SplitReqs_Copy resized to NumParts: 2
+ === handler === Split step3 Req:0x27fca30->0x27edee0 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x27f8980
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x2ca9ac0->0x27ee010 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x27f8980
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x2f6c8e0->0x27ee140 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x27f8980
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x2fd51e0->0x27ee990 CurCtx is host
+=== handler === Split step3 copy to split device
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x30e0500->0x27ee270 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 4096 range: 4096,8192,1
+=== handler === Split step3 Write part 1 begin: 4096 end: 8192 range: 4096,8192,1
+ === handler === Split step3 Req:0x3043ea0->0x27ee3a0 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 4096 range: 4096,8192,1
+=== handler === Split step3 Write part 1 begin: 4096 end: 8192 range: 4096,8192,1
+ === handler === Split step3 Req:0x30186d0->0x27ee4d0 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 4096 range: 4096,8192,1
+=== handler === Split step3 Write part 1 begin: 4096 end: 8192 range: 4096,8192,1
+=== handler === Split step3 onlyRead: 4 hasWrite: 3
+=== handler === Split submitted async, merge deferred for kernel_count: 103
+81094 === handler === resubmit kernel: 103
+81094 === handler === resubmitted kernel: 103
+=== handler === Process 81094 === kernel_count: 104
+=== handler === Process 81094 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Offline split devices: 1 2 num_parts: 2
+=== handler === Process 81094 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Process 81094 === rebind MQueue
+=== handler === Split NumParts: 2
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Split part 0 uses device_index: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Split part 1 uses device_index: 2
+=== handler === Split step1 hostQ: 0x249c8e0 hostCtx: 0x27f9030
+=== handler === Split step2 SplitReqs_Copy resized to NumParts: 2
+ === handler === Split step3 Req:0x2d093a0->0x27edee0 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x27f8980
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x27fe6b0->0x27ee010 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x27f8980
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x27fcc60->0x27ee140 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x27f8980
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x3123df0->0x27eeac0 CurCtx is host
+=== handler === Split step3 copy to split device
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x2f8af40->0x27ee600 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 4096 range: 4096,8192,1
+=== handler === Split step3 Write part 1 begin: 4096 end: 8192 range: 4096,8192,1
+ === handler === Split step3 Req:0x2ba3700->0x27ee730 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 4096 range: 4096,8192,1
+=== handler === Split step3 Write part 1 begin: 4096 end: 8192 range: 4096,8192,1
+ === handler === Split step3 Req:0x2d0f910->0x27ee860 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 4096 range: 4096,8192,1
+=== handler === Split step3 Write part 1 begin: 4096 end: 8192 range: 4096,8192,1
+=== handler === Split step3 onlyRead: 4 hasWrite: 3
+=== handler === Split submitted async, merge deferred for kernel_count: 104
+81094 === handler === resubmit kernel: 104
+81094 === handler === resubmitted kernel: 104
+=== handler === Process 81094 === kernel_count: 115
+=== handler === Split finalize kernel_count: 103 before wait
+=== handler === Split finalize kernel_count: 103 after wait
+=== handler === Split finalize PartReq 0x3127090 Record: 0x28cad20 SrcCtx: 0x28248a0 SrcQueue: 0x28d3750 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x312cc10 Record: 0x28e8dd0 SrcCtx: 0x28248a0 SrcQueue: 0x28d3750 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x3103f80 Record: 0x28ea550 SrcCtx: 0x28248a0 SrcQueue: 0x28d3750 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x312ca10 Record: 0x28cad20 SrcCtx: 0x28248a0 SrcQueue: 0x28d3750 is host: false
+=== handler === Split finalize merge direct D2D success
+=== handler === Split finalize current context moved to merge device
+=== handler === Split finalize PartReq 0x3103ea0 Record: 0x28e8dd0 SrcCtx: 0x28248a0 SrcQueue: 0x28d3750 is host: false
+=== handler === Split finalize merge direct D2D success
+=== handler === Split finalize current context moved to merge device
+=== handler === Split finalize PartReq 0x311a2c0 Record: 0x28ea550 SrcCtx: 0x28248a0 SrcQueue: 0x28d3750 is host: false
+=== handler === Split finalize merge direct D2D success
+=== handler === Split finalize current context moved to merge device
+=== handler === Split finalize kernel_count: 104 before wait
+=== handler === Split finalize kernel_count: 104 after wait
+=== handler === Split finalize PartReq 0x28019c0 Record: 0x2802d50 SrcCtx: 0x28248a0 SrcQueue: 0x29ec410 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x2801aa0 Record: 0x2a00040 SrcCtx: 0x28248a0 SrcQueue: 0x29ec410 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x2fa2fe0 Record: 0x2a017c0 SrcCtx: 0x28248a0 SrcQueue: 0x29ec410 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x28014f0 Record: 0x2802d50 SrcCtx: 0x28248a0 SrcQueue: 0x29ec410 is host: false
+=== handler === Split finalize merge direct D2D success
+=== handler === Split finalize current context moved to merge device
+=== handler === Split finalize PartReq 0x2801610 Record: 0x2a00040 SrcCtx: 0x28248a0 SrcQueue: 0x29ec410 is host: false
+=== handler === Split finalize merge direct D2D success
+=== handler === Split finalize current context moved to merge device
+=== handler === Split finalize PartReq 0x2fa31e0 Record: 0x2a017c0 SrcCtx: 0x28248a0 SrcQueue: 0x29ec410 is host: false
+=== handler === Split finalize merge direct D2D success
+=== handler === Split finalize current context moved to merge device
+=== handler === Process 81094 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Offline split devices: 1 2 num_parts: 2
+=== handler === Process 81094 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Process 81094 === rebind MQueue
+=== handler === Split NumParts: 2
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Split part 0 uses device_index: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Split part 1 uses device_index: 2
+=== handler === Split step1 hostQ: 0x249c8e0 hostCtx: 0x27f9030
+=== handler === Split step2 SplitReqs_Copy resized to NumParts: 2
+ === handler === Split step3 Req:0x2d4c3f0->0x27edee0 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x27f8980
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x310b110->0x27ee010 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x27f8980
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x2e662f0->0x27ee140 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x27f8980
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x2e66820->0x27ee270 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x28d3750
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x2e3e5c0->0x27ee3a0 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x28d3750
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x2e42f20->0x27ee4d0 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x28d3750
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x2e34040->0x27ee600 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x29ec410
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x2e45260->0x27ee730 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x29ec410
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x3105550->0x27ee860 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x29ec410
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x2d24420->0x27edb50 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 4096 range: 4096,8192,1
+=== handler === Split step3 Write part 1 begin: 4096 end: 8192 range: 4096,8192,1
+ === handler === Split step3 Req:0x2f96540->0x27edc80 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 4096 range: 4096,8192,1
+=== handler === Split step3 Write part 1 begin: 4096 end: 8192 range: 4096,8192,1
+ === handler === Split step3 Req:0x2fa2780->0x27eddb0 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 4096 range: 4096,8192,1
+=== handler === Split step3 Write part 1 begin: 4096 end: 8192 range: 4096,8192,1
+=== handler === Split step3 onlyRead: 9 hasWrite: 3
+=== handler === Split submitted async, merge deferred for kernel_count: 115
+81094 === handler === resubmit kernel: 115
+81094 === handler === resubmitted kernel: 115
+=== handler === Process 81094 === kernel_count: 101
+=== handler === Process 81094 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Process 81094 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Process 81094 === rebind MQueue
+81094 === handler === resubmit kernel: 101
+81094 === handler === resubmitted kernel: 101
+=== handler === Process 81094 === kernel_count: 111
+=== handler === Process 81094 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Offline split devices: 1 2 num_parts: 2
+=== handler === Process 81094 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Process 81094 === rebind MQueue
+=== handler === Split NumParts: 2
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Split part 0 uses device_index: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Split part 1 uses device_index: 2
+=== handler === Split step1 hostQ: 0x249c8e0 hostCtx: 0x27f9030
+=== handler === Split step2 SplitReqs_Copy resized to NumParts: 2
+ === handler === Split step3 Req:0x2e43510->0x27f43a0 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x2b1bd50
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x2e38230->0x27f44d0 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x2b1bd50
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x2e39770->0x27f4600 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x2b1bd50
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x2e66f00->0x27f4e50 CurCtx is host
+=== handler === Split step3 copy to split device
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x2e44ce0->0x27f4730 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2456 range: 2456,4912,1
+=== handler === Split step3 Write part 1 begin: 2456 end: 4912 range: 2456,4912,1
+ === handler === Split step3 Req:0x2e23470->0x27f4860 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2456 range: 2456,4912,1
+=== handler === Split step3 Write part 1 begin: 2456 end: 4912 range: 2456,4912,1
+ === handler === Split step3 Req:0x300aab0->0x27f4990 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2456 range: 2456,4912,1
+=== handler === Split step3 Write part 1 begin: 2456 end: 4912 range: 2456,4912,1
+=== handler === Split step3 onlyRead: 4 hasWrite: 3
+=== handler === Split submitted async, merge deferred for kernel_count: 111
+81094 === handler === resubmit kernel: 111
+81094 === handler === resubmitted kernel: 111
+=== handler === Process 81094 === kernel_count: 112
+=== handler === Process 81094 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Offline split devices: 1 2 num_parts: 2
+=== handler === Process 81094 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Process 81094 === rebind MQueue
+=== handler === Split NumParts: 2
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Split part 0 uses device_index: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Split part 1 uses device_index: 2
+=== handler === Split step1 hostQ: 0x249c8e0 hostCtx: 0x27f9030
+=== handler === Split step2 SplitReqs_Copy resized to NumParts: 2
+ === handler === Split step3 Req:0x3008a10->0x27f43a0 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x2b1bd50
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x30c4fa0->0x27f44d0 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x2b1bd50
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x30c7490->0x27f4600 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x2b1bd50
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x301a630->0x27f4f80 CurCtx is host
+=== handler === Split step3 copy to split device
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x304b7c0->0x27f4ac0 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2456 range: 2456,4912,1
+=== handler === Split step3 Write part 1 begin: 2456 end: 4912 range: 2456,4912,1
+ === handler === Split step3 Req:0x30eac70->0x27f4bf0 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2456 range: 2456,4912,1
+=== handler === Split step3 Write part 1 begin: 2456 end: 4912 range: 2456,4912,1
+ === handler === Split step3 Req:0x2d47c50->0x27f4d20 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2456 range: 2456,4912,1
+=== handler === Split step3 Write part 1 begin: 2456 end: 4912 range: 2456,4912,1
+=== handler === Split step3 onlyRead: 4 hasWrite: 3
+=== handler === Split submitted async, merge deferred for kernel_count: 112
+81094 === handler === resubmit kernel: 112
+81094 === handler === resubmitted kernel: 112
+=== handler === Process 81094 === kernel_count: 119
+=== handler === Split finalize kernel_count: 111 before wait
+=== handler === Split finalize kernel_count: 111 after wait
+=== handler === Split finalize PartReq 0x28ea470 Record: 0x2b3a8c0 SrcCtx: 0x28248a0 SrcQueue: 0x2b25e10 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x2c51a50 Record: 0x2b3bb80 SrcCtx: 0x28248a0 SrcQueue: 0x2b25e10 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x31bdaf0 Record: 0x2b3d320 SrcCtx: 0x28248a0 SrcQueue: 0x2b25e10 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x2b3a5c0 Record: 0x2b3a8c0 SrcCtx: 0x28248a0 SrcQueue: 0x2b25e10 is host: false
+=== handler === Split finalize merge direct D2D success
+=== handler === Split finalize current context moved to merge device
+=== handler === Split finalize PartReq 0x31bd8a0 Record: 0x2b3bb80 SrcCtx: 0x28248a0 SrcQueue: 0x2b25e10 is host: false
+=== handler === Split finalize merge direct D2D success
+=== handler === Split finalize current context moved to merge device
+=== handler === Split finalize PartReq 0x31bdf90 Record: 0x2b3d320 SrcCtx: 0x28248a0 SrcQueue: 0x2b25e10 is host: false
+=== handler === Split finalize merge direct D2D success
+=== handler === Split finalize current context moved to merge device
+=== handler === Split finalize kernel_count: 112 before wait
+=== handler === Split finalize kernel_count: 112 after wait
+=== handler === Split finalize PartReq 0x31388d0 Record: 0x2b5b440 SrcCtx: 0x28248a0 SrcQueue: 0x2b54db0 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x280e4a0 Record: 0x2b5c700 SrcCtx: 0x28248a0 SrcQueue: 0x2b54db0 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x280e5f0 Record: 0x2b5de80 SrcCtx: 0x28248a0 SrcQueue: 0x2b54db0 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x280e9a0 Record: 0x2b5b440 SrcCtx: 0x28248a0 SrcQueue: 0x2b54db0 is host: false
+=== handler === Split finalize merge direct D2D success
+=== handler === Split finalize current context moved to merge device
+=== handler === Split finalize PartReq 0x280ea80 Record: 0x2b5c700 SrcCtx: 0x28248a0 SrcQueue: 0x2b54db0 is host: false
+=== handler === Split finalize merge direct D2D success
+=== handler === Split finalize current context moved to merge device
+=== handler === Split finalize PartReq 0x2e989d0 Record: 0x2b5de80 SrcCtx: 0x28248a0 SrcQueue: 0x2b54db0 is host: false
+=== handler === Split finalize merge direct D2D success
+=== handler === Split finalize current context moved to merge device
+=== handler === Process 81094 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Offline split devices: 1 2 num_parts: 2
+=== handler === Process 81094 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Process 81094 === rebind MQueue
+=== handler === Split NumParts: 2
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Split part 0 uses device_index: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Split part 1 uses device_index: 2
+=== handler === Split step1 hostQ: 0x249c8e0 hostCtx: 0x27f9030
+=== handler === Split step2 SplitReqs_Copy resized to NumParts: 2
+ === handler === Split step3 Req:0x3103940->0x27f43a0 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x2b1bd50
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x3103a20->0x27f44d0 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x2b1bd50
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x2c89ee0->0x27f4600 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x2b1bd50
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x2c89fc0->0x27f4730 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x2b25e10
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x2c8a0a0->0x27f4860 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x2b25e10
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x3112290->0x27f4990 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x2b25e10
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x3112370->0x27f4ac0 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x2b54db0
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x3112450->0x27f4bf0 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x2b54db0
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x2e65be0->0x27f4d20 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x2b54db0
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x2fa93d0->0x27f4010 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2456 range: 2456,4912,1
+=== handler === Split step3 Write part 1 begin: 2456 end: 4912 range: 2456,4912,1
+ === handler === Split step3 Req:0x2fa94b0->0x27f4140 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2456 range: 2456,4912,1
+=== handler === Split step3 Write part 1 begin: 2456 end: 4912 range: 2456,4912,1
+ === handler === Split step3 Req:0x2fa9590->0x27f4270 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2456 range: 2456,4912,1
+=== handler === Split step3 Write part 1 begin: 2456 end: 4912 range: 2456,4912,1
+=== handler === Split step3 onlyRead: 9 hasWrite: 3
+=== handler === Split submitted async, merge deferred for kernel_count: 119
+81094 === handler === resubmit kernel: 119
+81094 === handler === resubmitted kernel: 119
+=== handler === Process 81094 === kernel_count: 102
+=== handler === Process 81094 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Process 81094 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Process 81094 === rebind MQueue
+81094 === handler === resubmit kernel: 102
+81094 === handler === resubmitted kernel: 102
+=== handler === Process 81094 === kernel_count: 113
+=== handler === Process 81094 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Offline split devices: 1 2 num_parts: 2
+=== handler === Process 81094 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Process 81094 === rebind MQueue
+=== handler === Split NumParts: 2
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Split part 0 uses device_index: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Split part 1 uses device_index: 2
+=== handler === Split step1 hostQ: 0x249c8e0 hostCtx: 0x27f9030
+=== handler === Split step2 SplitReqs_Copy resized to NumParts: 2
+ === handler === Split step3 Req:0x2e678c0->0x27f5cd0 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x2b94d90
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x27fc460->0x27f5e00 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x2b94d90
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x2fb8a60->0x27f5f30 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x2b94d90
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x2e660f0->0x27f6780 CurCtx is host
+=== handler === Split step3 copy to split device
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x2e6cc80->0x27f6060 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2048 range: 2048,4096,1
+=== handler === Split step3 Write part 1 begin: 2048 end: 4096 range: 2048,4096,1
+ === handler === Split step3 Req:0x2e6be00->0x27f6190 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2048 range: 2048,4096,1
+=== handler === Split step3 Write part 1 begin: 2048 end: 4096 range: 2048,4096,1
+ === handler === Split step3 Req:0x2e6d270->0x27f62c0 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2048 range: 2048,4096,1
+=== handler === Split step3 Write part 1 begin: 2048 end: 4096 range: 2048,4096,1
+=== handler === Split step3 onlyRead: 4 hasWrite: 3
+=== handler === Split submitted async, merge deferred for kernel_count: 113
+81094 === handler === resubmit kernel: 113
+81094 === handler === resubmitted kernel: 113
+=== handler === Process 81094 === kernel_count: 114
+=== handler === Process 81094 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Offline split devices: 1 2 num_parts: 2
+=== handler === Process 81094 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Process 81094 === rebind MQueue
+=== handler === Split NumParts: 2
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Split part 0 uses device_index: 1
+=== handler === Offline profiling queue created, profiling: 1 in_order: 0
+=== handler === Split part 1 uses device_index: 2
+=== handler === Split step1 hostQ: 0x249c8e0 hostCtx: 0x27f9030
+=== handler === Split step2 SplitReqs_Copy resized to NumParts: 2
+ === handler === Split step3 Req:0x2e39cf0->0x27f5cd0 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x2b94d90
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x2e34200->0x27f5e00 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x2b94d90
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x2e36330->0x27f5f30 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x2b94d90
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D success
+ === handler === Split step3 Req:0x2e3e170->0x27f68b0 CurCtx is host
+=== handler === Split step3 copy to split device
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x2d4ef70->0x27f63f0 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2048 range: 2048,4096,1
+=== handler === Split step3 Write part 1 begin: 2048 end: 4096 range: 2048,4096,1
+ === handler === Split step3 Req:0x2d4e980->0x27f6520 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2048 range: 2048,4096,1
+=== handler === Split step3 Write part 1 begin: 2048 end: 4096 range: 2048,4096,1
+ === handler === Split step3 Req:0x2d4e080->0x27f6650 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2048 range: 2048,4096,1
+=== handler === Split step3 Write part 1 begin: 2048 end: 4096 range: 2048,4096,1
+=== handler === Split step3 onlyRead: 4 hasWrite: 3
+=== handler === Split submitted async, merge deferred for kernel_count: 114
+81094 === handler === resubmit kernel: 114
+81094 === handler === resubmitted kernel: 114
+=== handler === Process 81094 === kernel_count: 120
+=== handler === Split finalize kernel_count: 113 before wait
+=== handler === Split finalize kernel_count: 113 after wait
+=== handler === Split finalize PartReq 0x2ed88d0 Record: 0x2bbb0f0 SrcCtx: 0x28248a0 SrcQueue: 0x2ba43f0 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x2f01000 Record: 0x2bbc350 SrcCtx: 0x28248a0 SrcQueue: 0x2ba43f0 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x31dd660 Record: 0x2bbdad0 SrcCtx: 0x28248a0 SrcQueue: 0x2ba43f0 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x2e96ab0 Record: 0x2bbb0f0 SrcCtx: 0x28248a0 SrcQueue: 0x2ba43f0 is host: false
+=== handler === Split finalize merge direct D2D success
+=== handler === Split finalize current context moved to merge device
+=== handler === Split finalize PartReq 0x2b617c0 Record: 0x2bbc350 SrcCtx: 0x28248a0 SrcQueue: 0x2ba43f0 is host: false
+=== handler === Split finalize merge direct D2D success
+=== handler === Split finalize current context moved to merge device
+=== handler === Split finalize PartReq 0x31c6af0 Record: 0x2bbdad0 SrcCtx: 0x28248a0 SrcQueue: 0x2ba43f0 is host: false
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        cuda_piEnqueueMemBufferCopy
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:4463
+
+=== handler === Split finalize merge direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -999 (Unknown PI error) -999 (Unknown PI error)
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        get_next_transfer_stream
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:518
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+ERROR SYCL Native API failed. Native API returns: -999 (Unknown PI error) -999 (Unknown PI error)

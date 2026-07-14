@@ -1,0 +1,526 @@
+110238 === handler === resubmit kernel: 128
+110238 === handler === resubmitted kernel: 128
+=== handler === Process 110238 === kernel_count: 139
+=== handler === Split finalize kernel_count: 127 before wait
+=== handler === Split finalize kernel_count: 127 after wait
+=== handler === Split finalize PartReq 0x3d3a2a0 Record: 0x3a0ca70 SrcCtx: 0x3966930 SrcQueue: 0x393aa10 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x3eb0310 Record: 0x3a2b570 SrcCtx: 0x3966930 SrcQueue: 0x393aa10 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x3eb19b0 Record: 0x3a2ccf0 SrcCtx: 0x3966930 SrcQueue: 0x393aa10 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x3eb0230 Record: 0x3a0ca70 SrcCtx: 0x3966930 SrcQueue: 0x393aa10 is host: false
+=== handler === Split finalize merge direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split finalize copy partition to host
+=== handler === Split finalize copy partition to merge device
+=== handler === Split finalize current context moved to merge device
+=== handler === Split finalize PartReq 0x3eb18d0 Record: 0x3a2b570 SrcCtx: 0x3966930 SrcQueue: 0x393aa10 is host: false
+=== handler === Split finalize merge direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split finalize copy partition to host
+=== handler === Split finalize copy partition to merge device
+=== handler === Split finalize current context moved to merge device
+=== handler === Split finalize PartReq 0x3eb1a90 Record: 0x3a2ccf0 SrcCtx: 0x3966930 SrcQueue: 0x393aa10 is host: false
+=== handler === Split finalize merge direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split finalize copy partition to host
+=== handler === Split finalize copy partition to merge device
+=== handler === Split finalize current context moved to merge device
+=== handler === Split finalize kernel_count: 128 before wait
+=== handler === Split finalize kernel_count: 128 after wait
+=== handler === Split finalize PartReq 0x3956720 Record: 0x3944de0 SrcCtx: 0x3966930 SrcQueue: 0x393aa10 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x3955000 Record: 0x3b33100 SrcCtx: 0x3966930 SrcQueue: 0x393aa10 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x3951890 Record: 0x3b34880 SrcCtx: 0x3966930 SrcQueue: 0x393aa10 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x3950080 Record: 0x3944de0 SrcCtx: 0x3966930 SrcQueue: 0x393aa10 is host: false
+=== handler === Split finalize merge direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split finalize copy partition to host
+=== handler === Split finalize copy partition to merge device
+=== handler === Split finalize current context moved to merge device
+=== handler === Split finalize PartReq 0x3ccb010 Record: 0x3b33100 SrcCtx: 0x3966930 SrcQueue: 0x393aa10 is host: false
+=== handler === Split finalize merge direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split finalize copy partition to host
+=== handler === Split finalize copy partition to merge device
+=== handler === Split finalize current context moved to merge device
+=== handler === Split finalize PartReq 0x3ccb0f0 Record: 0x3b34880 SrcCtx: 0x3966930 SrcQueue: 0x393aa10 is host: false
+=== handler === Split finalize merge direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split finalize copy partition to host
+=== handler === Split finalize copy partition to merge device
+=== handler === Split finalize current context moved to merge device
+=== handler === Process 110238 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Offline split devices: 1 2 num_parts: 2
+=== handler === Process 110238 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue reused, profiling: 1 in_order: 1
+=== handler === Process 110238 === rebind MQueue
+=== handler === Split NumParts: 2
+=== handler === Offline profiling queue reused, profiling: 1 in_order: 1
+=== handler === Split part 0 uses device_index: 1
+=== handler === Offline profiling queue reused, profiling: 1 in_order: 1
+=== handler === Split part 1 uses device_index: 2
+=== handler === Split step1 hostQ: 0x35de8c0 hostCtx: 0x393b0c0
+=== handler === Split step2 SplitReqs_Copy resized to NumParts: 2
+ === handler === Split step3 Req:0x3db2370->0x392ff70 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x393aa10
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split step3 copy back host
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x3db24d0->0x39300a0 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x393aa10
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split step3 copy back host
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x3e0b540->0x39301d0 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x393aa10
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split step3 copy back host
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x3db4300->0x3930300 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x393aa10
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split step3 copy back host
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x3db43e0->0x3930430 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x393aa10
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split step3 copy back host
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x3db4550->0x3930560 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x393aa10
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split step3 copy back host
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x3db4630->0x3930690 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x393aa10
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split step3 copy back host
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x3db4730->0x39307c0 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x393aa10
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split step3 copy back host
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x3db4830->0x39308f0 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x393aa10
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split step3 copy back host
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x3e78830->0x21da230 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 4096 range: 4096,8192,1
+=== handler === Split step3 Write part 1 begin: 4096 end: 8192 range: 4096,8192,1
+ === handler === Split step3 Req:0x3e78930->0x392f980 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 4096 range: 4096,8192,1
+=== handler === Split step3 Write part 1 begin: 4096 end: 8192 range: 4096,8192,1
+ === handler === Split step3 Req:0x3e78a30->0x392fab0 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 4096 range: 4096,8192,1
+=== handler === Split step3 Write part 1 begin: 4096 end: 8192 range: 4096,8192,1
+=== handler === Split step3 onlyRead: 9 hasWrite: 3
+=== handler === Split submitted async, merge deferred for kernel_count: 139
+110238 === handler === resubmit kernel: 139
+110238 === handler === resubmitted kernel: 139
+=== handler === Process 110238 === kernel_count: 125
+=== handler === Process 110238 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Process 110238 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue reused, profiling: 1 in_order: 1
+=== handler === Process 110238 === rebind MQueue
+110238 === handler === resubmit kernel: 125
+110238 === handler === resubmitted kernel: 125
+=== handler === Process 110238 === kernel_count: 135
+=== handler === Process 110238 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Offline split devices: 1 2 num_parts: 2
+=== handler === Process 110238 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue reused, profiling: 1 in_order: 1
+=== handler === Process 110238 === rebind MQueue
+=== handler === Split NumParts: 2
+=== handler === Offline profiling queue reused, profiling: 1 in_order: 1
+=== handler === Split part 0 uses device_index: 1
+=== handler === Offline profiling queue reused, profiling: 1 in_order: 1
+=== handler === Split part 1 uses device_index: 2
+=== handler === Split step1 hostQ: 0x35de8c0 hostCtx: 0x393b0c0
+=== handler === Split step2 SplitReqs_Copy resized to NumParts: 2
+ === handler === Split step3 Req:0x3e02aa0->0x3936430 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x393aa10
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split step3 copy back host
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x3e02ba0->0x3936560 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x393aa10
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split step3 copy back host
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x3e02cc0->0x3936690 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x393aa10
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split step3 copy back host
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x3d31340->0x3936ee0 CurCtx is host
+=== handler === Split step3 copy to split device
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x3d31420->0x39367c0 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2456 range: 2456,4912,1
+=== handler === Split step3 Write part 1 begin: 2456 end: 4912 range: 2456,4912,1
+ === handler === Split step3 Req:0x3d31590->0x39368f0 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2456 range: 2456,4912,1
+=== handler === Split step3 Write part 1 begin: 2456 end: 4912 range: 2456,4912,1
+ === handler === Split step3 Req:0x3db26d0->0x3936a20 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2456 range: 2456,4912,1
+=== handler === Split step3 Write part 1 begin: 2456 end: 4912 range: 2456,4912,1
+=== handler === Split step3 onlyRead: 4 hasWrite: 3
+=== handler === Split submitted async, merge deferred for kernel_count: 135
+110238 === handler === resubmit kernel: 135
+110238 === handler === resubmitted kernel: 135
+=== handler === Process 110238 === kernel_count: 136
+=== handler === Process 110238 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Offline split devices: 1 2 num_parts: 2
+=== handler === Process 110238 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue reused, profiling: 1 in_order: 1
+=== handler === Process 110238 === rebind MQueue
+=== handler === Split NumParts: 2
+=== handler === Offline profiling queue reused, profiling: 1 in_order: 1
+=== handler === Split part 0 uses device_index: 1
+=== handler === Offline profiling queue reused, profiling: 1 in_order: 1
+=== handler === Split part 1 uses device_index: 2
+=== handler === Split step1 hostQ: 0x35de8c0 hostCtx: 0x393b0c0
+=== handler === Split step2 SplitReqs_Copy resized to NumParts: 2
+ === handler === Split step3 Req:0x3d3fa70->0x3936430 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x393aa10
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 reuse pending read replica
+ === handler === Split step3 Req:0x3d3fbd0->0x3936560 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x393aa10
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 reuse pending read replica
+ === handler === Split step3 Req:0x3d3fcf0->0x3936690 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x393aa10
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 reuse pending read replica
+ === handler === Split step3 Req:0x3d3fdd0->0x3937010 CurCtx is host
+=== handler === Split step3 copy to split device
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x3d54490->0x3936b50 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2456 range: 2456,4912,1
+=== handler === Split step3 Write part 1 begin: 2456 end: 4912 range: 2456,4912,1
+ === handler === Split step3 Req:0x3d54570->0x3936c80 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2456 range: 2456,4912,1
+=== handler === Split step3 Write part 1 begin: 2456 end: 4912 range: 2456,4912,1
+ === handler === Split step3 Req:0x3d54650->0x3936db0 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2456 range: 2456,4912,1
+=== handler === Split step3 Write part 1 begin: 2456 end: 4912 range: 2456,4912,1
+=== handler === Split step3 onlyRead: 4 hasWrite: 3
+=== handler === Split submitted async, merge deferred for kernel_count: 136
+110238 === handler === resubmit kernel: 136
+110238 === handler === resubmitted kernel: 136
+=== handler === Process 110238 === kernel_count: 143
+=== handler === Split finalize kernel_count: 135 before wait
+=== handler === Split finalize kernel_count: 135 after wait
+=== handler === Split finalize PartReq 0x3ce9810 Record: 0x3c2d350 SrcCtx: 0x3966930 SrcQueue: 0x393aa10 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x3ce99d0 Record: 0x3c2e610 SrcCtx: 0x3966930 SrcQueue: 0x393aa10 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x3ce9b90 Record: 0x3c2fd10 SrcCtx: 0x3966930 SrcQueue: 0x393aa10 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x3ce98f0 Record: 0x3c2d350 SrcCtx: 0x3966930 SrcQueue: 0x393aa10 is host: false
+=== handler === Split finalize merge direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split finalize copy partition to host
+=== handler === Split finalize copy partition to merge device
+=== handler === Split finalize current context moved to merge device
+=== handler === Split finalize PartReq 0x3ce9ab0 Record: 0x3c2e610 SrcCtx: 0x3966930 SrcQueue: 0x393aa10 is host: false
+=== handler === Split finalize merge direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split finalize copy partition to host
+=== handler === Split finalize copy partition to merge device
+=== handler === Split finalize current context moved to merge device
+=== handler === Split finalize PartReq 0x3ce9c70 Record: 0x3c2fd10 SrcCtx: 0x3966930 SrcQueue: 0x393aa10 is host: false
+=== handler === Split finalize merge direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split finalize copy partition to host
+=== handler === Split finalize copy partition to merge device
+=== handler === Split finalize current context moved to merge device
+=== handler === Split finalize kernel_count: 136 before wait
+=== handler === Split finalize kernel_count: 136 after wait
+=== handler === Split finalize PartReq 0x3cd5540 Record: 0x3c3f8c0 SrcCtx: 0x3966930 SrcQueue: 0x393aa10 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x3cd5ae0 Record: 0x3c40cc0 SrcCtx: 0x3966930 SrcQueue: 0x393aa10 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x3cd5bc0 Record: 0x3c422e0 SrcCtx: 0x3966930 SrcQueue: 0x393aa10 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x3cd5840 Record: 0x3c3f8c0 SrcCtx: 0x3966930 SrcQueue: 0x393aa10 is host: false
+=== handler === Split finalize merge direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split finalize copy partition to host
+=== handler === Split finalize copy partition to merge device
+=== handler === Split finalize current context moved to merge device
+=== handler === Split finalize PartReq 0x3cd5620 Record: 0x3c40cc0 SrcCtx: 0x3966930 SrcQueue: 0x393aa10 is host: false
+=== handler === Split finalize merge direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split finalize copy partition to host
+=== handler === Split finalize copy partition to merge device
+=== handler === Split finalize current context moved to merge device
+=== handler === Split finalize PartReq 0x3cd5760 Record: 0x3c422e0 SrcCtx: 0x3966930 SrcQueue: 0x393aa10 is host: false
+=== handler === Split finalize merge direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split finalize copy partition to host
+=== handler === Split finalize copy partition to merge device
+=== handler === Split finalize current context moved to merge device
+=== handler === Process 110238 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Offline split devices: 1 2 num_parts: 2
+=== handler === Process 110238 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue reused, profiling: 1 in_order: 1
+=== handler === Process 110238 === rebind MQueue
+=== handler === Split NumParts: 2
+=== handler === Offline profiling queue reused, profiling: 1 in_order: 1
+=== handler === Split part 0 uses device_index: 1
+=== handler === Offline profiling queue reused, profiling: 1 in_order: 1
+=== handler === Split part 1 uses device_index: 2
+=== handler === Split step1 hostQ: 0x35de8c0 hostCtx: 0x393b0c0
+=== handler === Split step2 SplitReqs_Copy resized to NumParts: 2
+ === handler === Split step3 Req:0x3ea8cb0->0x3936430 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x393aa10
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split step3 copy back host
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x3ea8d90->0x3936560 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x393aa10
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split step3 copy back host
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x3ea8e70->0x3936690 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x393aa10
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split step3 copy back host
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x3ea8f50->0x39367c0 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x393aa10
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split step3 copy back host
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x3ea9030->0x39368f0 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x393aa10
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split step3 copy back host
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x3ea9110->0x3936a20 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x393aa10
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split step3 copy back host
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x3ea91f0->0x3936b50 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x393aa10
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split step3 copy back host
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x3ea92d0->0x3936c80 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x393aa10
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split step3 copy back host
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x3ea93b0->0x3936db0 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x393aa10
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split step3 copy back host
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x3ea9490->0x3935d10 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2456 range: 2456,4912,1
+=== handler === Split step3 Write part 1 begin: 2456 end: 4912 range: 2456,4912,1
+ === handler === Split step3 Req:0x3ea9570->0x3935e40 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2456 range: 2456,4912,1
+=== handler === Split step3 Write part 1 begin: 2456 end: 4912 range: 2456,4912,1
+ === handler === Split step3 Req:0x3ea9650->0x3935f70 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2456 range: 2456,4912,1
+=== handler === Split step3 Write part 1 begin: 2456 end: 4912 range: 2456,4912,1
+=== handler === Split step3 onlyRead: 9 hasWrite: 3
+=== handler === Split submitted async, merge deferred for kernel_count: 143
+110238 === handler === resubmit kernel: 143
+110238 === handler === resubmitted kernel: 143
+=== handler === Process 110238 === kernel_count: 126
+=== handler === Process 110238 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Process 110238 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue reused, profiling: 1 in_order: 1
+=== handler === Process 110238 === rebind MQueue
+110238 === handler === resubmit kernel: 126
+110238 === handler === resubmitted kernel: 126
+=== handler === Process 110238 === kernel_count: 137
+=== handler === Process 110238 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Offline split devices: 1 2 num_parts: 2
+=== handler === Process 110238 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue reused, profiling: 1 in_order: 1
+=== handler === Process 110238 === rebind MQueue
+=== handler === Split NumParts: 2
+=== handler === Offline profiling queue reused, profiling: 1 in_order: 1
+=== handler === Split part 0 uses device_index: 1
+=== handler === Offline profiling queue reused, profiling: 1 in_order: 1
+=== handler === Split part 1 uses device_index: 2
+=== handler === Split step1 hostQ: 0x35de8c0 hostCtx: 0x393b0c0
+=== handler === Split step2 SplitReqs_Copy resized to NumParts: 2
+ === handler === Split step3 Req:0x3d53f80->0x3937d60 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x393aa10
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split step3 copy back host
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x3d540e0->0x3937e90 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x393aa10
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split step3 copy back host
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x3d54200->0x3937fc0 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x393aa10
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+=== handler === Split step3 copy back host
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x3d542e0->0x3938810 CurCtx is host
+=== handler === Split step3 copy to split device
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x3db6a40->0x39380f0 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2048 range: 2048,4096,1
+=== handler === Split step3 Write part 1 begin: 2048 end: 4096 range: 2048,4096,1
+ === handler === Split step3 Req:0x3db6bb0->0x3938220 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2048 range: 2048,4096,1
+=== handler === Split step3 Write part 1 begin: 2048 end: 4096 range: 2048,4096,1
+ === handler === Split step3 Req:0x3db6c90->0x3938350 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2048 range: 2048,4096,1
+=== handler === Split step3 Write part 1 begin: 2048 end: 4096 range: 2048,4096,1
+=== handler === Split step3 onlyRead: 4 hasWrite: 3
+=== handler === Split submitted async, merge deferred for kernel_count: 137
+110238 === handler === resubmit kernel: 137
+110238 === handler === resubmitted kernel: 137
+=== handler === Process 110238 === kernel_count: 138
+=== handler === Process 110238 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Offline split devices: 1 2 num_parts: 2
+=== handler === Process 110238 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue reused, profiling: 1 in_order: 1
+=== handler === Process 110238 === rebind MQueue
+=== handler === Split NumParts: 2
+=== handler === Offline profiling queue reused, profiling: 1 in_order: 1
+=== handler === Split part 0 uses device_index: 1
+=== handler === Offline profiling queue reused, profiling: 1 in_order: 1
+=== handler === Split part 1 uses device_index: 2
+=== handler === Split step1 hostQ: 0x35de8c0 hostCtx: 0x393b0c0
+=== handler === Split step2 SplitReqs_Copy resized to NumParts: 2
+ === handler === Split step3 Req:0x3e0ae40->0x3937d60 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x393aa10
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 reuse pending read replica
+ === handler === Split step3 Req:0x3e0afa0->0x3937e90 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x393aa10
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 reuse pending read replica
+ === handler === Split step3 Req:0x3e0b0c0->0x3937fc0 CurCtx not host
+=== handler === Split step3 SrcQueue: 0x393aa10
+=== handler === Split step3 SplitQueue is SrcQueue, continue
+=== handler === Split step3 reuse pending read replica
+ === handler === Split step3 Req:0x3e0b1a0->0x3938940 CurCtx is host
+=== handler === Split step3 copy to split device
+=== handler === Split step3 copy to split device
+ === handler === Split step3 Req:0x3e0b280->0x3938480 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2048 range: 2048,4096,1
+=== handler === Split step3 Write part 1 begin: 2048 end: 4096 range: 2048,4096,1
+ === handler === Split step3 Req:0x3e0b360->0x39385b0 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2048 range: 2048,4096,1
+=== handler === Split step3 Write part 1 begin: 2048 end: 4096 range: 2048,4096,1
+ === handler === Split step3 Req:0x3e0b440->0x39386e0 CurCtx not host
+=== handler === Split step3 Write part 0 begin: 0 end: 2048 range: 2048,4096,1
+=== handler === Split step3 Write part 1 begin: 2048 end: 4096 range: 2048,4096,1
+=== handler === Split step3 onlyRead: 4 hasWrite: 3
+=== handler === Split submitted async, merge deferred for kernel_count: 138
+110238 === handler === resubmit kernel: 138
+110238 === handler === resubmitted kernel: 138
+=== handler === Process 110238 === kernel_count: 144
+=== handler === Split finalize kernel_count: 137 before wait
+=== handler === Split finalize kernel_count: 137 after wait
+=== handler === Split finalize PartReq 0x3e28c50 Record: 0x3c88370 SrcCtx: 0x3966930 SrcQueue: 0x393aa10 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x3cf32d0 Record: 0x3c89630 SrcCtx: 0x3966930 SrcQueue: 0x393aa10 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x397bee0 Record: 0x3c8ad30 SrcCtx: 0x3966930 SrcQueue: 0x393aa10 is host: false
+=== handler === Split finalize keep partition on merge device
+=== handler === Split finalize PartReq 0x3e292a0 Record: 0x3c88370 SrcCtx: 0x3966930 SrcQueue: 0x393aa10 is host: false
+=== handler === Split finalize merge direct D2D failed, fallback D2H->H2D, reason: Native API failed. Native API returns: -59 (PI_ERROR_INVALID_OPERATION) -59 (PI_ERROR_INVALID_OPERATION)
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        cuda_piEnqueueMemBufferRead
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:2794
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
+
+
+PI CUDA ERROR:
+	Value:           700
+	Name:            CUDA_ERROR_ILLEGAL_ADDRESS
+	Description:     an illegal memory access was encountered
+	Function:        wait
+	Source Location: /home/heyifu/SYCL/llvm-sycl/sycl/plugins/cuda/pi_cuda.cpp:658
