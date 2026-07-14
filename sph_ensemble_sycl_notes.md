@@ -12,7 +12,7 @@
 4. `ViscosityForce`：遍历真实邻居，用平滑 Laplacian 计算黏性加速度；它不读 pressure，因此可与 `EOS -> PressureForce` 分支并行。
 5. `Integrate`：合并两个加速度分支和重力，更新并周期 wrap 位置/速度。
 
-计算量没有 `repeat` 或 busy loop；三个重 kernel 的工作量均来自 SPH 邻居相互作用。邻居表在 host 初始化阶段通过周期 cell list 构造，条目都满足真实 Verlet cutoff，初始化不计入 `run_sec`。
+计算量没有 `repeat` 或 busy loop；三个重 kernel 的工作量均来自 SPH 邻居相互作用。邻居表在 host 初始化阶段通过周期 cell list 构造，条目都满足真实 Verlet cutoff，初始化不计入 `run_sec`。不同 class 默认并发构造；邻居行保持确定性的 cell traversal 顺序，不再执行不影响物理结果的逐行排序。
 
 ## 2. Buffer 读写合同
 
@@ -49,7 +49,9 @@ PressureForce[t]|
  position[t+1], velocity[t+1]
 ```
 
-对 `R` 个 replica：每步 `5R` 个 kernel，最大结构宽度 `2R`，关键路径 4 层，等成本结构平均并行度为 `1.25R`。默认 `R=64` 时分别是 320、128、4 和 80。默认 `window_steps=1`，只在物理步末 `queue.wait()`；增大该参数可以把多步连接成一个压力测试窗口。
+对 `R` 个 replica：每个积分子步 `5R` 个 kernel，最大结构宽度 `2R`，关键路径 4 层，等成本结构平均并行度为 `1.25R`。默认 `R=64` 时分别是 320、128、4 和 80。默认每个宏物理步细化成 4 个积分子步，所以 `30` 个宏步形成 `120` 个 timed steps、`38400` 个 kernel；子步 `dt=macro_dt/4`，总物理时间仍是 `30*2e-5`，增加的是有物理意义的时间积分分辨率和重复调度窗口，不是 repeat/busy work。`--integration-substeps 1` 可恢复旧的 30-step 行为。
+
+默认 `window_steps=1`，只在积分子步末 `queue.wait()`；增大该参数可以把多个子步连接成一个压力测试窗口。输出同时给出 `macro_steps`、`integration_substeps`、`timed_steps`、`macro_dt` 和 `physical_time`，避免混淆工作量与物理时域。
 
 ## 4. 为什么主模式应 whole-replica placement
 
@@ -90,6 +92,7 @@ PressureForce[t]|
 - C++17 语法通过本地轻量 SYCL API stub 检查。
 - host 顺序执行 stub 下跑过 `uniform`、`mixed`、`single-large` 小规模案例。
 - AddressSanitizer 和 UndefinedBehaviorSanitizer 下，小规模 mixed/reference 案例无内存或 UB 报告，`VERIFY passed=1`。
+- 默认 4-way 时间细化和 parallel class initialization 已在小规模 mixed/reference 案例中通过，细化前后保持相同宏观物理时间。
 - 小规模 reference 会对每个 class 的一个代表 replica、`N<=2048` 做全量 position/velocity/density/pressure/acceleration 比较；正式规模对全部最终 position 做位移和周期边界检查。
 
 尚未实测、不能当作现有结果的假设：真实 SYCL 编译器/设备运行、三个重 kernel 是否达到 3 ms 门槛、双 GPU overlap/speedup、steady-state 迁移量、Split 选择，以及相对最佳公平 Celerity 是否达到 1.20x。当前机器只有 SYCL 源码头且缺 OpenCL headers/可用 SYCL compiler，因此没有伪造硬件性能数字。
@@ -100,7 +103,7 @@ PressureForce[t]|
 
 ```bash
 cd test-scenario
-icpx -O3 -std=c++17 -fsycl sph_ensemble_sycl_timer.cpp -o sph_ensemble_sycl
+icpx -O3 -std=c++17 -pthread -fsycl sph_ensemble_sycl_timer.cpp -o sph_ensemble_sycl
 ```
 
 小规模 reference/smoke test：
@@ -108,6 +111,7 @@ icpx -O3 -std=c++17 -fsycl sph_ensemble_sycl_timer.cpp -o sph_ensemble_sycl
 ```bash
 ./sph_ensemble_sycl \
   --particles 2048 --replicas 4 --steps 3 \
+  --integration-substeps 2 \
   --max-neighbors 192 --classes 2 --coarsen-percent 10 \
   --mode mixed --verify 1 --host-read-full 1
 ```
@@ -128,6 +132,8 @@ icpx -O3 -std=c++17 -fsycl sph_ensemble_sycl_timer.cpp -o sph_ensemble_sycl
 ```
 
 `--wait-each-kernel 1` 只用于排错，不能用于正式结果。正式跑前应先用 native profile 调整真实 `particles/max-neighbors`，使三个邻居 kernel 的第 25 百分位达到设计门槛，同时保证 `max_displacement < skin/2`。
+
+初始化输出现在细分为 `init_geometry_sec`、`init_replicas_sec` 和 `init_release_sec`。`--parallel-init 0` 可用于与原来的串行 class topology construction 对照。时间细化只增加 `run_sec` 中真实 Density/EOS/force/integrate 工作，不会增加显存或 neighbor-list 初始化量；它用于延长稳定调度观察期，但不会增加单个 kernel 的粒度，单 kernel 粒度仍应通过 `particles` 和真实 `avg_neighbors` 调整。
 
 ## 10. 公平实验表
 

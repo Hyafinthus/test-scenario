@@ -18,6 +18,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
+#include <future>
 #include <iomanip>
 #include <iostream>
 #include <limits>
@@ -39,6 +40,7 @@ namespace {
 constexpr std::size_t kDefaultParticles = 131072;
 constexpr std::size_t kDefaultReplicas = 64;
 constexpr std::size_t kDefaultSteps = 30;
+constexpr std::size_t kDefaultIntegrationSubsteps = 4;
 constexpr std::size_t kDefaultMaxNeighbors = 192;
 constexpr std::size_t kDefaultClasses = 8;
 constexpr std::size_t kDefaultCoarsenPercent = 4;
@@ -69,6 +71,7 @@ struct Config {
   std::size_t particles = kDefaultParticles;
   std::size_t replicas = kDefaultReplicas;
   std::size_t steps = kDefaultSteps;
+  std::size_t integration_substeps = kDefaultIntegrationSubsteps;
   std::size_t max_neighbors = kDefaultMaxNeighbors;
   std::size_t classes = kDefaultClasses;
   std::size_t coarsen_percent = kDefaultCoarsenPercent;
@@ -82,6 +85,7 @@ struct Config {
   bool wait_each_kernel = false;
   bool host_read_full = false;
   bool verify = true;
+  bool parallel_init = true;
 };
 
 struct ClassSpec {
@@ -97,6 +101,7 @@ struct ClassSpec {
   float sound_speed = 0.0f;
   float mass = 0.0f;
   float dt = 0.0f;
+  float damping = 0.0f;
   double average_neighbors = 0.0;
 };
 
@@ -130,18 +135,20 @@ void print_usage(const char *program) {
       << "Usage: " << program << " [options]\n"
       << "  --particles <int>          Finest/base particle count (default 131072)\n"
       << "  --replicas <int>           Replica count (default 64; single-large uses 1)\n"
-      << "  --steps <int>              Physical time steps (default 30)\n"
+      << "  --steps <int>              Macro physical steps (default 30)\n"
+      << "  --integration-substeps <int>  Timed refinements per macro step (default 4)\n"
       << "  --max-neighbors <int>      Fixed Verlet-row stride (default 192)\n"
       << "  --classes <int>            Mixed-mode fidelity classes (default 8)\n"
       << "  --coarsen-percent <int>    Particle reduction per class (default 4)\n"
-      << "  --dt <real>                Integration time step (default 2e-5)\n"
+      << "  --dt <real>                Macro-step physical time (default 2e-5)\n"
       << "  --smoothing-length <real>  Finest-class h; 0 derives it from spacing\n"
       << "  --skin <real>              Finest-class Verlet skin; 0 derives it\n"
-      << "  --window-steps <int>       Steps per queue.wait window (default 1)\n"
+      << "  --window-steps <int>       Integration steps per wait window (default 1)\n"
       << "  --split-parts <int>        Validate N divisibility for this part count\n"
       << "  --memory-limit-gib <real>  Fail above this estimate; 0 means unlimited\n"
       << "  --mode <mixed|uniform|single-large>\n"
       << "  --wait-each-kernel <0|1>   Debug-only synchronization (default 0)\n"
+      << "  --parallel-init <0|1>      Build class topologies concurrently (default 1)\n"
       << "  --host-read-full <0|1>     Materialize/check every final field (default 0)\n"
       << "  --verify <0|1>             Enable reference/basic verification (default 1)\n";
 }
@@ -240,6 +247,8 @@ bool parse_arguments(int argc, char **argv, Config &config,
       parsed = parse_size(value, config.replicas);
     } else if (option == "--steps") {
       parsed = parse_size(value, config.steps);
+    } else if (option == "--integration-substeps") {
+      parsed = parse_size(value, config.integration_substeps);
     } else if (option == "--max-neighbors") {
       parsed = parse_size(value, config.max_neighbors);
     } else if (option == "--classes") {
@@ -262,6 +271,8 @@ bool parse_arguments(int argc, char **argv, Config &config,
       parsed = parse_mode(value, config.mode);
     } else if (option == "--wait-each-kernel") {
       parsed = parse_binary(value, config.wait_each_kernel);
+    } else if (option == "--parallel-init") {
+      parsed = parse_binary(value, config.parallel_init);
     } else if (option == "--host-read-full") {
       parsed = parse_binary(value, config.host_read_full);
     } else if (option == "--verify") {
@@ -439,7 +450,13 @@ bool derive_specs(const Config &config, std::vector<ClassSpec> &specs,
     spec.sound_speed =
         20.0f * (1.0f + 0.03f * static_cast<float>(class_id));
     spec.mass = spec.rho0 / static_cast<float>(particles);
-    spec.dt = config.dt;
+    spec.dt = config.dt / static_cast<float>(config.integration_substeps);
+    if (!(spec.dt > 0.0f) || !std::isfinite(spec.dt)) {
+      error = "dt/integration-substeps underflows or is not finite";
+      return false;
+    }
+    spec.damping = std::pow(
+        kDamping, 1.0f / static_cast<float>(config.integration_substeps));
     specs.push_back(spec);
     total_estimated_bytes = next_total;
   }
@@ -598,8 +615,9 @@ bool build_geometry(ClassSpec &spec, std::size_t max_neighbors,
         }
       }
     }
-    std::sort(geometry.neighbor_index.begin() + row_begin,
-              geometry.neighbor_index.begin() + row_begin + count);
+    // Cell traversal and insertion are already deterministic. Sorting every
+    // fixed Verlet row adds O(N*K*log(K)) host setup work but changes neither
+    // the neighbor set nor the timed SPH work, so preserve construction order.
     geometry.neighbor_count[i] = static_cast<std::uint32_t>(count);
     total_neighbors += count;
   }
@@ -916,6 +934,7 @@ void submit_integrate(sycl::queue &queue, ReplicaBuffers &replica,
                       std::size_t step, bool wait_each_kernel) {
   const std::size_t n = replica.spec->particles;
   const float dt = replica.spec->dt;
+  const float damping = replica.spec->damping;
   queue.submit([&](sycl::handler &cgh) {
     auto position_in = current_position(replica, step)
                            .buffer.template get_access<
@@ -940,11 +959,11 @@ void submit_integrate(sycl::queue &queue, ReplicaBuffers &replica,
           const Vec4 v = velocity_in[i];
           const Vec4 ap = pressure_accel[i];
           const Vec4 av = viscosity_accel[i];
-          float vx = kDamping *
+          float vx = damping *
                      (v.x + dt * (ap.x + av.x + kGravityX));
-          float vy = kDamping *
+          float vy = damping *
                      (v.y + dt * (ap.y + av.y + kGravityY));
-          float vz = kDamping *
+          float vz = damping *
                      (v.z + dt * (ap.z + av.z + kGravityZ));
           float x = p.x + dt * vx;
           float y = p.y + dt * vy;
@@ -1101,11 +1120,11 @@ ReferenceState run_host_reference(const ClassSpec &spec,
       const Vec4 v = state.velocity[i];
       const Vec4 ap = state.pressure_accel[i];
       const Vec4 av = state.viscosity_accel[i];
-      float vx = kDamping *
+      float vx = spec.damping *
                  (v.x + spec.dt * (ap.x + av.x + kGravityX));
-      float vy = kDamping *
+      float vy = spec.damping *
                  (v.y + spec.dt * (ap.y + av.y + kGravityY));
-      float vz = kDamping *
+      float vz = spec.damping *
                  (v.z + spec.dt * (ap.z + av.z + kGravityZ));
       next_position_values[i] = {wrap_host(p.x + spec.dt * vx),
                                  wrap_host(p.y + spec.dt * vy),
@@ -1145,7 +1164,8 @@ void compare_reference_value(double actual, double expected,
 ResultSummary read_and_verify(
     std::vector<std::unique_ptr<ReplicaBuffers>> &replicas,
     const std::vector<ClassSpec> &specs,
-    const std::vector<ClassGeometry> &geometries, const Config &config) {
+    const std::vector<ClassGeometry> &geometries, const Config &config,
+    std::size_t timed_steps) {
   ResultSummary result;
   std::vector<bool> class_reference_done(specs.size(), false);
   long double reference_difference2 = 0.0L;
@@ -1160,14 +1180,14 @@ ResultSummary read_and_verify(
     ReferenceState reference;
     if (run_reference) {
       reference = run_host_reference(spec, geometry, replica.replica_index,
-                                     config.max_neighbors, config.steps);
+                                     config.max_neighbors, timed_steps);
       class_reference_done[replica.class_id] = true;
       ++result.reference_replicas;
     }
 
-    auto position = final_position(replica, config.steps)
+    auto position = final_position(replica, timed_steps)
                         .buffer.get_host_access(sycl::read_only);
-    auto velocity = final_velocity(replica, config.steps)
+    auto velocity = final_velocity(replica, timed_steps)
                         .buffer.get_host_access(sycl::read_only);
     auto density = replica.density.buffer.get_host_access(sycl::read_only);
     auto pressure = replica.pressure.buffer.get_host_access(sycl::read_only);
@@ -1312,11 +1332,14 @@ int main(int argc, char **argv) {
   }
 
   std::size_t kernels_per_step = 0;
+  std::size_t timed_steps = 0;
   std::size_t total_kernels = 0;
   std::size_t max_width = 0;
-  if (!checked_multiply(std::size_t{5}, effective_replicas,
+  if (!checked_multiply(config.steps, config.integration_substeps,
+                        timed_steps) ||
+      !checked_multiply(std::size_t{5}, effective_replicas,
                         kernels_per_step) ||
-      !checked_multiply(kernels_per_step, config.steps, total_kernels) ||
+      !checked_multiply(kernels_per_step, timed_steps, total_kernels) ||
       !checked_multiply(std::size_t{2}, effective_replicas, max_width)) {
     std::cerr << "ERROR DAG kernel-count arithmetic overflows size_t\n";
     return 1;
@@ -1325,15 +1348,21 @@ int main(int argc, char **argv) {
   std::cout << std::setprecision(9);
   std::cout << "CONFIG particles=" << config.particles
             << " replicas=" << effective_replicas
-            << " steps=" << config.steps
+            << " steps=" << timed_steps
+            << " macro_steps=" << config.steps
+            << " integration_substeps=" << config.integration_substeps
+            << " timed_steps=" << timed_steps
             << " max_neighbors=" << config.max_neighbors
             << " classes=" << specs.size()
             << " coarsen_percent=" << config.coarsen_percent
             << " mode=" << mode_name(config.mode)
-            << " dt=" << config.dt
+            << " macro_dt=" << config.dt
+            << " physical_time="
+            << static_cast<double>(config.steps) * config.dt
             << " window_steps=" << config.window_steps
             << " split_parts=" << config.split_parts
             << " wait_each_kernel=" << (config.wait_each_kernel ? 1 : 0)
+            << " parallel_init=" << (config.parallel_init ? 1 : 0)
             << " host_read_full=" << (config.host_read_full ? 1 : 0)
             << '\n';
   std::cout << "DAG kernels_per_step=" << kernels_per_step
@@ -1354,13 +1383,40 @@ int main(int argc, char **argv) {
   try {
     const double total_begin = get_time();
     std::vector<ClassGeometry> geometries(specs.size());
-    for (std::size_t class_id = 0; class_id < specs.size(); ++class_id) {
-      if (!build_geometry(specs[class_id], config.max_neighbors,
-                          geometries[class_id], error)) {
+    if (config.parallel_init && specs.size() > 1) {
+      std::vector<std::future<std::string>> jobs;
+      jobs.reserve(specs.size());
+      for (std::size_t class_id = 0; class_id < specs.size(); ++class_id) {
+        jobs.push_back(std::async(std::launch::async, [&, class_id] {
+          std::string local_error;
+          if (!build_geometry(specs[class_id], config.max_neighbors,
+                              geometries[class_id], local_error)) {
+            return local_error.empty() ? std::string("geometry build failed")
+                                       : local_error;
+          }
+          return std::string{};
+        }));
+      }
+      for (auto &job : jobs) {
+        const std::string local_error = job.get();
+        if (!local_error.empty() && error.empty()) {
+          error = local_error;
+        }
+      }
+      if (!error.empty()) {
         std::cerr << "ERROR " << error << '\n';
         return 1;
       }
+    } else {
+      for (std::size_t class_id = 0; class_id < specs.size(); ++class_id) {
+        if (!build_geometry(specs[class_id], config.max_neighbors,
+                            geometries[class_id], error)) {
+          std::cerr << "ERROR " << error << '\n';
+          return 1;
+        }
+      }
     }
+    const double geometry_init_end = get_time();
 
     std::vector<std::unique_ptr<ReplicaBuffers>> replicas;
     replicas.reserve(effective_replicas);
@@ -1372,6 +1428,7 @@ int main(int argc, char **argv) {
         ++replica_index;
       }
     }
+    const double replica_init_end = get_time();
     // Large-run verification only needs the initial positions. Keep the full
     // host topology solely for the small CPU reference path; every replica
     // already owns an independent device-visible copy at this point.
@@ -1393,7 +1450,7 @@ int main(int argc, char **argv) {
                 << " skin=" << spec.skin << " rho0=" << spec.rho0
                 << " viscosity=" << spec.viscosity
                 << " sound_speed=" << spec.sound_speed
-                << " dt=" << spec.dt << '\n';
+                << " dt=" << spec.dt << " damping=" << spec.damping << '\n';
     }
 
     const double queue_begin = get_time();
@@ -1401,11 +1458,11 @@ int main(int argc, char **argv) {
     const double queue_end = get_time();
 
     const double run_begin = get_time();
-    for (std::size_t step = 0; step < config.steps; ++step) {
+    for (std::size_t step = 0; step < timed_steps; ++step) {
       submit_step(queue, replicas, step, config.max_neighbors,
                   config.wait_each_kernel);
       const bool end_of_window =
-          (step + 1) % config.window_steps == 0 || step + 1 == config.steps;
+          (step + 1) % config.window_steps == 0 || step + 1 == timed_steps;
       if (end_of_window) {
         queue.wait();
       }
@@ -1414,13 +1471,19 @@ int main(int argc, char **argv) {
 
     const double host_begin = get_time();
     const ResultSummary result =
-        read_and_verify(replicas, specs, geometries, config);
+        read_and_verify(replicas, specs, geometries, config, timed_steps);
     const double host_end = get_time();
     const bool passed = result.finite_and_physical &&
                         result.displacement_valid && result.reference_valid;
 
     std::cout << std::fixed << std::setprecision(6);
     std::cout << "TIMING init_sec=" << init_end - total_begin << '\n';
+    std::cout << "TIMING init_geometry_sec="
+              << geometry_init_end - total_begin << '\n';
+    std::cout << "TIMING init_replicas_sec="
+              << replica_init_end - geometry_init_end << '\n';
+    std::cout << "TIMING init_release_sec="
+              << init_end - replica_init_end << '\n';
     std::cout << "TIMING queue_sec=" << queue_end - queue_begin << '\n';
     std::cout << "TIMING run_sec=" << run_end - run_begin << '\n';
     std::cout << "TIMING host_sec=" << host_end - host_begin << '\n';
