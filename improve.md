@@ -1,8 +1,10 @@
 # 当前系统可快速验证的性能改进
 
-> 2026-07-15 更新：本文保留此前 Reactive/Split 消融记录；当前 runtime
-> 的 wait/profile 解耦、统一代价模型、非阻塞 profile 传播和 Split 默认策略，
-> 以 [runtime-scheduler-evolution.md](runtime-scheduler-evolution.md) 为准。
+> 2026-07-15 更新：本文保留此前 Reactive/Split 消融记录。当前 runtime
+> 已进一步实现 completion-driven ready queue、统一 single/Split candidate
+> 和默认开启的受控 Split；现状以
+> [runtime-scheduler-evolution.md](runtime-scheduler-evolution.md) 与
+> [completion-driven-split-runtime.md](completion-driven-split-runtime.md) 为准。
 
 ## 结论先行
 
@@ -40,19 +42,24 @@ default selected single/Split kernels      = 2400 / 0
 | 开关 | 默认 | 对应改进 | 作用 |
 |---|---|---|---|
 | `SNMD_OFFLINE_CANONICAL_MERGE` | 开 | P1 | handler 固定向调度选择的首设备 merge；daemon 只把该设备视为完整 Split producer source |
-| `SNMD_OFFLINE_SINGLE_FIRST` | 开 | P2 | 没有 `num_parts=1` profile 时拒绝 Split probe |
+| `SNMD_OFFLINE_COLD_SPLIT_PROBE` | 开 | P2 | 只对预测单 kernel 至少约 5 s、且冷估计收益至少 30% 的任务允许一次 Split probe |
 | `SNMD_OFFLINE_SPLIT_HYSTERESIS` | 开 | P2 | 已有 single/Split profile 后，Split 至少快 15% 才保留 |
 | `SNMD_OFFLINE_WIDE_DAG_GUARD` | 开 | P3 | batch-local DAG depth 宽度足以填满 GPU 时优先 task parallelism |
+| `SNMD_OFFLINE_COMPLETION_DRIVEN_QUEUE` | 开 | P6 | 单 daemon/rank 按真实 event completion 释放资源并补发 ready kernel |
 | `SNMD_OFFLINE_TEST_DISABLE_SPLIT` | 关 | P0 | 仅禁用 `num_parts>1`，保留 offline HEFT 和双 GPU whole-kernel placement |
 | `SNMD_OFFLINE_SPLIT_STATS` | 关 | P5 | 输出 daemon 预测决策以及 handler 实际 Split copy bytes/wait 时间 |
 
-表中的“默认”指正式配置意图。当前工作区的 `define.hpp` 在最近一次消融后仍把 `SNMD_OFFLINE_TEST_DISABLE_SPLIT` 留在打开状态；正式默认/性能构建应把两个 TEST/STATS 宏都恢复为注释，并以日志确认默认 guard 自己仍选择 `split_kernels=0`。
+`SNMD_OFFLINE_TEST_DISABLE_SPLIT` 与详细统计宏在当前工作区均未打开。
+正式性能构建仍应保持详细 trace 关闭，并用日志确认宽 DAG 的默认 guard
+自己选择 `split_kernels=0`，而不是依赖强制禁用。
 
 阈值也在同一文件：
 
 ```text
 SNMD_OFFLINE_SPLIT_MIN_GAIN_PERCENT=15
 SNMD_OFFLINE_SPLIT_THROUGHPUT_MARGIN_PERCENT=15
+SNMD_OFFLINE_COLD_SPLIT_MIN_SINGLE_COST=500000
+SNMD_OFFLINE_COLD_SPLIT_MIN_GAIN_PERCENT=30
 ```
 
 P4 没有额外建立第二张 residency table：当前 daemon 的 `kernel_dag_nodes` 会跨 wait window 保留最近 producer 节点及其 `exec_rank/exec_proc`，candidate communication cost 已能使用这一 placement。P1 的 canonical source 修正同时适用于跨窗口 Split producer。若后续发现 DAG 生命周期或 host write 使该信息不可靠，再改为 handler 显式发送 version/device，而不是现在叠加一套可能冲突的推断状态。
@@ -69,9 +76,9 @@ P4 没有额外建立第二张 residency table：当前 daemon 的 `kernel_dag_n
 
 | 组合 | 宏配置 |
 |---|---|
-| 当前旧策略复现 | 关闭 `CANONICAL_MERGE`、`SINGLE_FIRST`、`SPLIT_HYSTERESIS`、`WIDE_DAG_GUARD` |
+| 当前旧策略复现 | 关闭 `CANONICAL_MERGE`、`COLD_SPLIT_PROBE`、`SPLIT_HYSTERESIS`、`WIDE_DAG_GUARD` |
 | P0 whole-kernel 对照 | 打开 `TEST_DISABLE_SPLIT`；其他 Split 修正对该运行不产生决策影响 |
-| P1+P2 | 打开 canonical、single-first、hysteresis；关闭 wide-DAG guard |
+| P1+P2 | 打开 canonical、cold Split probe、hysteresis；关闭 wide-DAG guard |
 | P1+P2+P3 | 使用 `define.hpp` 当前默认配置 |
 | 数据量定位 | 在任一组合上额外打开 `SPLIT_STATS`，但不作为正式计时 |
 

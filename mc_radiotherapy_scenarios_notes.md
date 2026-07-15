@@ -140,7 +140,8 @@ for history = 0 .. histories_per_item-1
 
 - 四个节点都是 batch root，HEFT 的 device available time 应把它们分散到两张 GPU；
 - 每个情景的 buffer identity 不同，不需要在情景之间搬数据；
-- `SNMD_OFFLINE_SINGLE_FIRST` 会在没有 single profile 时拒绝 cold Split；
+- bounded cold Split probe 只允许预测 single 至少约 5 s、且模型收益至少
+  30% 的窄 DAG；本例四情景宽 DAG 仍应由 wide-DAG guard 保持 whole-kernel；
 - `SNMD_OFFLINE_WIDE_DAG_GUARD` 应在宽度已经填满 GPU 时继续偏向 whole-kernel throughput；
 - 第二个 epoch 的 profile key、NDRange 和 accessor 形状不变，可以复用第一窗口实测；相同 shape 的四个情景会共享/汇总 profile，而不是按 buffer 内容分别建模；
 - tally 的跨窗口依赖应让同一情景保持 producer affinity，避免把完整 read_write 数组迁到另一设备。
