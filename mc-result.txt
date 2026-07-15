@@ -1,0 +1,696 @@
+heyifu@a6000-docker:~$ mpirun -n 1 sycl-daemon
+No protocol specified
+No protocol specified
+MPI_Rank 0: a6000-docker of 1 started
+MPI_Rank 0: Established
+SystemSchedulerMonitor: MONITOR_Rank 0 started.
+MPI_Rank 0: SystemSchedulerSubmit started
+SystemSchedulerSubmit: SUBMIT_Rank 0 started.
+Number of GPUs: 4
+GPU 0: PCI Bus ID: 00000000:3A:00.0 int: 58
+GPU 1: PCI Bus ID: 00000000:3C:00.0 int: 60
+GPU 2: PCI Bus ID: 00000000:AD:00.0 int: 173
+GPU 3: PCI Bus ID: 00000000:BE:00.0 int: 190
+SYCL Device 0 (INTEL(R) XEON(R) GOLD 6530): PCI Bus ID: -1
+SYCL Device 1 (NVIDIA RTX 6000 Ada Generation): PCI Bus ID: 58
+SYCL Device 2 (NVIDIA RTX 6000 Ada Generation): PCI Bus ID: 60
+SYCL Device 3 (NVIDIA RTX 6000 Ada Generation): PCI Bus ID: 173
+SYCL Device 4 (NVIDIA RTX 6000 Ada Generation): PCI Bus ID: 190
+SYCL Device 1 mapped to GPU 1 fp32 capability 11.39 fp64 capability 5.56
+SYCL Device 2 mapped to GPU 2 fp32 capability 11.39 fp64 capability 5.56
+SYCL Device 3 mapped to GPU 3 fp32 capability 11.39 fp64 capability 5.56
+SYCL Device 4 mapped to GPU 4 fp32 capability 11.39 fp64 capability 5.56
+SUBMIT_Rank 0: Received submit command: /home/heyifu/SYCL/test-scenario/mc_radiotherapy_scenarios_sycl_timer_our --work-items 4194304 --epochs 4
+SystemSchedulerScale: SUBMIT_Rank 0 SYCLAPP_Rank 0 SYCLAPP_Size 1 DAEMON_Rank 0 DAEMON_Size 1
+SUBMIT_Rank 0 SYCLAPP_Rank 0: Launched binary with PID 55372
+SystemSchedulerScale: SYCLAPP_Rank 0 waiting DAEMON NOTIFY
+EstablishDaemon: Rank 0 created mq_id_daemon: 125
+waiting
+waiting
+waiting
+waiting
+waiting
+waiting
+Process 55372: ProgramManager SCHEDULE register
+waiting
+waiting
+SystemSchedulerDaemonOffline: Rank 0 for PID 55372 opened mq_id_program: /sycl_mq_program_55372
+SystemSchedulerDaemonOffline: Rank 0 for PID 55372 send to ProgramManager scale_count: 0 ret: 0
+SystemSchedulerDaemonOffline: Rank 0 for PID 55372 started.
+SystemSchedulerDaemonOffline: Rank 0: waiting reqs from handler
+Process 55372: ProgramManager SCHEDULE scale_count = 0
+Process 55372: ProgramManager SCHEDULE waiting mq_id_daemon
+Process 55372: ProgramManager SCHEDULE opened mq_id_daemon
+CONFIG work_items=4194304 scenarios=4 epochs=4 histories_per_item=256 max_collisions=128 layers=128 split_parts=2 wait_each_kernel=0 calibrate=0
+DAG kernels_per_window=4 max_width=4 critical_path_levels=1 total_kernels=16
+WORK histories_per_kernel=1073741824 histories_per_epoch=4294967296 total_histories=17179869184 max_collision_steps_per_kernel=137438953472 max_total_collision_steps=2199023255552
+MEMORY bytes_per_scenario=150996480 total_estimated_bytes=603985920
+=== handler === Process 55372 === set sycl_kernel_cg: 1 MQueue: 0x2e58930 MRequirements: 12 - 0x2e0c400 0x2e0c500 0x2e0c600 0x2e0c700 0x2e0c800 0x2e0c900 0x2e0ca00 0x2e0cb00 0x2e0cc00 0x2e0cd00 0x2e0ce00 0x2e0cf00 MEvents: 0
+=== handler === Process 55372 === set sycl_kernel_cg: 2 MQueue: 0x2e58930 MRequirements: 12 - 0x2e158f0 0x2e173e0 0x2e18c10 0x2e1a440 0x2e1bc20 0x2e1d450 0x2e1ec80 0x2e13db0 0x2e0cfe0 0x2e0f450 0x2e10aa0 0x2e122e0 MEvents: 0
+=== handler === Process 55372 === set sycl_kernel_cg: 3 MQueue: 0x2e58930 MRequirements: 12 - 0x2e284b0 0x2e29f30 0x2e2b6f0 0x2e2cf20 0x2e2e750 0x2e2ff80 0x2e317b0 0x2e26a30 0x2e206b0 0x2e21ee0 0x2e23710 0x2e24f40 MEvents: 0
+=== handler === Process 55372 === set sycl_kernel_cg: 4 MQueue: 0x2e58930 MRequirements: 12 - 0x2e3b030 0x2e3cb20 0x2e3e300 0x2e3fb30 0x2e41570 0x2e42da0 0x2e445d0 0x2e39560 0x2e331e0 0x2e34a10 0x2e36240 0x2e37a70 MEvents: 0
+=== handler === Process 55372 === daemon_wait_count: 1 daemon_scale_count: 0
+=== handler === Process 55372 === mq_send kernel_req_datas size: 4 bytes: 1950
+Rank 0: mq_receive kernel_req_datas size: 4
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 1 req_count: 1 pointer: 0x2e0c400
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 1 req_count: 2 pointer: 0x2e0c500
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 1 req_count: 3 pointer: 0x2e0c600
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 1 req_count: 4 pointer: 0x2e0c700
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 1 req_count: 5 pointer: 0x2e0c800
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 1 req_count: 6 pointer: 0x2e0c900
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 1 req_count: 7 pointer: 0x2e0ca00
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 1 req_count: 8 pointer: 0x2e0cb00
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 1 req_count: 9 pointer: 0x2e0cc00
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 1 req_count: 10 pointer: 0x2e0cd00
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 1 req_count: 11 pointer: 0x2e0ce00
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 1 req_count: 12 pointer: 0x2e0cf00
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 2 req_count: 1 pointer: 0x2e158f0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 2 req_count: 2 pointer: 0x2e173e0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 2 req_count: 3 pointer: 0x2e18c10
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 2 req_count: 4 pointer: 0x2e1a440
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 2 req_count: 5 pointer: 0x2e1bc20
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 2 req_count: 6 pointer: 0x2e1d450
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 2 req_count: 7 pointer: 0x2e1ec80
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 2 req_count: 8 pointer: 0x2e13db0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 2 req_count: 9 pointer: 0x2e0cfe0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 2 req_count: 10 pointer: 0x2e0f450
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 2 req_count: 11 pointer: 0x2e10aa0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 2 req_count: 12 pointer: 0x2e122e0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 3 req_count: 1 pointer: 0x2e284b0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 3 req_count: 2 pointer: 0x2e29f30
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 3 req_count: 3 pointer: 0x2e2b6f0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 3 req_count: 4 pointer: 0x2e2cf20
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 3 req_count: 5 pointer: 0x2e2e750
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 3 req_count: 6 pointer: 0x2e2ff80
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 3 req_count: 7 pointer: 0x2e317b0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 3 req_count: 8 pointer: 0x2e26a30
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 3 req_count: 9 pointer: 0x2e206b0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 3 req_count: 10 pointer: 0x2e21ee0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 3 req_count: 11 pointer: 0x2e23710
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 3 req_count: 12 pointer: 0x2e24f40
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 4 req_count: 1 pointer: 0x2e3b030
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 4 req_count: 2 pointer: 0x2e3cb20
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 4 req_count: 3 pointer: 0x2e3e300
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 4 req_count: 4 pointer: 0x2e3fb30
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 4 req_count: 5 pointer: 0x2e41570
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 4 req_count: 6 pointer: 0x2e42da0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 4 req_count: 7 pointer: 0x2e445d0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 4 req_count: 8 pointer: 0x2e39560
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 4 req_count: 9 pointer: 0x2e331e0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 4 req_count: 10 pointer: 0x2e34a10
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 4 req_count: 11 pointer: 0x2e36240
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 4 req_count: 12 pointer: 0x2e37a70
+ensureOfflineDeviceModel: Rank 0 Proc 0 FP32Capability 1.8622 FP64Capability 1 Util 3.59937 AvailableTime 0
+ensureOfflineDeviceModel: Rank 0 Proc 1 FP32Capability 21.2104 FP64Capability 10.3538 Util 0 AvailableTime 0
+ensureOfflineDeviceModel: Rank 0 Proc 2 FP32Capability 21.2104 FP64Capability 10.3538 Util 0 AvailableTime 0
+ensureOfflineDeviceModel: Rank 0 Proc 3 FP32Capability 21.2104 FP64Capability 10.3538 Util 0 AvailableTime 0
+ensureOfflineDeviceModel: Rank 0 Proc 4 FP32Capability 21.2104 FP64Capability 10.3538 Util 0 AvailableTime 0
+algorithmHEFT: Kernel 1 total_elem: 3.77491e+07 precision: fp32
+algorithmHEFT: Kernel 2 total_elem: 3.77491e+07 precision: fp32
+algorithmHEFT: Kernel 3 total_elem: 3.77491e+07 precision: fp32
+algorithmHEFT: Kernel 4 total_elem: 3.77491e+07 precision: fp32
+algorithmHEFT: Kernel 4 is exit node rank_u: 1779.74
+algorithmHEFT: Kernel 3 is exit node rank_u: 1779.74
+algorithmHEFT: Kernel 2 is exit node rank_u: 1779.74
+algorithmHEFT: Kernel 1 is exit node rank_u: 1779.74
+algorithmHEFT: Kernel 4 split rejected until a single-device profile exists
+algorithmHEFT: Kernel 4 split rejected until a single-device profile exists
+algorithmHEFT: Kernel 4 assigned to Rank 0 Proc 1 NumParts 1 SplitDevices 1 start_time 0 exec_cost 1779.74 finish_time 1779.74
+algorithmHEFT: Kernel 3 split rejected until a single-device profile exists
+algorithmHEFT: Kernel 3 split rejected until a single-device profile exists
+algorithmHEFT: Kernel 3 assigned to Rank 0 Proc 2 NumParts 1 SplitDevices 2 start_time 0 exec_cost 1779.74 finish_time 1779.74
+algorithmHEFT: Kernel 2 split rejected until a single-device profile exists
+algorithmHEFT: Kernel 2 split rejected until a single-device profile exists
+algorithmHEFT: Kernel 2 assigned to Rank 0 Proc 3 NumParts 1 SplitDevices 3 start_time 0 exec_cost 1779.74 finish_time 1779.74
+algorithmHEFT: Kernel 1 split rejected until a single-device profile exists
+algorithmHEFT: Kernel 1 split rejected until a single-device profile exists
+algorithmHEFT: Kernel 1 assigned to Rank 0 Proc 4 NumParts 1 SplitDevices 4 start_time 0 exec_cost 1779.74 finish_time 1779.74
+Rank 0 TEST kernel_sched_order_infos size: 4
+Rank 0 scale_ranks: 0
+SystemSchedulerDaemonOffline: Rank 0 for PID 55372 waiting new daemon, onrun size: 1
+SystemSchedulerDaemonOffline: Rank 0 for PID 55372 onrun size: 1 sent D2DKernelSchedInfos size: 4
+commExecInfo === Rank 0: mq_send kernel_exec_infos size: 4 mqsize: 64
+commExecInfo === Rank 0: kernel_count 4 exec 1 device_index 1 num_parts 1 split_devices 1 req_counts 0
+commExecInfo === Rank 0: kernel_count 3 exec 1 device_index 2 num_parts 1 split_devices 2 req_counts 0
+commExecInfo === Rank 0: kernel_count 2 exec 1 device_index 3 num_parts 1 split_devices 3 req_counts 0
+=== handler === Process 55372 === mq_receive kernel_exec_infos
+commExecInfo === Rank 0: kernel_count 1 exec 1 device_index 4 num_parts 1 split_devices 4 req_counts 0
+SystemSchedulerDaemonOffline: Rank 0: waiting reqs from handler
+=== handler === Process 55372 === mq_receive kernel_exec_info === kernel_count: 4 exec: 1 device_index: 1 num_parts: 1 split_devices: 1 req_size: 0
+=== handler === Process 55372 === mq_receive kernel_exec_info === kernel_count: 3 exec: 1 device_index: 2 num_parts: 1 split_devices: 2 req_size: 0
+=== handler === Process 55372 === mq_receive kernel_exec_info === kernel_count: 2 exec: 1 device_index: 3 num_parts: 1 split_devices: 3 req_size: 0
+=== handler === Process 55372 === mq_receive kernel_exec_info === kernel_count: 1 exec: 1 device_index: 4 num_parts: 1 split_devices: 4 req_size: 0
+=== handler === Process 55372 === kernel_exec_infos.size(): 4
+=== handler === Process 55372 === kernel_count: 4
+=== handler === Process 55372 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Process 55372 === rebind_device is_gpu: 1
+=== handler === Offline private device context created: device 0x2dd7cb0 context 0x2e63280
+=== handler === Offline profiling queue created, profiling: 1 in_order: 1
+=== handler === Process 55372 === rebind MQueue
+55372 === handler === resubmit kernel: 4
+55372 === handler === resubmitted kernel: 4
+=== handler === Process 55372 === kernel_count: 3
+=== handler === Process 55372 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Process 55372 === rebind_device is_gpu: 1
+=== handler === Offline private device context created: device 0x2dd7dc0 context 0x2ebc540
+=== handler === Offline profiling queue created, profiling: 1 in_order: 1
+=== handler === Process 55372 === rebind MQueue
+55372 === handler === resubmit kernel: 3
+55372 === handler === resubmitted kernel: 3
+=== handler === Process 55372 === kernel_count: 2
+=== handler === Process 55372 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Process 55372 === rebind_device is_gpu: 1
+=== handler === Offline private device context created: device 0x2dd7e50 context 0x2f17a40
+=== handler === Offline profiling queue created, profiling: 1 in_order: 1
+=== handler === Process 55372 === rebind MQueue
+55372 === handler === resubmit kernel: 2
+55372 === handler === resubmitted kernel: 2
+=== handler === Process 55372 === kernel_count: 1
+=== handler === Process 55372 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Process 55372 === rebind_device is_gpu: 1
+=== handler === Offline private device context created: device 0x2dd7fa0 context 0x2f31140
+=== handler === Offline profiling queue created, profiling: 1 in_order: 1
+=== handler === Process 55372 === rebind MQueue
+55372 === handler === resubmit kernel: 1
+55372 === handler === resubmitted kernel: 1
+=== handler === Process 55372 === resubmit last kernel: 1
+=== handler === Offline profiling kernel_count: 4 device_index: 1 num_parts: 1 start_ns: 5777846191 end_ns: 6973453125 duration_ns: 1195606934
+=== handler === Offline profiling kernel_count: 3 device_index: 2 num_parts: 1 start_ns: 5725481933 end_ns: 6911057128 duration_ns: 1185575195
+=== handler === Offline profiling kernel_count: 2 device_index: 3 num_parts: 1 start_ns: 5697755859 end_ns: 6936634277 duration_ns: 1238878418
+=== handler === Offline profiling kernel_count: 1 device_index: 4 num_parts: 1 start_ns: 5646416015 end_ns: 6877594726 duration_ns: 1231178711
+=== handler === Offline profiling sent samples: 4
+Rank 0: mq_receive profile samples: 4
+ProfileCostTable: key dims=1:4194304x1x1|reqs=12|1024:4:4194304:4194304x1x1;1024:4:4194304:4194304x1x1;1024:4:4194304:4194304x1x1;1024:4:128:128x1x1;1024:4:128:128x1x1;1024:4:128:128x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;|rb=150996480|wb=100663296 rank 0 device 1 parts 1 sample_cost 119561 ewma_cost 119561 samples 1
+ProfileCostTable: key dims=1:4194304x1x1|reqs=12|1024:4:4194304:4194304x1x1;1024:4:4194304:4194304x1x1;1024:4:4194304:4194304x1x1;1024:4:128:128x1x1;1024:4:128:128x1x1;1024:4:128:128x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;|rb=150996480|wb=100663296 rank 0 device 2 parts 1 sample_cost 118558 ewma_cost 118558 samples 1
+ProfileCostTable: key dims=1:4194304x1x1|reqs=12|1024:4:4194304:4194304x1x1;1024:4:4194304:4194304x1x1;1024:4:4194304:4194304x1x1;1024:4:128:128x1x1;1024:4:128:128x1x1;1024:4:128:128x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;|rb=150996480|wb=100663296 rank 0 device 3 parts 1 sample_cost 123888 ewma_cost 123888 samples 1
+=== handler === Process 55372 === set sycl_kernel_cg: 5 MQueue: 0x2e58930 MRequirements: 12 - 0x2e0c400 0x2e0c500 0x2e0c600 0x2e0c700 0x2e0c800 0x2e0c900 0x2e0ca00 0x2e0cb00 0x2e0cc00 0x2e0cd00 0x2e0ce00 0x2e0cf00 MEvents: 0
+ProfileCostTable: key dims=1:4194304x1x1|reqs=12|1024:4:4194304:4194304x1x1;1024:4:4194304:4194304x1x1;1024:4:4194304:4194304x1x1;1024:4:128:128x1x1;1024:4:128:128x1x1;1024:4:128:128x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;|rb=150996480|wb=100663296 rank 0 device 4 parts 1 sample_cost 123118 ewma_cost 123118 samples 1
+SystemSchedulerDaemonOffline: Rank 0 processed profile-only batch
+SystemSchedulerDaemonOffline: Rank 0: waiting reqs from handler
+=== handler === Process 55372 === set sycl_kernel_cg: 6 MQueue: 0x2e58930 MRequirements: 12 - 0x2e158f0 0x2e173e0 0x2e18c10 0x2e1a440 0x2e1bc20 0x2e1d450 0x2e1ec80 0x2e13db0 0x2e0cfe0 0x2e0f450 0x2e10aa0 0x2e122e0 MEvents: 0
+=== handler === Process 55372 === set sycl_kernel_cg: 7 MQueue: 0x2e58930 MRequirements: 12 - 0x2e284b0 0x2e29f30 0x2e2b6f0 0x2e2cf20 0x2e2e750 0x2e2ff80 0x2e317b0 0x2e26a30 0x2e206b0 0x2e21ee0 0x2e23710 0x2e24f40 MEvents: 0
+=== handler === Process 55372 === set sycl_kernel_cg: 8 MQueue: 0x2e58930 MRequirements: 12 - 0x2e3b030 0x2e3cb20 0x2e3e300 0x2e3fb30 0x2e41570 0x2e42da0 0x2e445d0 0x2e39560 0x2e331e0 0x2e34a10 0x2e36240 0x2e37a70 MEvents: 0
+=== handler === Process 55372 === daemon_wait_count: 2 daemon_scale_count: 0
+=== handler === Process 55372 === mq_send kernel_req_datas size: 4 bytes: 1950
+Rank 0: mq_receive kernel_req_datas size: 4
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 5 req_count: 1 pointer: 0x2e0c400
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 5 req_count: 2 pointer: 0x2e0c500
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 5 req_count: 3 pointer: 0x2e0c600
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 5 req_count: 4 pointer: 0x2e0c700
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 5 req_count: 5 pointer: 0x2e0c800
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 5 req_count: 6 pointer: 0x2e0c900
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 5 req_count: 7 pointer: 0x2e0ca00
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 5 req_count: 8 pointer: 0x2e0cb00
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 5 req_count: 9 pointer: 0x2e0cc00
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 5 req_count: 10 pointer: 0x2e0cd00
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 5 req_count: 11 pointer: 0x2e0ce00
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 5 req_count: 12 pointer: 0x2e0cf00
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 6 req_count: 1 pointer: 0x2e158f0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 6 req_count: 2 pointer: 0x2e173e0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 6 req_count: 3 pointer: 0x2e18c10
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 6 req_count: 4 pointer: 0x2e1a440
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 6 req_count: 5 pointer: 0x2e1bc20
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 6 req_count: 6 pointer: 0x2e1d450
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 6 req_count: 7 pointer: 0x2e1ec80
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 6 req_count: 8 pointer: 0x2e13db0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 6 req_count: 9 pointer: 0x2e0cfe0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 6 req_count: 10 pointer: 0x2e0f450
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 6 req_count: 11 pointer: 0x2e10aa0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 6 req_count: 12 pointer: 0x2e122e0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 7 req_count: 1 pointer: 0x2e284b0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 7 req_count: 2 pointer: 0x2e29f30
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 7 req_count: 3 pointer: 0x2e2b6f0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 7 req_count: 4 pointer: 0x2e2cf20
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 7 req_count: 5 pointer: 0x2e2e750
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 7 req_count: 6 pointer: 0x2e2ff80
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 7 req_count: 7 pointer: 0x2e317b0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 7 req_count: 8 pointer: 0x2e26a30
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 7 req_count: 9 pointer: 0x2e206b0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 7 req_count: 10 pointer: 0x2e21ee0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 7 req_count: 11 pointer: 0x2e23710
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 7 req_count: 12 pointer: 0x2e24f40
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 8 req_count: 1 pointer: 0x2e3b030
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 8 req_count: 2 pointer: 0x2e3cb20
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 8 req_count: 3 pointer: 0x2e3e300
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 8 req_count: 4 pointer: 0x2e3fb30
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 8 req_count: 5 pointer: 0x2e41570
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 8 req_count: 6 pointer: 0x2e42da0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 8 req_count: 7 pointer: 0x2e445d0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 8 req_count: 8 pointer: 0x2e39560
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 8 req_count: 9 pointer: 0x2e331e0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 8 req_count: 10 pointer: 0x2e34a10
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 8 req_count: 11 pointer: 0x2e36240
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 8 req_count: 12 pointer: 0x2e37a70
+ensureOfflineDeviceModel: Rank 0 Proc 0 FP32Capability 1.8622 FP64Capability 1 Util 19.5652 AvailableTime 0
+ensureOfflineDeviceModel: Rank 0 Proc 1 FP32Capability 21.2104 FP64Capability 10.3538 Util 100 AvailableTime 47.1466
+ensureOfflineDeviceModel: Rank 0 Proc 2 FP32Capability 21.2104 FP64Capability 10.3538 Util 100 AvailableTime 47.1466
+ensureOfflineDeviceModel: Rank 0 Proc 3 FP32Capability 21.2104 FP64Capability 10.3538 Util 100 AvailableTime 47.1466
+ensureOfflineDeviceModel: Rank 0 Proc 4 FP32Capability 21.2104 FP64Capability 10.3538 Util 100 AvailableTime 47.1466
+algorithmHEFT: Kernel 5 total_elem: 3.77491e+07 precision: fp32
+algorithmHEFT: Kernel 5 depends on Kernel 1 pre_comm_elem: 25165824
+algorithmHEFT: Kernel 6 total_elem: 3.77491e+07 precision: fp32
+algorithmHEFT: Kernel 6 depends on Kernel 2 pre_comm_elem: 25165824
+algorithmHEFT: Kernel 7 total_elem: 3.77491e+07 precision: fp32
+algorithmHEFT: Kernel 7 depends on Kernel 3 pre_comm_elem: 25165824
+algorithmHEFT: Kernel 8 total_elem: 3.77491e+07 precision: fp32
+algorithmHEFT: Kernel 8 depends on Kernel 4 pre_comm_elem: 25165824
+algorithmHEFT: Kernel 8 is exit node rank_u: 242562
+algorithmHEFT: Kernel 7 is exit node rank_u: 242562
+algorithmHEFT: Kernel 6 is exit node rank_u: 242562
+algorithmHEFT: Kernel 5 is exit node rank_u: 242562
+algorithmHEFT: Kernel 8 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 8 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 8 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 8 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 8 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 8 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 8 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 8 assigned to Rank 0 Proc 2 NumParts 1 SplitDevices 2 start_time 2161.15 exec_cost 237115 finish_time 239276
+algorithmHEFT: Kernel 7 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 7 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 7 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 7 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 7 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 7 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 7 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 7 assigned to Rank 0 Proc 1 NumParts 1 SplitDevices 1 start_time 2161.15 exec_cost 239121 finish_time 241283
+algorithmHEFT: Kernel 6 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 6 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 6 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 6 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 6 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 6 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 6 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 6 assigned to Rank 0 Proc 4 NumParts 1 SplitDevices 4 start_time 2162.71 exec_cost 246236 finish_time 248398
+algorithmHEFT: Kernel 5 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 5 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 5 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 5 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 5 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 5 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 5 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 5 assigned to Rank 0 Proc 3 NumParts 1 SplitDevices 3 start_time 2161.15 exec_cost 247776 finish_time 249937
+Rank 0 TEST kernel_sched_order_infos size: 4
+Rank 0 scale_ranks: 0
+SystemSchedulerDaemonOffline: Rank 0 for PID 55372 waiting new daemon, onrun size: 1
+SystemSchedulerDaemonOffline: Rank 0 for PID 55372 onrun size: 1 sent D2DKernelSchedInfos size: 4
+commExecInfo === Rank 0: mq_send kernel_exec_infos size: 4 mqsize: 64
+commExecInfo === Rank 0: kernel_count 8 exec 1 device_index 2 num_parts 1 split_devices 2 req_counts 0
+commExecInfo === Rank 0: kernel_count 7 exec 1 device_index 1 num_parts 1 split_devices 1 req_counts 0
+commExecInfo === Rank 0: kernel_count 6 exec 1 device_index 4 num_parts 1 split_devices 4 req_counts 0
+commExecInfo === Rank 0: kernel_count 5 exec 1 device_index 3 num_parts 1 split_devices 3 req_counts 0
+=== handler === Process 55372 === mq_receive kernel_exec_infos
+SystemSchedulerDaemonOffline: Rank 0: waiting reqs from handler
+=== handler === Process 55372 === mq_receive kernel_exec_info === kernel_count: 8 exec: 1 device_index: 2 num_parts: 1 split_devices: 2 req_size: 0
+=== handler === Process 55372 === mq_receive kernel_exec_info === kernel_count: 7 exec: 1 device_index: 1 num_parts: 1 split_devices: 1 req_size: 0
+=== handler === Process 55372 === mq_receive kernel_exec_info === kernel_count: 6 exec: 1 device_index: 4 num_parts: 1 split_devices: 4 req_size: 0
+=== handler === Process 55372 === mq_receive kernel_exec_info === kernel_count: 5 exec: 1 device_index: 3 num_parts: 1 split_devices: 3 req_size: 0
+=== handler === Process 55372 === kernel_exec_infos.size(): 4
+=== handler === Process 55372 === kernel_count: 8
+=== handler === Process 55372 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Process 55372 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue reused, profiling: 1 in_order: 1
+=== handler === Process 55372 === rebind MQueue
+55372 === handler === resubmit kernel: 8
+55372 === handler === resubmitted kernel: 8
+=== handler === Process 55372 === kernel_count: 7
+=== handler === Process 55372 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Process 55372 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue reused, profiling: 1 in_order: 1
+=== handler === Process 55372 === rebind MQueue
+55372 === handler === resubmit kernel: 7
+55372 === handler === resubmitted kernel: 7
+=== handler === Process 55372 === kernel_count: 6
+=== handler === Process 55372 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Process 55372 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue reused, profiling: 1 in_order: 1
+=== handler === Process 55372 === rebind MQueue
+55372 === handler === resubmit kernel: 6
+55372 === handler === resubmitted kernel: 6
+=== handler === Process 55372 === kernel_count: 5
+=== handler === Process 55372 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Process 55372 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue reused, profiling: 1 in_order: 1
+=== handler === Process 55372 === rebind MQueue
+55372 === handler === resubmit kernel: 5
+55372 === handler === resubmitted kernel: 5
+=== handler === Process 55372 === resubmit last kernel: 5
+=== handler === Offline profiling kernel_count: 8 device_index: 2 num_parts: 1 start_ns: 7228190917 end_ns: 8428604492 duration_ns: 1200413575
+=== handler === Offline profiling kernel_count: 7 device_index: 1 num_parts: 1 start_ns: 8649013671 end_ns: 9847286132 duration_ns: 1198272461
+=== handler === Offline profiling kernel_count: 6 device_index: 4 num_parts: 1 start_ns: 8342440429 end_ns: 9953303710 duration_ns: 1610863281
+=== handler === Offline profiling kernel_count: 5 device_index: 3 num_parts: 1 start_ns: 10180989257 end_ns: 11411324218 duration_ns: 1230334961
+=== handler === Offline profiling sent samples: 4
+Rank 0: mq_receive profile samples: 4
+ProfileCostTable: key dims=1:4194304x1x1|reqs=12|1024:4:4194304:4194304x1x1;1024:4:4194304:4194304x1x1;1024:4:4194304:4194304x1x1;1024:4:128:128x1x1;1024:4:128:128x1x1;1024:4:128:128x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;|rb=150996480|wb=100663296 rank 0 device 2 parts 1 sample_cost 120041 ewma_cost 119003 samples 2
+ProfileCostTable: key dims=1:4194304x1x1|reqs=12|1024:4:4194304:4194304x1x1;1024:4:4194304:4194304x1x1;1024:4:4194304:4194304x1x1;1024:4:128:128x1x1;1024:4:128:128x1x1;1024:4:128:128x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;|rb=150996480|wb=100663296 rank 0 device 1 parts 1 sample_cost 119827 ewma_cost 119641 samples 2
+ProfileCostTable: key dims=1:4194304x1x1|reqs=12|1024:4:4194304:4194304x1x1;1024:4:4194304:4194304x1x1;1024:4:4194304:4194304x1x1;1024:4:128:128x1x1;1024:4:128:128x1x1;1024:4:128:128x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;|rb=150996480|wb=100663296 rank 0 device 4 parts 1 sample_cost 161086 ewma_cost 134508 samples 2
+ProfileCostTable: key dims=1:4194304x1x1|reqs=12|1024:4:4194304:4194304x1x1;1024:4:4194304:4194304x1x1;1024:4:4194304:4194304x1x1;1024:4:128:128x1x1;1024:4:128:128x1x1;1024:4:128:128x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;|rb=150996480|wb=100663296 rank 0 device 3 parts 1 sample_cost 123033 ewma_cost 123632 samples 2
+SystemSchedulerDaemonOffline: Rank 0 processed profile-only batch
+SystemSchedulerDaemonOffline: Rank 0: waiting reqs from handler
+=== handler === Process 55372 === set sycl_kernel_cg: 9 MQueue: 0x2e58930 MRequirements: 12 - 0x2e0c400 0x2e0c500 0x2e0c600 0x2e0c700 0x2e0c800 0x2e0c900 0x2e0ca00 0x2e0cb00 0x2e0cc00 0x2e0cd00 0x2e0ce00 0x2e0cf00 MEvents: 0
+=== handler === Process 55372 === set sycl_kernel_cg: 10 MQueue: 0x2e58930 MRequirements: 12 - 0x2e158f0 0x2e173e0 0x2e18c10 0x2e1a440 0x2e1bc20 0x2e1d450 0x2e1ec80 0x2e13db0 0x2e0cfe0 0x2e0f450 0x2e10aa0 0x2e122e0 MEvents: 0
+=== handler === Process 55372 === set sycl_kernel_cg: 11 MQueue: 0x2e58930 MRequirements: 12 - 0x2e284b0 0x2e29f30 0x2e2b6f0 0x2e2cf20 0x2e2e750 0x2e2ff80 0x2e317b0 0x2e26a30 0x2e206b0 0x2e21ee0 0x2e23710 0x2e24f40 MEvents: 0
+=== handler === Process 55372 === set sycl_kernel_cg: 12 MQueue: 0x2e58930 MRequirements: 12 - 0x2e3b030 0x2e3cb20 0x2e3e300 0x2e3fb30 0x2e41570 0x2e42da0 0x2e445d0 0x2e39560 0x2e331e0 0x2e34a10 0x2e36240 0x2e37a70 MEvents: 0
+=== handler === Process 55372 === daemon_wait_count: 3 daemon_scale_count: 0
+=== handler === Process 55372 === mq_send kernel_req_datas size: 4 bytes: 1989
+Rank 0: mq_receive kernel_req_datas size: 4
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 9 req_count: 1 pointer: 0x2e0c400
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 9 req_count: 2 pointer: 0x2e0c500
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 9 req_count: 3 pointer: 0x2e0c600
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 9 req_count: 4 pointer: 0x2e0c700
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 9 req_count: 5 pointer: 0x2e0c800
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 9 req_count: 6 pointer: 0x2e0c900
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 9 req_count: 7 pointer: 0x2e0ca00
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 9 req_count: 8 pointer: 0x2e0cb00
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 9 req_count: 9 pointer: 0x2e0cc00
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 9 req_count: 10 pointer: 0x2e0cd00
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 9 req_count: 11 pointer: 0x2e0ce00
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 9 req_count: 12 pointer: 0x2e0cf00
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 10 req_count: 1 pointer: 0x2e158f0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 10 req_count: 2 pointer: 0x2e173e0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 10 req_count: 3 pointer: 0x2e18c10
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 10 req_count: 4 pointer: 0x2e1a440
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 10 req_count: 5 pointer: 0x2e1bc20
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 10 req_count: 6 pointer: 0x2e1d450
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 10 req_count: 7 pointer: 0x2e1ec80
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 10 req_count: 8 pointer: 0x2e13db0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 10 req_count: 9 pointer: 0x2e0cfe0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 10 req_count: 10 pointer: 0x2e0f450
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 10 req_count: 11 pointer: 0x2e10aa0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 10 req_count: 12 pointer: 0x2e122e0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 11 req_count: 1 pointer: 0x2e284b0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 11 req_count: 2 pointer: 0x2e29f30
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 11 req_count: 3 pointer: 0x2e2b6f0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 11 req_count: 4 pointer: 0x2e2cf20
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 11 req_count: 5 pointer: 0x2e2e750
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 11 req_count: 6 pointer: 0x2e2ff80
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 11 req_count: 7 pointer: 0x2e317b0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 11 req_count: 8 pointer: 0x2e26a30
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 11 req_count: 9 pointer: 0x2e206b0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 11 req_count: 10 pointer: 0x2e21ee0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 11 req_count: 11 pointer: 0x2e23710
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 11 req_count: 12 pointer: 0x2e24f40
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 12 req_count: 1 pointer: 0x2e3b030
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 12 req_count: 2 pointer: 0x2e3cb20
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 12 req_count: 3 pointer: 0x2e3e300
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 12 req_count: 4 pointer: 0x2e3fb30
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 12 req_count: 5 pointer: 0x2e41570
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 12 req_count: 6 pointer: 0x2e42da0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 12 req_count: 7 pointer: 0x2e445d0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 12 req_count: 8 pointer: 0x2e39560
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 12 req_count: 9 pointer: 0x2e331e0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 12 req_count: 10 pointer: 0x2e34a10
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 12 req_count: 11 pointer: 0x2e36240
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 12 req_count: 12 pointer: 0x2e37a70
+ensureOfflineDeviceModel: Rank 0 Proc 0 FP32Capability 1.8622 FP64Capability 1 Util 18.6196 AvailableTime 0
+ensureOfflineDeviceModel: Rank 0 Proc 1 FP32Capability 21.2104 FP64Capability 10.3538 Util 0 AvailableTime 0
+ensureOfflineDeviceModel: Rank 0 Proc 2 FP32Capability 21.2104 FP64Capability 10.3538 Util 0 AvailableTime 0
+ensureOfflineDeviceModel: Rank 0 Proc 3 FP32Capability 21.2104 FP64Capability 10.3538 Util 0 AvailableTime 0
+ensureOfflineDeviceModel: Rank 0 Proc 4 FP32Capability 21.2104 FP64Capability 10.3538 Util 99 AvailableTime 46.5573
+algorithmHEFT: Kernel 9 total_elem: 3.77491e+07 precision: fp32
+algorithmHEFT: Kernel 9 depends on Kernel 5 pre_comm_elem: 25165824
+algorithmHEFT: Kernel 10 total_elem: 3.77491e+07 precision: fp32
+algorithmHEFT: Kernel 10 depends on Kernel 6 pre_comm_elem: 25165824
+algorithmHEFT: Kernel 11 total_elem: 3.77491e+07 precision: fp32
+algorithmHEFT: Kernel 11 depends on Kernel 7 pre_comm_elem: 25165824
+algorithmHEFT: Kernel 12 total_elem: 3.77491e+07 precision: fp32
+algorithmHEFT: Kernel 12 depends on Kernel 8 pre_comm_elem: 25165824
+algorithmHEFT: Kernel 12 is exit node rank_u: 157487
+algorithmHEFT: Kernel 11 is exit node rank_u: 157487
+algorithmHEFT: Kernel 10 is exit node rank_u: 157487
+algorithmHEFT: Kernel 9 is exit node rank_u: 157487
+algorithmHEFT: Kernel 12 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 12 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 12 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 12 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 12 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 12 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 12 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 12 assigned to Rank 0 Proc 2 NumParts 1 SplitDevices 2 start_time 239276 exec_cost 119003 finish_time 358279
+algorithmHEFT: Kernel 11 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 11 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 11 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 11 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 11 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 11 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 11 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 11 assigned to Rank 0 Proc 1 NumParts 1 SplitDevices 1 start_time 241283 exec_cost 119641 finish_time 360923
+algorithmHEFT: Kernel 10 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 10 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 10 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 10 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 10 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 10 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 10 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 10 assigned to Rank 0 Proc 3 NumParts 1 SplitDevices 3 start_time 248780 exec_cost 123632 finish_time 372411
+algorithmHEFT: Kernel 9 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 9 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 9 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 9 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 9 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 9 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 9 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 9 assigned to Rank 0 Proc 2 NumParts 1 SplitDevices 2 start_time 358279 exec_cost 119003 finish_time 477282
+Rank 0 TEST kernel_sched_order_infos size: 4
+Rank 0 scale_ranks: 0
+SystemSchedulerDaemonOffline: Rank 0 for PID 55372 waiting new daemon, onrun size: 1
+SystemSchedulerDaemonOffline: Rank 0 for PID 55372 onrun size: 1 sent D2DKernelSchedInfos size: 4
+commExecInfo === Rank 0: mq_send kernel_exec_infos size: 4 mqsize: 67
+commExecInfo === Rank 0: kernel_count 12 exec 1 device_index 2 num_parts 1 split_devices 2 req_counts 0
+commExecInfo === Rank 0: kernel_count 11 exec 1 device_index 1 num_parts 1 split_devices 1 req_counts 0
+=== handler === Process 55372 === mq_receive kernel_exec_infos
+commExecInfo === Rank 0: kernel_count 10 exec 1 device_index 3 num_parts 1 split_devices 3 req_counts 0
+commExecInfo === Rank 0: kernel_count 9 exec 1 device_index 2 num_parts 1 split_devices 2 req_counts 0
+SystemSchedulerDaemonOffline: Rank 0: waiting reqs from handler
+=== handler === Process 55372 === mq_receive kernel_exec_info === kernel_count: 12 exec: 1 device_index: 2 num_parts: 1 split_devices: 2 req_size: 0
+=== handler === Process 55372 === mq_receive kernel_exec_info === kernel_count: 11 exec: 1 device_index: 1 num_parts: 1 split_devices: 1 req_size: 0
+=== handler === Process 55372 === mq_receive kernel_exec_info === kernel_count: 10 exec: 1 device_index: 3 num_parts: 1 split_devices: 3 req_size: 0
+=== handler === Process 55372 === mq_receive kernel_exec_info === kernel_count: 9 exec: 1 device_index: 2 num_parts: 1 split_devices: 2 req_size: 0
+=== handler === Process 55372 === kernel_exec_infos.size(): 4
+=== handler === Process 55372 === kernel_count: 12
+=== handler === Process 55372 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Process 55372 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue reused, profiling: 1 in_order: 1
+=== handler === Process 55372 === rebind MQueue
+55372 === handler === resubmit kernel: 12
+55372 === handler === resubmitted kernel: 12
+=== handler === Process 55372 === kernel_count: 11
+=== handler === Process 55372 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Process 55372 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue reused, profiling: 1 in_order: 1
+=== handler === Process 55372 === rebind MQueue
+55372 === handler === resubmit kernel: 11
+55372 === handler === resubmitted kernel: 11
+=== handler === Process 55372 === kernel_count: 10
+=== handler === Process 55372 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Process 55372 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue reused, profiling: 1 in_order: 1
+=== handler === Process 55372 === rebind MQueue
+55372 === handler === resubmit kernel: 10
+55372 === handler === resubmitted kernel: 10
+=== handler === Process 55372 === kernel_count: 9
+=== handler === Process 55372 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Process 55372 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue reused, profiling: 1 in_order: 1
+=== handler === Process 55372 === rebind MQueue
+55372 === handler === resubmit kernel: 9
+55372 === handler === resubmitted kernel: 9
+=== handler === Process 55372 === resubmit last kernel: 9
+=== handler === Offline profiling kernel_count: 12 device_index: 2 num_parts: 1 start_ns: 11549200195 end_ns: 12740074218 duration_ns: 1190874023
+=== handler === Offline profiling kernel_count: 11 device_index: 1 num_parts: 1 start_ns: 11683272460 end_ns: 12881070312 duration_ns: 1197797852
+=== handler === Offline profiling kernel_count: 10 device_index: 3 num_parts: 1 start_ns: 11445956054 end_ns: 12699618164 duration_ns: 1253662110
+=== handler === Offline profiling kernel_count: 9 device_index: 2 num_parts: 1 start_ns: 12864928710 end_ns: 14047403320 duration_ns: 1182474610
+=== handler === Offline profiling sent samples: 4
+Rank 0: mq_receive profile samples: 4
+ProfileCostTable: key dims=1:4194304x1x1|reqs=12|1024:4:4194304:4194304x1x1;1024:4:4194304:4194304x1x1;1024:4:4194304:4194304x1x1;1024:4:128:128x1x1;1024:4:128:128x1x1;1024:4:128:128x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;|rb=150996480|wb=100663296 rank 0 device 2 parts 1 sample_cost 119087 ewma_cost 119028 samples 3
+ProfileCostTable: key dims=1:4194304x1x1|reqs=12|1024:4:4194304:4194304x1x1;1024:4:4194304:4194304x1x1;1024:4:4194304:4194304x1x1;1024:4:128:128x1x1;1024:4:128:128x1x1;1024:4:128:128x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;|rb=150996480|wb=100663296 rank 0 device 1 parts 1 sample_cost 119780 ewma_cost 119682 samples 3
+ProfileCostTable: key dims=1:4194304x1x1|reqs=12|1024:4:4194304:4194304x1x1;1024:4:4194304:4194304x1x1;1024:4:4194304:4194304x1x1;1024:4:128:128x1x1;1024:4:128:128x1x1;1024:4:128:128x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;|rb=150996480|wb=100663296 rank 0 device 3 parts 1 sample_cost 125366 ewma_cost 124152 samples 3
+ProfileCostTable: key dims=1:4194304x1x1|reqs=12|1024:4:4194304:4194304x1x1;1024:4:4194304:4194304x1x1;1024:4:4194304:4194304x1x1;1024:4:128:128x1x1;1024:4:128:128x1x1;1024:4:128:128x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;|rb=150996480|wb=100663296 rank 0 device 2 parts 1 sample_cost 118247 ewma_cost 118794 samples 4
+SystemSchedulerDaemonOffline: Rank 0 processed profile-only batch
+=== handler === Process 55372 === set sycl_kernel_cg: 13 MQueue: 0x2e58930 MRequirements: 12 - 0x2e0c400 0x2e0c500 0x2e0c600 0x2e0c700 0x2e0c800 0x2e0c900 0x2e0ca00 0x2e0cb00 0x2e0cc00 0x2e0cd00 0x2e0ce00 0x2e0cf00 MEvents: 0
+SystemSchedulerDaemonOffline: Rank 0: waiting reqs from handler
+=== handler === Process 55372 === set sycl_kernel_cg: 14 MQueue: 0x2e58930 MRequirements: 12 - 0x2e158f0 0x2e173e0 0x2e18c10 0x2e1a440 0x2e1bc20 0x2e1d450 0x2e1ec80 0x2e13db0 0x2e0cfe0 0x2e0f450 0x2e10aa0 0x2e122e0 MEvents: 0
+=== handler === Process 55372 === set sycl_kernel_cg: 15 MQueue: 0x2e58930 MRequirements: 12 - 0x2e284b0 0x2e29f30 0x2e2b6f0 0x2e2cf20 0x2e2e750 0x2e2ff80 0x2e317b0 0x2e26a30 0x2e206b0 0x2e21ee0 0x2e23710 0x2e24f40 MEvents: 0
+=== handler === Process 55372 === set sycl_kernel_cg: 16 MQueue: 0x2e58930 MRequirements: 12 - 0x2e3b030 0x2e3cb20 0x2e3e300 0x2e3fb30 0x2e41570 0x2e42da0 0x2e445d0 0x2e39560 0x2e331e0 0x2e34a10 0x2e36240 0x2e37a70 MEvents: 0
+=== handler === Process 55372 === daemon_wait_count: 4 daemon_scale_count: 0
+=== handler === Process 55372 === mq_send kernel_req_datas size: 4 bytes: 2002
+Rank 0: mq_receive kernel_req_datas size: 4
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 13 req_count: 1 pointer: 0x2e0c400
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 13 req_count: 2 pointer: 0x2e0c500
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 13 req_count: 3 pointer: 0x2e0c600
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 13 req_count: 4 pointer: 0x2e0c700
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 13 req_count: 5 pointer: 0x2e0c800
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 13 req_count: 6 pointer: 0x2e0c900
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 13 req_count: 7 pointer: 0x2e0ca00
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 13 req_count: 8 pointer: 0x2e0cb00
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 13 req_count: 9 pointer: 0x2e0cc00
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 13 req_count: 10 pointer: 0x2e0cd00
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 13 req_count: 11 pointer: 0x2e0ce00
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 13 req_count: 12 pointer: 0x2e0cf00
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 14 req_count: 1 pointer: 0x2e158f0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 14 req_count: 2 pointer: 0x2e173e0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 14 req_count: 3 pointer: 0x2e18c10
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 14 req_count: 4 pointer: 0x2e1a440
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 14 req_count: 5 pointer: 0x2e1bc20
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 14 req_count: 6 pointer: 0x2e1d450
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 14 req_count: 7 pointer: 0x2e1ec80
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 14 req_count: 8 pointer: 0x2e13db0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 14 req_count: 9 pointer: 0x2e0cfe0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 14 req_count: 10 pointer: 0x2e0f450
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 14 req_count: 11 pointer: 0x2e10aa0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 14 req_count: 12 pointer: 0x2e122e0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 15 req_count: 1 pointer: 0x2e284b0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 15 req_count: 2 pointer: 0x2e29f30
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 15 req_count: 3 pointer: 0x2e2b6f0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 15 req_count: 4 pointer: 0x2e2cf20
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 15 req_count: 5 pointer: 0x2e2e750
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 15 req_count: 6 pointer: 0x2e2ff80
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 15 req_count: 7 pointer: 0x2e317b0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 15 req_count: 8 pointer: 0x2e26a30
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 15 req_count: 9 pointer: 0x2e206b0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 15 req_count: 10 pointer: 0x2e21ee0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 15 req_count: 11 pointer: 0x2e23710
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 15 req_count: 12 pointer: 0x2e24f40
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 16 req_count: 1 pointer: 0x2e3b030
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 16 req_count: 2 pointer: 0x2e3cb20
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 16 req_count: 3 pointer: 0x2e3e300
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 16 req_count: 4 pointer: 0x2e3fb30
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 16 req_count: 5 pointer: 0x2e41570
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 16 req_count: 6 pointer: 0x2e42da0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 16 req_count: 7 pointer: 0x2e445d0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 16 req_count: 8 pointer: 0x2e39560
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 16 req_count: 9 pointer: 0x2e331e0
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 16 req_count: 10 pointer: 0x2e34a10
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 16 req_count: 11 pointer: 0x2e36240
+Rank 0: mq_receive kernel_req_data pid: 55372 count: 16 req_count: 12 pointer: 0x2e37a70
+ensureOfflineDeviceModel: Rank 0 Proc 0 FP32Capability 1.8622 FP64Capability 1 Util 11.6057 AvailableTime 0
+ensureOfflineDeviceModel: Rank 0 Proc 1 FP32Capability 21.2104 FP64Capability 10.3538 Util 100 AvailableTime 47.1466
+ensureOfflineDeviceModel: Rank 0 Proc 2 FP32Capability 21.2104 FP64Capability 10.3538 Util 100 AvailableTime 47.1466
+ensureOfflineDeviceModel: Rank 0 Proc 3 FP32Capability 21.2104 FP64Capability 10.3538 Util 100 AvailableTime 47.1466
+ensureOfflineDeviceModel: Rank 0 Proc 4 FP32Capability 21.2104 FP64Capability 10.3538 Util 92 AvailableTime 42.432
+algorithmHEFT: Kernel 13 total_elem: 3.77491e+07 precision: fp32
+algorithmHEFT: Kernel 13 depends on Kernel 9 pre_comm_elem: 25165824
+algorithmHEFT: Kernel 14 total_elem: 3.77491e+07 precision: fp32
+algorithmHEFT: Kernel 14 depends on Kernel 10 pre_comm_elem: 25165824
+algorithmHEFT: Kernel 15 total_elem: 3.77491e+07 precision: fp32
+algorithmHEFT: Kernel 15 depends on Kernel 11 pre_comm_elem: 25165824
+algorithmHEFT: Kernel 16 total_elem: 3.77491e+07 precision: fp32
+algorithmHEFT: Kernel 16 depends on Kernel 12 pre_comm_elem: 25165824
+algorithmHEFT: Kernel 16 is exit node rank_u: 245878
+algorithmHEFT: Kernel 15 is exit node rank_u: 245878
+algorithmHEFT: Kernel 14 is exit node rank_u: 245878
+algorithmHEFT: Kernel 13 is exit node rank_u: 245878
+algorithmHEFT: Kernel 16 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 16 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 16 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 16 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 16 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 16 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 16 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 16 assigned to Rank 0 Proc 2 NumParts 1 SplitDevices 2 start_time 358279 exec_cost 237588 finish_time 595867
+algorithmHEFT: Kernel 15 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 15 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 15 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 15 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 15 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 15 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 15 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 15 assigned to Rank 0 Proc 1 NumParts 1 SplitDevices 1 start_time 360923 exec_cost 239365 finish_time 600288
+algorithmHEFT: Kernel 14 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 14 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 14 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 14 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 14 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 14 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 14 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 14 assigned to Rank 0 Proc 3 NumParts 1 SplitDevices 3 start_time 372411 exec_cost 248304 finish_time 620715
+algorithmHEFT: Kernel 13 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 13 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 13 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 13 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 13 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 13 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 13 split rejected by wide-DAG guard: level_width 4 usable_gpus 4
+algorithmHEFT: Kernel 13 assigned to Rank 0 Proc 4 NumParts 1 SplitDevices 4 start_time 477729 exec_cost 258256 finish_time 735985
+Rank 0 TEST kernel_sched_order_infos size: 4
+Rank 0 scale_ranks: 0
+SystemSchedulerDaemonOffline: Rank 0 for PID 55372 waiting new daemon, onrun size: 1
+SystemSchedulerDaemonOffline: Rank 0 for PID 55372 onrun size: 1 sent D2DKernelSchedInfos size: 4
+commExecInfo === Rank 0: mq_send kernel_exec_infos size: 4 mqsize: 68
+commExecInfo === Rank 0: kernel_count 16 exec 1 device_index 2 num_parts 1 split_devices 2 req_counts 0
+commExecInfo === Rank 0: kernel_count 15 exec 1 device_index 1 num_parts 1 split_devices 1 req_counts 0
+commExecInfo === Rank 0: kernel_count 14 exec 1 device_index 3 num_parts 1 split_devices 3 req_counts 0
+=== handler === Process 55372 === mq_receive kernel_exec_infos
+commExecInfo === Rank 0: kernel_count 13 exec 1 device_index 4 num_parts 1 split_devices 4 req_counts 0
+SystemSchedulerDaemonOffline: Rank 0: waiting reqs from handler
+=== handler === Process 55372 === mq_receive kernel_exec_info === kernel_count: 16 exec: 1 device_index: 2 num_parts: 1 split_devices: 2 req_size: 0
+=== handler === Process 55372 === mq_receive kernel_exec_info === kernel_count: 15 exec: 1 device_index: 1 num_parts: 1 split_devices: 1 req_size: 0
+=== handler === Process 55372 === mq_receive kernel_exec_info === kernel_count: 14 exec: 1 device_index: 3 num_parts: 1 split_devices: 3 req_size: 0
+=== handler === Process 55372 === mq_receive kernel_exec_info === kernel_count: 13 exec: 1 device_index: 4 num_parts: 1 split_devices: 4 req_size: 0
+=== handler === Process 55372 === kernel_exec_infos.size(): 4
+=== handler === Process 55372 === kernel_count: 16
+=== handler === Process 55372 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Process 55372 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue reused, profiling: 1 in_order: 1
+=== handler === Process 55372 === rebind MQueue
+55372 === handler === resubmit kernel: 16
+55372 === handler === resubmitted kernel: 16
+=== handler === Process 55372 === kernel_count: 15
+=== handler === Process 55372 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Process 55372 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue reused, profiling: 1 in_order: 1
+=== handler === Process 55372 === rebind MQueue
+55372 === handler === resubmit kernel: 15
+55372 === handler === resubmitted kernel: 15
+=== handler === Process 55372 === kernel_count: 14
+=== handler === Process 55372 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Process 55372 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue reused, profiling: 1 in_order: 1
+=== handler === Process 55372 === rebind MQueue
+55372 === handler === resubmit kernel: 14
+55372 === handler === resubmitted kernel: 14
+=== handler === Process 55372 === kernel_count: 13
+=== handler === Process 55372 === req_counts.size(): 0
+=== EXEC ===
+=== handler === Process 55372 === rebind_device is_gpu: 1
+=== handler === Offline profiling queue reused, profiling: 1 in_order: 1
+=== handler === Process 55372 === rebind MQueue
+55372 === handler === resubmit kernel: 13
+55372 === handler === resubmitted kernel: 13
+=== handler === Process 55372 === resubmit last kernel: 13
+=== handler === Offline profiling kernel_count: 16 device_index: 2 num_parts: 1 start_ns: 14052651367 end_ns: 15261935546 duration_ns: 1209284179
+=== handler === Offline profiling kernel_count: 15 device_index: 1 num_parts: 1 start_ns: 14186893554 end_ns: 15383824218 duration_ns: 1196930664
+=== handler === Offline profiling kernel_count: 14 device_index: 3 num_parts: 1 start_ns: 13919268554 end_ns: 15182720703 duration_ns: 1263452149
+=== handler === Offline profiling kernel_count: 13 device_index: 4 num_parts: 1 start_ns: 15087613281 end_ns: 16289700195 duration_ns: 1202086914
+=== handler === Offline profiling sent samples: 4
+Rank 0: mq_receive profile samples: 4
+ProfileCostTable: key dims=1:4194304x1x1|reqs=12|1024:4:4194304:4194304x1x1;1024:4:4194304:4194304x1x1;1024:4:4194304:4194304x1x1;1024:4:128:128x1x1;1024:4:128:128x1x1;1024:4:128:128x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;|rb=150996480|wb=100663296 rank 0 device 2 parts 1 sample_cost 120928 ewma_cost 119434 samples 5
+ProfileCostTable: key dims=1:4194304x1x1|reqs=12|1024:4:4194304:4194304x1x1;1024:4:4194304:4194304x1x1;1024:4:4194304:4194304x1x1;1024:4:128:128x1x1;1024:4:128:128x1x1;1024:4:128:128x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;|rb=150996480|wb=100663296 rank 0 device 1 parts 1 sample_cost 119693 ewma_cost 119686 samples 4
+ProfileCostTable: key dims=1:4194304x1x1|reqs=12|1024:4:4194304:4194304x1x1;1024:4:4194304:4194304x1x1;1024:4:4194304:4194304x1x1;1024:4:128:128x1x1;1024:4:128:128x1x1;1024:4:128:128x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;|rb=150996480|wb=100663296 rank 0 device 3 parts 1 sample_cost 126345 ewma_cost 124810 samples 4
+ProfileCostTable: key dims=1:4194304x1x1|reqs=12|1024:4:4194304:4194304x1x1;1024:4:4194304:4194304x1x1;1024:4:4194304:4194304x1x1;1024:4:128:128x1x1;1024:4:128:128x1x1;1024:4:128:128x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;1026:4:4194304:4194304x1x1;|rb=150996480|wb=100663296 rank 0 device 4 parts 1 sample_cost 120209 ewma_cost 130218 samples 3
+SystemSchedulerDaemonOffline: Rank 0 processed profile-only batch
+SystemSchedulerDaemonOffline: Rank 0: waiting reqs from handler
+TIMING init_sec=5.150625
+TIMING queue_sec=0.000043
+TIMING run_sec=11.024661
+TIMING host_sec=0.212211
+TIMING total_sec=16.387540
+RESULT checksum=133082.305006 checked_items=128 sampled_collisions=9463016 max_relative_energy_error=0.000002
+VERIFY passed=1 nonfinite=0
+Process 55372: Message queue closed
+Rank 0: SYCLAPP finish

@@ -1,5 +1,9 @@
 # 当前系统可快速验证的性能改进
 
+> 2026-07-15 更新：本文保留此前 Reactive/Split 消融记录；当前 runtime
+> 的 wait/profile 解耦、统一代价模型、非阻塞 profile 传播和 Split 默认策略，
+> 以 [runtime-scheduler-evolution.md](runtime-scheduler-evolution.md) 为准。
+
 ## 结论先行
 
 第一阶段“阻止无收益的持续 Split”已经达到目标。Reactive 的历史与最新数据为：
