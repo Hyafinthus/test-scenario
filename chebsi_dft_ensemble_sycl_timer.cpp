@@ -14,6 +14,7 @@
 #include <cerrno>
 #include <cmath>
 #include <cstddef>
+#include <cstdint>
 #include <cstdlib>
 #include <iomanip>
 #include <iostream>
@@ -291,7 +292,7 @@ bool derive_specs(const Config &config, std::vector<SystemSpec> &specs,
       return false;
     }
     // Five orbital blocks, two potentials, density, three band matrices and
-    // one reusable partial Gram matrix.
+    // separate partial buffers for the two independent Gram branches.
     std::size_t values = 0;
     std::size_t term = 0;
     if (!checked_mul(std::size_t{5}, spec.orbital_values, values) ||
@@ -299,7 +300,8 @@ bool derive_specs(const Config &config, std::vector<SystemSpec> &specs,
         !checked_add(values, term, values) ||
         !checked_mul(std::size_t{3}, matrix, term) ||
         !checked_add(values, term, values) ||
-        !checked_add(values, partial_values, values) ||
+        !checked_mul(std::size_t{2}, partial_values, term) ||
+        !checked_add(values, term, values) ||
         !checked_mul(values, sizeof(float), spec.bytes_per_system)) {
       error = "memory estimate overflow";
       return false;
@@ -344,9 +346,17 @@ std::vector<float> make_orbitals(const SystemSpec &spec,
   const float scale = std::sqrt(3.0f / static_cast<float>(spec.grid));
   for (std::size_t g = 0; g < spec.grid; ++g) {
     for (std::size_t b = 0; b < spec.bands; ++b) {
-      const std::size_t hash =
-          (g * 1103515245ULL + b * 2654435761ULL + system_id * 97ULL) & 1023;
-      const float centered = static_cast<float>(hash) / 511.5f - 1.0f;
+      // Avalanche all input bits. Taking the low bits of a linear congruence
+      // made different bands shifted copies of one short-period sequence,
+      // which is a poor starting subspace for repeated Chebyshev filtering.
+      std::uint64_t hash = static_cast<std::uint64_t>(g) +
+                           0x9e3779b97f4a7c15ULL * (b + 1) +
+                           0xd1b54a32d192ed03ULL * (system_id + 1);
+      hash = (hash ^ (hash >> 30)) * 0xbf58476d1ce4e5b9ULL;
+      hash = (hash ^ (hash >> 27)) * 0x94d049bb133111ebULL;
+      hash ^= hash >> 31;
+      const float centered =
+          static_cast<float>(hash & 0xffffULL) / 32767.5f - 1.0f;
       values[g * spec.bands + b] = scale * centered;
     }
   }
@@ -382,7 +392,8 @@ struct SystemBuffers {
   Buffer1D<float> overlap;
   Buffer1D<float> projected_h;
   Buffer1D<float> transform;
-  Buffer1D<float> partial_matrix;
+  Buffer1D<float> overlap_partial;
+  Buffer1D<float> projected_partial;
 
   SystemBuffers(std::size_t id, const SystemSpec &s, std::size_t partials)
       : system_id(id), spec(&s), orbital0(s.orbital_values),
@@ -391,7 +402,8 @@ struct SystemBuffers {
         potential0(s.grid), potential1(s.grid), density(s.grid),
         overlap(s.bands * s.bands), projected_h(s.bands * s.bands),
         transform(s.bands * s.bands),
-        partial_matrix(partials * s.bands * s.bands) {
+        overlap_partial(partials * s.bands * s.bands),
+        projected_partial(partials * s.bands * s.bands) {
     orbital0.initialize(make_orbitals(s, id));
     potential0.initialize(make_potential(s, id));
   }
@@ -494,7 +506,7 @@ void submit_overlap_partial(sycl::queue &queue, Buffer1D<float> &filtered,
   const std::size_t matrix = s.bands * s.bands;
   queue.submit([&](sycl::handler &cgh) {
     auto psi = filtered.buffer.template get_access<sycl::access::mode::read>(cgh);
-    auto partial = system.partial_matrix.buffer.template get_access<
+    auto partial = system.overlap_partial.buffer.template get_access<
         sycl::access::mode::discard_write>(cgh);
     cgh.parallel_for<DftOverlapPartialKernel>(
         sycl::range<1>(partials * matrix), [=](sycl::item<1> item) {
@@ -520,7 +532,7 @@ void submit_overlap_reduce(sycl::queue &queue, SystemBuffers &system,
   const SystemSpec &s = *system.spec;
   const std::size_t matrix = s.bands * s.bands;
   queue.submit([&](sycl::handler &cgh) {
-    auto partial = system.partial_matrix.buffer.template get_access<
+    auto partial = system.overlap_partial.buffer.template get_access<
         sycl::access::mode::read>(cgh);
     auto overlap = system.overlap.buffer.template get_access<
         sycl::access::mode::discard_write>(cgh);
@@ -567,7 +579,7 @@ void submit_projected_partial(sycl::queue &queue, Buffer1D<float> &filtered,
     auto psi = filtered.buffer.template get_access<sycl::access::mode::read>(cgh);
     auto hpsi = system.h_orbital.buffer.template get_access<
         sycl::access::mode::read>(cgh);
-    auto partial = system.partial_matrix.buffer.template get_access<
+    auto partial = system.projected_partial.buffer.template get_access<
         sycl::access::mode::discard_write>(cgh);
     cgh.parallel_for<DftProjectedPartialKernel>(
         sycl::range<1>(partials * matrix), [=](sycl::item<1> item) {
@@ -593,7 +605,7 @@ void submit_projected_reduce(sycl::queue &queue, SystemBuffers &system,
   const SystemSpec &s = *system.spec;
   const std::size_t matrix = s.bands * s.bands;
   queue.submit([&](sycl::handler &cgh) {
-    auto partial = system.partial_matrix.buffer.template get_access<
+    auto partial = system.projected_partial.buffer.template get_access<
         sycl::access::mode::read>(cgh);
     auto projected = system.projected_h.buffer.template get_access<
         sycl::access::mode::discard_write>(cgh);
@@ -629,10 +641,23 @@ void submit_transform(sycl::queue &queue, SystemBuffers &system,
           const float sii = sycl::fmax(overlap[row * s.bands + row], 1.0e-8f);
           const float sjj = sycl::fmax(overlap[col * s.bands + col], 1.0e-8f);
           const float inv_row_norm = 1.0f / sycl::sqrt(sii);
-          const float normalized_overlap =
-              overlap[pair] / sycl::sqrt(sii * sjj);
-          const float normalized_projected =
-              projected[pair] / sycl::sqrt(sii * sjj);
+          const float inv_col_norm = 1.0f / sycl::sqrt(sjj);
+          // Multiply by inverse norms separately. Forming sii*sjj first can
+          // overflow even when the normalized quantity is representable.
+          float normalized_overlap =
+              overlap[pair] * inv_row_norm * inv_col_norm;
+          float normalized_projected =
+              projected[pair] * inv_row_norm * inv_col_norm;
+          normalized_overlap = normalized_overlap < -1.0f
+                                   ? -1.0f
+                                   : (normalized_overlap > 1.0f
+                                          ? 1.0f
+                                          : normalized_overlap);
+          normalized_projected = normalized_projected < -4.0f
+                                     ? -4.0f
+                                     : (normalized_projected > 4.0f
+                                            ? 4.0f
+                                            : normalized_projected);
           // A damped first-order inverse-square-root/Rayleigh-Ritz step. The
           // 1/sqrt(bands) factor keeps the accumulated off-diagonal rotation
           // bounded as the subspace width grows.
@@ -714,9 +739,16 @@ void submit_potential_mix(sycl::queue &queue, SystemBuffers &system,
     cgh.parallel_for<DftPotentialMixKernel>(
         sycl::range<1>(s.grid), [=](sycl::item<1> item) {
           const std::size_t g = item[0];
-          const float target =
+          const float raw_target =
               0.08f * (density[g] * density_scale - 1.0f);
-          new_potential[g] = 0.85f * old_potential[g] + 0.15f * target;
+          const float target =
+              raw_target < -0.25f
+                  ? -0.25f
+                  : (raw_target > 0.25f ? 0.25f : raw_target);
+          const float mixed =
+              0.85f * old_potential[g] + 0.15f * target;
+          new_potential[g] =
+              mixed < -0.25f ? -0.25f : (mixed > 0.25f ? 0.25f : mixed);
         });
   });
   debug_wait(queue, wait_each);
@@ -781,6 +813,10 @@ struct Result {
   double checksum = 0.0;
   double sample_density = 0.0;
   double sample_orbital = 0.0;
+  double density_min = std::numeric_limits<double>::infinity();
+  double density_max = 0.0;
+  std::size_t nonfinite_density = 0;
+  std::size_t nonfinite_orbital_samples = 0;
   bool valid = true;
 };
 
@@ -800,20 +836,32 @@ Result read_result(std::vector<std::unique_ptr<SystemBuffers>> &systems,
                                     ? sample
                                     : sample * (s.orbital_values - 1) / 7;
       const float value = psi[index];
-      result.valid = result.valid && std::isfinite(value);
       result.checksum += (1.0 + 0.01 * system.system_id) * value;
+      if (!std::isfinite(value)) {
+        ++result.nonfinite_orbital_samples;
+      }
     }
     for (std::size_t g = 0; g < s.grid; ++g) {
       const float rho = density[g];
-      result.valid = result.valid && std::isfinite(rho) && rho >= 0.0f;
       result.checksum += 1.0e-3 * rho;
+      if (std::isfinite(rho)) {
+        result.density_min = std::min(result.density_min,
+                                      static_cast<double>(rho));
+        result.density_max = std::max(result.density_max,
+                                      static_cast<double>(rho));
+        result.valid = result.valid && rho >= 0.0f;
+      } else {
+        ++result.nonfinite_density;
+      }
     }
     if (system.system_id == 0) {
       result.sample_density = density[s.grid / 2];
       result.sample_orbital = psi[(s.grid / 2) * s.bands];
     }
   }
-  result.valid = result.valid && std::isfinite(result.checksum);
+  result.valid = result.valid && result.nonfinite_density == 0 &&
+                 result.nonfinite_orbital_samples == 0 &&
+                 std::isfinite(result.checksum);
   return result;
 }
 
@@ -916,8 +964,13 @@ int main(int argc, char **argv) {
     std::cout << "TIMING total_sec=" << host_end - total_begin << '\n';
     std::cout << "RESULT checksum=" << result.checksum
               << " sample_density=" << result.sample_density
-              << " sample_orbital=" << result.sample_orbital << '\n';
-    std::cout << "VERIFY passed=" << (result.valid ? 1 : 0) << '\n';
+              << " sample_orbital=" << result.sample_orbital
+              << " density_min=" << result.density_min
+              << " density_max=" << result.density_max << '\n';
+    std::cout << "VERIFY passed=" << (result.valid ? 1 : 0)
+              << " nonfinite_density=" << result.nonfinite_density
+              << " nonfinite_orbital_samples="
+              << result.nonfinite_orbital_samples << '\n';
     return config.verify && !result.valid ? 2 : 0;
   } catch (const sycl::exception &exception) {
     std::cerr << "ERROR SYCL " << exception.what() << '\n';

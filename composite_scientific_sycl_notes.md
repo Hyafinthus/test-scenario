@@ -30,6 +30,14 @@ dense block multiply. The small subspace transform is a stable diagonal plus
 off-diagonal correction; it preserves the workload/dataflow of CheFSI but is
 not a production generalized eigensolver.
 
+The overlap and projected-H branches have separate partial-reduction buffers.
+Besides matching their physical independence, this avoids a scratch-buffer
+WAR edge that would otherwise serialize the branches or expose an incorrect
+custom dependency implementation. Orbital initialization uses an avalanched
+64-bit hash to avoid correlated band vectors. The approximate subspace step
+normalizes projected quantities before rotation, and bounded potential mixing
+prevents isolated density peaks from destabilizing later Chebyshev filters.
+
 | Phase | Closest PolyBench family | Dominant behavior |
 | --- | --- | --- |
 | Hamiltonian/Chebyshev filter | `jacobi-3d`/`heat-3d` plus vector recurrence | 3-D stencil, repeated state chain |
