@@ -49,11 +49,22 @@ risk(candidate) = mean_EFT
 
 冷 Split 的 5 s/30% 规则仍保留，但其角色是限制未知模式 exploration 的可行域，不再是 profiled candidate 的长期 penalty。宽 DAG guard 同理是资源形态约束：已有足够 task parallelism 时，只有经 profile 证明的 throughput win 才允许 gang Split。
 
-因此第一项可以称为“预测接口和决策融合相对完备”，不能仅凭功能称为“冷启动精度
-已经完备”。access range 已替代 backing-buffer size 进入 work/precision 特征，但当前
-cold prior 仍缺 kernel 指令混合、occupancy/cache 特征和跨 daemon 重启的 profile
-持久化；这些属于下一阶段模型训练与校准，而不是再增加一个绕过统一 selector 的
-heuristic。
+随后补齐的分层学习把第一项从“统一接口”推进到可跨运行积累的机制：rank 0 daemon
+加载/异步追加 profile observation journal，持久化 exact 与 live exact 分源并带年龄
+误差；跨设备缩放使用采样时 capability；同 kernel identity 可以跨 shape 迁移，严格
+structural cohort 可以在更宽不确定度下提供最后一级 learned prior。完整回退顺序为：
+
+```text
+live exact -> persisted exact -> exact-key scaled
+           -> same-identity learned -> structural learned -> cold
+```
+
+因此第一项在 runtime 功能上已形成“观测—持久化—迁移—风险决策”的闭环，但不能
+仅凭功能称为“冷启动精度已经证明”。access range 已替代 backing-buffer size 进入
+work/precision 特征，跨 shape 尺度代理也与当前 DAG 宽度解耦；尚缺 kernel 指令混合、
+occupancy/cache/寄存器特征和 estimate-source calibration 实验。不同应用/构建应通过
+`SYCL_SNMD_PROFILE_NAMESPACE` 隔离；默认 namespace 无法自动识别同名 kernel 的
+二进制实现已经改变。
 
 ### 贡献二：profile-feedback completion-driven HEFT
 

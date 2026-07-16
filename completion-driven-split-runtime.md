@@ -38,18 +38,41 @@ candidate_risk = candidate_mean_EFT
                               transfer.uncertainty)
 ```
 
-四种 service estimate 使用同一个类型：
+六类 service estimate 使用同一个类型：
 
 ```text
 CostEstimate { mean, uncertainty, samples, source }
-source in {exact-profile, scaled-profile, cold, derived-split}
+source in {exact-profile, persisted-profile, scaled-profile,
+           learned-profile, cold, derived-split}
 ```
 
 cold path 现在使用 accessor 的实际 access range，而不是把 backing buffer 全尺寸都
 当作计算工作量；kernel identity、NDRange、访问模式、元素宽度、读写规模、设备
-FP32/FP64 capability 和 monitor service scale 共同构成先验。这里的“统一”已在实现
-上闭环，但“跨 workload 冷启动精度”仍是待校准的实验命题：当前还没有指令混合、
-occupancy/cache 特征，也没有把 profile table 持久化到 daemon 重启之后。
+FP32/FP64 capability 和 monitor service scale 共同构成先验。当前预测按以下层级命中：
+
+```text
+本进程 exact
+  -> daemon 重启前持久化的 exact
+  -> 同一 exact key 的跨设备 capability scaling
+  -> 同 kernel identity 的跨 shape 学习
+  -> 严格 structural cohort 的局部迁移
+  -> analytical cold model
+```
+
+持久化记录包含样本时间、记录时 FP32/FP64 能力、mode/part 数和静态访问特征；旧样本
+保留独立的不确定度下限并随时间老化，不能冒充本次运行的 live exact。完成路径只向
+有界内存队列写入 observation，后台线程 append journal，因此存储变慢不会阻塞
+completion acknowledgement 或 ready admission。`SYCL_SNMD_PROFILE_NAMESPACE` 用于
+隔离不同应用/构建，正式运行应设置为应用版本或二进制哈希；另可用
+`SYCL_SNMD_PROFILE_STORE` 选择文件，或用 `SYCL_SNMD_PROFILE_PERSIST=0` 关闭。
+
+同 identity 的 shape transfer 使用与 DAG 宽度无关的
+`max(global_items, accessed_elements)` 做尺度代理，避免同一 kernel 在宽/窄窗口之间
+被 cold guard 改变特征。不同 identity 只有 work dimension、accessor 数、读写模式、
+主元素宽度和 partition contract 全部一致且 shape 距离很小时才共享，且使用 60%
+模型误差下限。因此这里已经具备“可积累、可迁移、风险可见”的 runtime 机制；
+指令混合、occupancy/cache、寄存器压力等 compiler 特征仍是提高跨 kernel 冷启动精度
+的下一层，不能在没有元数据时由 daemon 猜测。
 
 `selectUnifiedTaskCandidate()` 是 batch HEFT 和 completion dispatcher 的共同入口。profiled Split 不再使用固定 15% hysteresis，迁移也不再使用另一套 pairwise 门槛；两者与 Single 一起最小化 `candidate_risk`。co-located fallback 只有在同一 batch risk makespan 更小时才能覆盖逐节点结果。queue 只执行 daemon 返回的决定，不重新读取 NVML、不增加独立 penalty，也不自行改卡。
 

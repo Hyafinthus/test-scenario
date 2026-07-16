@@ -18,6 +18,9 @@
    daemon 释放 single/Split compute gang 后，再调用统一 candidate selector dispatch
    下一批 ready task；transfer endpoints 只在一个 dispatch wave 内按预测 copy 时间
    排序，不会锁到目标 kernel 完成。multi-rank 暂时保留静态 fallback。
+10. profile observation 已异步持久化并进入分层预测：旧 exact、跨设备、同 identity
+    跨 shape 和严格结构同类样本都能参与冷启动，同时以来源、年龄和迁移距离扩大
+    uncertainty；profile 文件 I/O 不阻塞 completion-driven queue。
 
 协议、状态机、当前 materializing Split 与后续 partition-resident/halo 设计详见 [`completion-driven-split-runtime.md`](completion-driven-split-runtime.md)。
 
@@ -127,7 +130,12 @@ candidate = argmin risk(candidate)
 2. 已落地：精确 device/mode profile 将 Welford 观测标准差作为下一次运行的 aleatoric uncertainty，并叠加随样本数衰减的 cold-start prior；capability-scaled/cold 候选使用宽预测区间。观测抖动不会因为样本变多而错误地消失。
 3. 已落地：显式 `CostEstimate {mean, uncertainty, samples, source}`；精确、缩放、cold、derived Split 共用该类型，monitor 同时缩放 mean/uncertainty，通信预测也提供 uncertainty。
 4. 已落地：同一个 UCB 风险目标用于 HEFT rank、Single/Split placement、迁移、co-located fallback 与完成事件后的重选，删除 profiled Split 15% hysteresis 和 migration-only 置信门槛。
-5. 待实验：按 estimate source 分桶检查 coverage/calibration，并验证 bounded cold probe 是否同时避免永久无样本与灾难性探索。
+5. 已落地：rank 0 daemon 启动时加载 profile observation journal；完成线程只向有界队列 enqueue，后台线程持久化，磁盘写入不进入 completion/ready queue 临界路径。持久化样本有独立误差下限、时间衰减和 live/persisted 来源区分。
+6. 已落地：预测回退层级为 `live exact -> persisted exact -> exact-key capability scaling -> same-identity shape transfer -> strict structural cohort -> analytical cold`。同 identity 以与 DAG 无关的 shape work proxy 缩放；跨 identity 只在访问结构严格同类时局部迁移，并保留更宽的模型不确定性。
+7. 已落地：持久化记录保存采样时的 FP32/FP64 capability；跨设备/跨重启缩放使用记录能力，而不是错误读取本次进程中相同 rank/device 编号的当前能力。
+8. 已落地：`SYCL_SNMD_PROFILE_NAMESPACE` 隔离不同应用/构建；正式论文运行应使用应用版本、git commit 或二进制哈希。未设置时为兼容模式 `default`，不能自动识别“kernel 名字不变但实现已修改”。
+9. 待实验：按 estimate source 分桶检查 coverage/calibration，并验证 bounded cold probe 是否同时避免永久无样本与灾难性探索。
+10. 待设计：由 compiler/runtime integration 提供指令混合、寄存器/共享内存、occupancy 与静态访存特征，替换当前跨 identity 的粗粒度 structural cohort。daemon 不应从 accessor metadata 虚构这些信息。
 
 必须验证：两个形状完全相同但代码不同的 kernel 不共享样本；相同 kernel 跨 epoch 能命中；不同 `num_parts` 永不混桶。
 
@@ -230,6 +238,6 @@ SYCL_SNMD_COMPLETION_QUEUE=0 mpirun -n 1 sycl-daemon
 - 已消除由 profiling 自身造成的 event 二次等待和跨 rank profile barrier。
 - 未绕过、也不应绕过用户写下的 epoch barrier。
 - 单 rank 多 GPU 有完成后的 calendar rebase；multi-rank 必须等 completion ACK 后再启用。
-- 当前 scheduler 已统一 monitor/profile/communication/HEFT/Split 的估计类型和风险目标；source/destination transfer reservation 已进入相同目标，但仍需 A6000 重跑验证预测区间与实际执行一致。
+- 当前 scheduler 已统一 monitor/profile/communication/HEFT/Split 的估计类型和风险目标；source/destination transfer reservation 已进入相同目标。profile 已可跨 daemon 重启积累并进行受不确定度约束的 shape/设备迁移，但仍需 A6000 重跑验证预测区间与实际执行一致。
 - handler trace 已记录每次 `resubmit` 的 host duration，用于确认换卡时是否在跨 context 数据准备中阻塞；该 trace 只在 handler trace 开启时输出。
 - 当前 Split 已默认启用并使用 gang reservation、精确 part 数 profile、read-only replica reuse，以及 compute/materialization 分项计时；writable output 仍走 canonical materialization。达到 stencil 性能仍需要显式 region-version、partition contract 与 halo persistence，不能靠推断 accessor/NDRange 对应关系跳过 merge。
