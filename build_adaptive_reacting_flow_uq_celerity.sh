@@ -8,7 +8,7 @@ BUILD_ROOT="${BUILD_ROOT:-$SCRIPT_DIR/.arf_celerity_build}"
 BUILD_SOURCE="$BUILD_ROOT/src"
 BUILD_DIR="$BUILD_ROOT/build"
 
-: "${CELERITY_INSTALL:?Set CELERITY_INSTALL to the Celerity 0.6 install prefix}"
+CELERITY_INSTALL="${CELERITY_INSTALL:-$HOME/SYCL/base-celerity/build/install}"
 
 mkdir -p "$BUILD_SOURCE" "$BUILD_DIR"
 cp "$SCRIPT_DIR/$SOURCE" "$BUILD_SOURCE/$SOURCE"

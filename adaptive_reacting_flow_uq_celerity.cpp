@@ -1,8 +1,9 @@
 // Celerity 0.6.0 port of adaptive_reacting_flow_uq_sycl_timer.cpp.
 //
 // Keep numerical kernels and command-line work parameters in lockstep with the
-// SYCL version. Every mapper is an exact access contract. The extra controls
-// select Celerity's 1-D/2-D split hint and local oversubscription factor.
+// SYCL version. Every mapper is an exact access contract, including the
+// alternating transposed-neighborhood path. The extra controls select
+// Celerity's 1-D/2-D split hint and local oversubscription factor.
 
 #include <celerity.h>
 
@@ -20,14 +21,12 @@
 #include <sys/time.h>
 #include <vector>
 
-class ArfCeleTransportKernel;
-class ArfCeleChemistryKernel;
-class ArfCeleCombineKernel;
+class ArfCeleDirectionalTransportKernelV2;
+class ArfCeleDetailedChemistryKernelV2;
+class ArfCeleLayoutCombineKernelV2;
 class ArfCeleEnsembleMoments4Kernel;
 class ArfCeleEnsembleMoments8Kernel;
-class ArfCeleSpectralOpacityKernel;
-class ArfCeleSpectralSourceKernel;
-class ArfCeleSpectralRiskKernel;
+class ArfCeleFusedRadiationRiskKernel;
 
 namespace {
 
@@ -35,21 +34,24 @@ using field_buffer_t = celerity::buffer<float, 2>;
 
 enum class Mode { Full, PatchOnly, StatisticsOnly };
 enum class StiffnessLayout { Clustered, Distributed, Uniform };
+enum class DirectionalLayout { Alternating, Aligned };
 enum class SplitShape { OneD, TwoD };
 
 struct Config {
-  std::size_t rows = 1024;
-  std::size_t cols = 1024;
+  std::size_t rows = 512;
+  std::size_t cols = 512;
   std::size_t patches = 8;
-  std::size_t steps = 4;
-  std::size_t cold_substeps = 8;
-  std::size_t hot_substeps = 1024;
+  std::size_t steps = 32;
+  std::size_t cold_substeps = 64;
+  std::size_t hot_substeps = 8192;
+  std::size_t reaction_channels = 512;
   std::size_t spectral_samples = 1024;
   std::size_t split_parts = 4;
   std::size_t oversubscribe = 1;
   double memory_limit_gib = 0.0;
   Mode mode = Mode::Full;
   StiffnessLayout stiffness_layout = StiffnessLayout::Clustered;
+  DirectionalLayout directional_layout = DirectionalLayout::Alternating;
   SplitShape split_shape = SplitShape::OneD;
   bool wait_each_kernel = false;
   bool host_read_full = false;
@@ -85,6 +87,10 @@ const char *layout_name(StiffnessLayout layout) {
     return "uniform";
   }
   return "unknown";
+}
+
+const char *directional_layout_name(DirectionalLayout layout) {
+  return layout == DirectionalLayout::Alternating ? "alternating" : "aligned";
 }
 
 bool checked_add(std::size_t lhs, std::size_t rhs, std::size_t &result) {
@@ -168,6 +174,18 @@ bool parse_layout(const std::string &text, StiffnessLayout &layout) {
   return true;
 }
 
+bool parse_directional_layout(const std::string &text,
+                              DirectionalLayout &layout) {
+  if (text == "alternating") {
+    layout = DirectionalLayout::Alternating;
+  } else if (text == "aligned") {
+    layout = DirectionalLayout::Aligned;
+  } else {
+    return false;
+  }
+  return true;
+}
+
 bool parse_split_shape(const std::string &text, SplitShape &shape) {
   if (text == "1d") {
     shape = SplitShape::OneD;
@@ -184,8 +202,10 @@ void print_usage(const char *program) {
       << "Usage: " << program << " [options]\n"
       << "  --rows <int> --cols <int> --patches <4|8> --steps <int>\n"
       << "  --cold-substeps <int> --hot-substeps <int>\n"
+      << "  --reaction-channels <int>\n"
       << "  --spectral-samples <int> --split-parts <int>\n"
       << "  --layout <clustered|distributed|uniform>\n"
+      << "  --directional-layout <alternating|aligned>\n"
       << "  --mode <full|patch-only|statistics-only>\n"
       << "  --celerity-split <1d|2d>       Celerity split hint (default 1d)\n"
       << "  --oversubscribe <int>           Fine chunks/device (default 1)\n"
@@ -219,6 +239,8 @@ bool parse_arguments(int argc, char **argv, Config &config,
       parsed = parse_size(value, config.cold_substeps);
     } else if (option == "--hot-substeps") {
       parsed = parse_size(value, config.hot_substeps);
+    } else if (option == "--reaction-channels") {
+      parsed = parse_size(value, config.reaction_channels);
     } else if (option == "--spectral-samples") {
       parsed = parse_size(value, config.spectral_samples);
     } else if (option == "--split-parts") {
@@ -229,6 +251,8 @@ bool parse_arguments(int argc, char **argv, Config &config,
       parsed = parse_double(value, config.memory_limit_gib);
     } else if (option == "--layout") {
       parsed = parse_layout(value, config.stiffness_layout);
+    } else if (option == "--directional-layout") {
+      parsed = parse_directional_layout(value, config.directional_layout);
     } else if (option == "--mode") {
       parsed = parse_mode(value, config.mode);
     } else if (option == "--celerity-split") {
@@ -305,13 +329,15 @@ struct PatchHostData {
   std::vector<float> fuel;
   std::vector<float> oxidizer;
   std::vector<float> product;
-  std::vector<std::uint16_t> chemistry_steps;
+  std::vector<std::uint16_t> chemistry_steps0;
+  std::vector<std::uint16_t> chemistry_steps1;
 
   PatchHostData(std::size_t patch_id, const Config &config)
       : temperature(config.rows * config.cols),
         fuel(config.rows * config.cols), oxidizer(config.rows * config.cols),
         product(config.rows * config.cols),
-        chemistry_steps(config.rows * config.cols) {
+        chemistry_steps0(config.rows * config.cols),
+        chemistry_steps1(config.rows * config.cols) {
     const float patch_phase = 0.17f * static_cast<float>(patch_id);
     for (std::size_t row = 0; row < config.rows; ++row) {
       for (std::size_t col = 0; col < config.cols; ++col) {
@@ -326,8 +352,10 @@ struct PatchHostData {
         fuel[i] = 0.82f - 0.18f * flame + 0.02f * wave;
         oxidizer[i] = 1.00f - 0.08f * flame - 0.01f * wave;
         product[i] = 0.02f + 0.12f * flame;
-        chemistry_steps[i] = static_cast<std::uint16_t>(
+        const auto steps = static_cast<std::uint16_t>(
             chemistry_substeps_for_cell(row, col, config));
+        chemistry_steps0[i] = steps;
+        chemistry_steps1[col * config.cols + row] = steps;
       }
     }
   }
@@ -354,7 +382,8 @@ struct PatchBuffers {
   field_buffer_t chemistry_fuel;
   field_buffer_t chemistry_oxidizer;
   field_buffer_t chemistry_product;
-  celerity::buffer<std::uint16_t, 2> chemistry_steps;
+  celerity::buffer<std::uint16_t, 2> chemistry_steps0;
+  celerity::buffer<std::uint16_t, 2> chemistry_steps1;
 
   PatchBuffers(std::size_t id, const Config &config)
       : patch_id(id), rows(config.rows), cols(config.cols), host(id, config),
@@ -374,8 +403,10 @@ struct PatchBuffers {
         chemistry_fuel(celerity::range<2>(rows, cols)),
         chemistry_oxidizer(celerity::range<2>(rows, cols)),
         chemistry_product(celerity::range<2>(rows, cols)),
-        chemistry_steps(host.chemistry_steps.data(),
-                        celerity::range<2>(rows, cols)) {}
+        chemistry_steps0(host.chemistry_steps0.data(),
+                         celerity::range<2>(rows, cols)),
+        chemistry_steps1(host.chemistry_steps1.data(),
+                         celerity::range<2>(rows, cols)) {}
 
   field_buffer_t &temperature(std::size_t index) {
     return index == 0 ? temperature0 : temperature1;
@@ -389,6 +420,68 @@ struct PatchBuffers {
   field_buffer_t &product(std::size_t index) {
     return index == 0 ? product0 : product1;
   }
+  celerity::buffer<std::uint16_t, 2> &
+  chemistry_steps(std::size_t orientation) {
+    return orientation == 0 ? chemistry_steps0 : chemistry_steps1;
+  }
+};
+
+std::vector<float> make_mechanism_activation(std::size_t channels,
+                                             bool forward) {
+  std::vector<float> values(channels);
+  for (std::size_t channel = 0; channel < channels; ++channel) {
+    const float x = (static_cast<float>(channel) + 0.5f) /
+                    static_cast<float>(channels);
+    values[channel] = forward ? 4.2f + 1.2f * x : 0.8f + 0.6f * x;
+  }
+  return values;
+}
+
+std::vector<float> make_mechanism_weights(std::size_t channels,
+                                          bool forward) {
+  std::vector<float> values(channels);
+  double sum = 0.0;
+  for (std::size_t channel = 0; channel < channels; ++channel) {
+    const float x = (static_cast<float>(channel) + 0.5f) /
+                    static_cast<float>(channels);
+    values[channel] =
+        forward ? 0.9f + 0.1f * std::sin(6.28318530718f * x)
+                : 0.9f + 0.1f * std::cos(6.28318530718f * x);
+    sum += values[channel];
+  }
+  for (float &value : values) {
+    value /= static_cast<float>(sum);
+  }
+  return values;
+}
+
+struct MechanismBuffers {
+  std::vector<float> forward_activation_host;
+  std::vector<float> backward_activation_host;
+  std::vector<float> forward_weight_host;
+  std::vector<float> backward_weight_host;
+  celerity::buffer<float, 1> forward_activation;
+  celerity::buffer<float, 1> backward_activation;
+  celerity::buffer<float, 1> forward_weight;
+  celerity::buffer<float, 1> backward_weight;
+
+  explicit MechanismBuffers(const Config &config)
+      : forward_activation_host(
+            make_mechanism_activation(config.reaction_channels, true)),
+        backward_activation_host(
+            make_mechanism_activation(config.reaction_channels, false)),
+        forward_weight_host(
+            make_mechanism_weights(config.reaction_channels, true)),
+        backward_weight_host(
+            make_mechanism_weights(config.reaction_channels, false)),
+        forward_activation(forward_activation_host.data(),
+                           celerity::range<1>(config.reaction_channels)),
+        backward_activation(backward_activation_host.data(),
+                            celerity::range<1>(config.reaction_channels)),
+        forward_weight(forward_weight_host.data(),
+                       celerity::range<1>(config.reaction_channels)),
+        backward_weight(backward_weight_host.data(),
+                        celerity::range<1>(config.reaction_channels)) {}
 };
 
 std::vector<float> make_spectral_weights(std::size_t samples) {
@@ -417,8 +510,6 @@ struct StatisticsBuffers {
   std::vector<float> kappas_host;
   field_buffer_t mean;
   field_buffer_t variance;
-  field_buffer_t opacity;
-  field_buffer_t source;
   field_buffer_t risk;
   celerity::buffer<float, 1> spectral_weight;
   celerity::buffer<float, 1> spectral_kappa;
@@ -428,8 +519,6 @@ struct StatisticsBuffers {
         kappas_host(make_spectral_kappas(config.spectral_samples)),
         mean(celerity::range<2>(config.rows, config.cols)),
         variance(celerity::range<2>(config.rows, config.cols)),
-        opacity(celerity::range<2>(config.rows, config.cols)),
-        source(celerity::range<2>(config.rows, config.cols)),
         risk(celerity::range<2>(config.rows, config.cols)),
         spectral_weight(weights_host.data(),
                         celerity::range<1>(config.spectral_samples)),
@@ -444,19 +533,41 @@ void submit_transport(celerity::distr_queue &queue, PatchBuffers &patch,
   const float velocity_x = 0.18f + 0.01f * static_cast<float>(patch.patch_id);
   const float velocity_y = -0.11f + 0.008f * static_cast<float>(patch.patch_id);
   const float diffusion = 0.025f;
+  const bool transpose =
+      config.directional_layout == DirectionalLayout::Alternating;
+  const bool axes_swapped = transpose && current == 1;
   queue.submit([&](celerity::handler &cgh) {
     apply_hints(cgh, config);
+    const auto mapped_neighborhood =
+        [=](celerity::chunk<2> chunk) -> celerity::subrange<2> {
+          const std::size_t source_row =
+              transpose ? chunk.offset[1] : chunk.offset[0];
+          const std::size_t source_col =
+              transpose ? chunk.offset[0] : chunk.offset[1];
+          const std::size_t source_rows =
+              transpose ? chunk.range[1] : chunk.range[0];
+          const std::size_t source_cols =
+              transpose ? chunk.range[0] : chunk.range[1];
+          const std::size_t begin_row = source_row == 0 ? 0 : source_row - 1;
+          const std::size_t begin_col = source_col == 0 ? 0 : source_col - 1;
+          const std::size_t end_row =
+              std::min(rows, source_row + source_rows + 1);
+          const std::size_t end_col =
+              std::min(cols, source_col + source_cols + 1);
+          return {{begin_row, begin_col},
+                  {end_row - begin_row, end_col - begin_col}};
+        };
     celerity::accessor temperature{patch.temperature(current), cgh,
-                                   celerity::access::neighborhood(1, 1),
+                                   mapped_neighborhood,
                                    celerity::read_only};
     celerity::accessor fuel{patch.fuel(current), cgh,
-                            celerity::access::neighborhood(1, 1),
+                            mapped_neighborhood,
                             celerity::read_only};
     celerity::accessor oxidizer{patch.oxidizer(current), cgh,
-                                celerity::access::neighborhood(1, 1),
+                                mapped_neighborhood,
                                 celerity::read_only};
     celerity::accessor product{patch.product(current), cgh,
-                               celerity::access::neighborhood(1, 1),
+                               mapped_neighborhood,
                                celerity::read_only};
     celerity::accessor out_t{patch.transport_temperature, cgh,
                              celerity::access::one_to_one{},
@@ -470,28 +581,39 @@ void submit_transport(celerity::distr_queue &queue, PatchBuffers &patch,
     celerity::accessor out_p{patch.transport_product, cgh,
                              celerity::access::one_to_one{},
                              celerity::write_only, celerity::no_init};
-    cgh.parallel_for<ArfCeleTransportKernel>(
+    cgh.parallel_for<ArfCeleDirectionalTransportKernelV2>(
         celerity::range<2>(rows, cols), [=](celerity::item<2> item) {
           const auto id = item.get_id();
-          const std::size_t row = id[0];
-          const std::size_t col = id[1];
+          const std::size_t row = transpose ? id[1] : id[0];
+          const std::size_t col = transpose ? id[0] : id[1];
           const std::size_t up = row == 0 ? 0 : row - 1;
           const std::size_t down = row + 1 == rows ? row : row + 1;
           const std::size_t left = col == 0 ? 0 : col - 1;
           const std::size_t right = col + 1 == cols ? col : col + 1;
-          const celerity::id<2> iu(up, col), idn(down, col), il(row, left),
-              ir(row, right);
-          out_t[id] = transport_rhs(temperature[id], temperature[iu],
+          const celerity::id<2> source(row, col);
+          const celerity::id<2> iu =
+              axes_swapped ? celerity::id<2>(row, left)
+                           : celerity::id<2>(up, col);
+          const celerity::id<2> idn =
+              axes_swapped ? celerity::id<2>(row, right)
+                           : celerity::id<2>(down, col);
+          const celerity::id<2> il =
+              axes_swapped ? celerity::id<2>(up, col)
+                           : celerity::id<2>(row, left);
+          const celerity::id<2> ir =
+              axes_swapped ? celerity::id<2>(down, col)
+                           : celerity::id<2>(row, right);
+          out_t[id] = transport_rhs(temperature[source], temperature[iu],
                                     temperature[idn], temperature[il],
                                     temperature[ir], diffusion, velocity_x,
                                     velocity_y);
-          out_f[id] = transport_rhs(fuel[id], fuel[iu], fuel[idn], fuel[il],
-                                    fuel[ir], diffusion, velocity_x,
+          out_f[id] = transport_rhs(fuel[source], fuel[iu], fuel[idn],
+                                    fuel[il], fuel[ir], diffusion, velocity_x,
                                     velocity_y);
-          out_o[id] = transport_rhs(oxidizer[id], oxidizer[iu], oxidizer[idn],
-                                    oxidizer[il], oxidizer[ir], diffusion,
-                                    velocity_x, velocity_y);
-          out_p[id] = transport_rhs(product[id], product[iu], product[idn],
+          out_o[id] = transport_rhs(oxidizer[source], oxidizer[iu],
+                                    oxidizer[idn], oxidizer[il], oxidizer[ir],
+                                    diffusion, velocity_x, velocity_y);
+          out_p[id] = transport_rhs(product[source], product[iu], product[idn],
                                     product[il], product[ir], diffusion,
                                     velocity_x, velocity_y);
         });
@@ -499,9 +621,11 @@ void submit_transport(celerity::distr_queue &queue, PatchBuffers &patch,
 }
 
 void submit_chemistry(celerity::distr_queue &queue, PatchBuffers &patch,
-                      std::size_t current, const Config &config) {
+                      MechanismBuffers &mechanism, std::size_t current,
+                      std::size_t orientation, const Config &config) {
   const float chemistry_dt = 0.0025f;
   const float rate_scale = 1.0f + 0.035f * static_cast<float>(patch.patch_id);
+  const std::size_t channels = config.reaction_channels;
   queue.submit([&](celerity::handler &cgh) {
     apply_hints(cgh, config);
     celerity::accessor temperature{patch.temperature(current), cgh,
@@ -516,9 +640,21 @@ void submit_chemistry(celerity::distr_queue &queue, PatchBuffers &patch,
     celerity::accessor product{patch.product(current), cgh,
                                celerity::access::one_to_one{},
                                celerity::read_only};
-    celerity::accessor substeps{patch.chemistry_steps, cgh,
+    celerity::accessor substeps{patch.chemistry_steps(orientation), cgh,
                                 celerity::access::one_to_one{},
                                 celerity::read_only};
+    celerity::accessor forward_e{mechanism.forward_activation, cgh,
+                                  celerity::access::all{},
+                                  celerity::read_only};
+    celerity::accessor backward_e{mechanism.backward_activation, cgh,
+                                   celerity::access::all{},
+                                   celerity::read_only};
+    celerity::accessor forward_w{mechanism.forward_weight, cgh,
+                                  celerity::access::all{},
+                                  celerity::read_only};
+    celerity::accessor backward_w{mechanism.backward_weight, cgh,
+                                   celerity::access::all{},
+                                   celerity::read_only};
     celerity::accessor out_t{patch.chemistry_temperature, cgh,
                              celerity::access::one_to_one{},
                              celerity::write_only, celerity::no_init};
@@ -531,7 +667,7 @@ void submit_chemistry(celerity::distr_queue &queue, PatchBuffers &patch,
     celerity::accessor out_p{patch.chemistry_product, cgh,
                              celerity::access::one_to_one{},
                              celerity::write_only, celerity::no_init};
-    cgh.parallel_for<ArfCeleChemistryKernel>(
+    cgh.parallel_for<ArfCeleDetailedChemistryKernelV2>(
         celerity::range<2>(patch.rows, patch.cols),
         [=](celerity::item<2> item) {
           const auto id = item.get_id();
@@ -544,10 +680,17 @@ void submit_chemistry(celerity::distr_queue &queue, PatchBuffers &patch,
           const float dt = chemistry_dt / static_cast<float>(steps);
           for (std::uint32_t step = 0; step < steps; ++step) {
             const float inv_temp = 1.0f / (temp + 0.20f);
+            float forward_kernel = 0.0f;
+            float backward_kernel = 0.0f;
+            for (std::size_t channel = 0; channel < channels; ++channel) {
+              forward_kernel += forward_w[channel] *
+                                sycl::exp(-forward_e[channel] * inv_temp);
+              backward_kernel += backward_w[channel] *
+                                 sycl::exp(-backward_e[channel] * inv_temp);
+            }
             const float forward_rate =
-                rate_scale * 24.0f * sycl::exp(-4.8f * inv_temp) * f * o;
-            const float backward_rate =
-                0.035f * sycl::exp(-1.1f * inv_temp) * p;
+                rate_scale * 24.0f * forward_kernel * f * o;
+            const float backward_rate = 0.035f * backward_kernel * p;
             float delta = dt * (forward_rate - backward_rate);
             const float positive_cap = 0.12f * sycl::fmin(f, 2.0f * o);
             const float negative_cap = 0.10f * p;
@@ -569,8 +712,18 @@ void submit_chemistry(celerity::distr_queue &queue, PatchBuffers &patch,
 void submit_combine(celerity::distr_queue &queue, PatchBuffers &patch,
                     std::size_t next, const Config &config) {
   const float transport_dt = 0.0015f;
+  const bool transpose =
+      config.directional_layout == DirectionalLayout::Alternating;
   queue.submit([&](celerity::handler &cgh) {
     apply_hints(cgh, config);
+    const auto chemistry_mapping =
+        [=](celerity::chunk<2> chunk) -> celerity::subrange<2> {
+          if (transpose) {
+            return {{chunk.offset[1], chunk.offset[0]},
+                    {chunk.range[1], chunk.range[0]}};
+          }
+          return {chunk.offset, chunk.range};
+        };
     celerity::accessor tr_t{patch.transport_temperature, cgh,
                             celerity::access::one_to_one{},
                             celerity::read_only};
@@ -584,16 +737,16 @@ void submit_combine(celerity::distr_queue &queue, PatchBuffers &patch,
                             celerity::access::one_to_one{},
                             celerity::read_only};
     celerity::accessor ch_t{patch.chemistry_temperature, cgh,
-                            celerity::access::one_to_one{},
+                            chemistry_mapping,
                             celerity::read_only};
     celerity::accessor ch_f{patch.chemistry_fuel, cgh,
-                            celerity::access::one_to_one{},
+                            chemistry_mapping,
                             celerity::read_only};
     celerity::accessor ch_o{patch.chemistry_oxidizer, cgh,
-                            celerity::access::one_to_one{},
+                            chemistry_mapping,
                             celerity::read_only};
     celerity::accessor ch_p{patch.chemistry_product, cgh,
-                            celerity::access::one_to_one{},
+                            chemistry_mapping,
                             celerity::read_only};
     celerity::accessor out_t{patch.temperature(next), cgh,
                              celerity::access::one_to_one{},
@@ -607,16 +760,21 @@ void submit_combine(celerity::distr_queue &queue, PatchBuffers &patch,
     celerity::accessor out_p{patch.product(next), cgh,
                              celerity::access::one_to_one{},
                              celerity::write_only, celerity::no_init};
-    cgh.parallel_for<ArfCeleCombineKernel>(
+    cgh.parallel_for<ArfCeleLayoutCombineKernelV2>(
         celerity::range<2>(patch.rows, patch.cols),
         [=](celerity::item<2> item) {
           const auto id = item.get_id();
+          const celerity::id<2> chemistry_id =
+              transpose ? celerity::id<2>(id[1], id[0]) : id;
           out_t[id] = sycl::fmin(4.0f,
-                                 sycl::fmax(0.2f, ch_t[id] +
+                                 sycl::fmax(0.2f, ch_t[chemistry_id] +
                                                      transport_dt * tr_t[id]));
-          out_f[id] = sycl::fmax(0.0f, ch_f[id] + transport_dt * tr_f[id]);
-          out_o[id] = sycl::fmax(0.0f, ch_o[id] + transport_dt * tr_o[id]);
-          out_p[id] = sycl::fmax(0.0f, ch_p[id] + transport_dt * tr_p[id]);
+          out_f[id] = sycl::fmax(
+              0.0f, ch_f[chemistry_id] + transport_dt * tr_f[id]);
+          out_o[id] = sycl::fmax(
+              0.0f, ch_o[chemistry_id] + transport_dt * tr_o[id]);
+          out_p[id] = sycl::fmax(
+              0.0f, ch_p[chemistry_id] + transport_dt * tr_p[id]);
         });
   });
 }
@@ -702,8 +860,9 @@ void submit_moments8(celerity::distr_queue &queue,
   });
 }
 
-void submit_opacity(celerity::distr_queue &queue,
-                    StatisticsBuffers &statistics, const Config &config) {
+void submit_radiation_risk(celerity::distr_queue &queue,
+                           StatisticsBuffers &statistics,
+                           const Config &config) {
   const std::size_t samples = config.spectral_samples;
   queue.submit([&](celerity::handler &cgh) {
     apply_hints(cgh, config);
@@ -713,83 +872,6 @@ void submit_opacity(celerity::distr_queue &queue,
     celerity::accessor variance{statistics.variance, cgh,
                                 celerity::access::one_to_one{},
                                 celerity::read_only};
-    celerity::accessor weights{statistics.spectral_weight, cgh,
-                               celerity::access::all{}, celerity::read_only};
-    celerity::accessor kappas{statistics.spectral_kappa, cgh,
-                              celerity::access::all{}, celerity::read_only};
-    celerity::accessor opacity{statistics.opacity, cgh,
-                               celerity::access::one_to_one{},
-                               celerity::write_only, celerity::no_init};
-    cgh.parallel_for<ArfCeleSpectralOpacityKernel>(
-        celerity::range<2>(config.rows, config.cols),
-        [=](celerity::item<2> item) {
-          const auto id = item.get_id();
-          const float temp = mean[id], var = variance[id];
-          float integral = 0.0f;
-          for (std::size_t sample = 0; sample < samples; ++sample) {
-            const float kappa = kappas[sample];
-            integral += weights[sample] *
-                        sycl::exp(-kappa / (temp + 0.25f)) *
-                        (1.0f + kappa * var);
-          }
-          opacity[id] = integral;
-        });
-  });
-}
-
-void submit_source(celerity::distr_queue &queue,
-                   StatisticsBuffers &statistics, const Config &config) {
-  const std::size_t samples = config.spectral_samples;
-  queue.submit([&](celerity::handler &cgh) {
-    apply_hints(cgh, config);
-    celerity::accessor mean{statistics.mean, cgh,
-                            celerity::access::one_to_one{},
-                            celerity::read_only};
-    celerity::accessor variance{statistics.variance, cgh,
-                                celerity::access::one_to_one{},
-                                celerity::read_only};
-    celerity::accessor opacity{statistics.opacity, cgh,
-                               celerity::access::one_to_one{},
-                               celerity::read_only};
-    celerity::accessor weights{statistics.spectral_weight, cgh,
-                               celerity::access::all{}, celerity::read_only};
-    celerity::accessor kappas{statistics.spectral_kappa, cgh,
-                              celerity::access::all{}, celerity::read_only};
-    celerity::accessor source{statistics.source, cgh,
-                              celerity::access::one_to_one{},
-                              celerity::write_only, celerity::no_init};
-    cgh.parallel_for<ArfCeleSpectralSourceKernel>(
-        celerity::range<2>(config.rows, config.cols),
-        [=](celerity::item<2> item) {
-          const auto id = item.get_id();
-          const float temp = mean[id], var = variance[id], base = opacity[id];
-          float integral = 0.0f;
-          for (std::size_t sample = 0; sample < samples; ++sample) {
-            const float kappa = kappas[sample];
-            const float transmission =
-                sycl::exp(-kappa * (0.12f + var));
-            integral += weights[sample] * (base + temp) *
-                        (1.0f - transmission) / (0.05f + kappa);
-          }
-          source[id] = integral;
-        });
-  });
-}
-
-void submit_risk(celerity::distr_queue &queue, StatisticsBuffers &statistics,
-                 const Config &config) {
-  const std::size_t samples = config.spectral_samples;
-  queue.submit([&](celerity::handler &cgh) {
-    apply_hints(cgh, config);
-    celerity::accessor variance{statistics.variance, cgh,
-                                celerity::access::one_to_one{},
-                                celerity::read_only};
-    celerity::accessor opacity{statistics.opacity, cgh,
-                               celerity::access::one_to_one{},
-                               celerity::read_only};
-    celerity::accessor source{statistics.source, cgh,
-                              celerity::access::one_to_one{},
-                              celerity::read_only};
     celerity::accessor weights{statistics.spectral_weight, cgh,
                                celerity::access::all{}, celerity::read_only};
     celerity::accessor kappas{statistics.spectral_kappa, cgh,
@@ -797,19 +879,32 @@ void submit_risk(celerity::distr_queue &queue, StatisticsBuffers &statistics,
     celerity::accessor risk{statistics.risk, cgh,
                             celerity::access::one_to_one{},
                             celerity::write_only, celerity::no_init};
-    cgh.parallel_for<ArfCeleSpectralRiskKernel>(
+    cgh.parallel_for<ArfCeleFusedRadiationRiskKernel>(
         celerity::range<2>(config.rows, config.cols),
         [=](celerity::item<2> item) {
           const auto id = item.get_id();
-          const float var = variance[id], radiance = source[id];
-          const float base = opacity[id];
+          const float temp = mean[id], var = variance[id];
+          float opacity = 0.0f;
+          for (std::size_t sample = 0; sample < samples; ++sample) {
+            const float kappa = kappas[sample];
+            opacity += weights[sample] *
+                       sycl::exp(-kappa / (temp + 0.25f)) *
+                       (1.0f + kappa * var);
+          }
+          float radiance = 0.0f;
+          for (std::size_t sample = 0; sample < samples; ++sample) {
+            const float kappa = kappas[sample];
+            const float transmission = sycl::exp(-kappa * (0.12f + var));
+            radiance += weights[sample] * (opacity + temp) *
+                        (1.0f - transmission) / (0.05f + kappa);
+          }
           float integral = 0.0f;
           for (std::size_t sample = 0; sample < samples; ++sample) {
             const float kappa = kappas[sample];
             const float weighted =
                 weights[sample] * radiance / (1.0f + kappa * var);
             integral += sycl::sqrt(sycl::fabs(weighted) + 1.0e-12f) *
-                        (0.5f + base * kappa);
+                        (0.5f + opacity * kappa);
           }
           risk[id] = integral;
         });
@@ -891,14 +986,18 @@ Result read_result(celerity::distr_queue &queue,
 bool estimate_memory(const Config &config, std::size_t &bytes_per_patch,
                      std::size_t &total_bytes) {
   std::size_t cells = 0, all_patch_bytes = 0, stats_bytes = 0, coeff_bytes = 0;
+  std::size_t mechanism_bytes = 0;
   if (!checked_mul(config.rows, config.cols, cells) ||
-      !checked_mul(cells, std::size_t{66}, bytes_per_patch) ||
+      !checked_mul(cells, std::size_t{68}, bytes_per_patch) ||
       !checked_mul(bytes_per_patch, config.patches, all_patch_bytes) ||
-      !checked_mul(cells, std::size_t{5 * sizeof(float)}, stats_bytes) ||
+      !checked_mul(cells, std::size_t{3 * sizeof(float)}, stats_bytes) ||
       !checked_mul(config.spectral_samples,
                    std::size_t{2 * sizeof(float)}, coeff_bytes) ||
+      !checked_mul(config.reaction_channels,
+                   std::size_t{4 * sizeof(float)}, mechanism_bytes) ||
       !checked_add(all_patch_bytes, stats_bytes, total_bytes) ||
-      !checked_add(total_bytes, coeff_bytes, total_bytes)) {
+      !checked_add(total_bytes, coeff_bytes, total_bytes) ||
+      !checked_add(total_bytes, mechanism_bytes, total_bytes)) {
     return false;
   }
   return true;
@@ -908,6 +1007,9 @@ bool validate_config(const Config &config, std::size_t total_bytes,
                      std::string &error) {
   if (config.rows < 4 || config.cols < 4) {
     error = "rows and cols must be at least 4";
+  } else if (config.directional_layout == DirectionalLayout::Alternating &&
+             config.rows != config.cols) {
+    error = "alternating directional layout requires square patches";
   } else if (config.patches != 4 && config.patches != 8) {
     error = "patches must be 4 or 8";
   } else if (config.rows % config.split_parts != 0) {
@@ -962,21 +1064,22 @@ int main(int argc, char **argv) {
   }
   const std::size_t patch_kernels =
       config.mode == Mode::StatisticsOnly ? 0 : 3 * config.patches;
-  const std::size_t stats_kernels = config.mode == Mode::PatchOnly ? 0 : 4;
+  const std::size_t stats_kernels = config.mode == Mode::PatchOnly ? 0 : 2;
   const std::size_t kernels_per_window = patch_kernels + stats_kernels;
   const std::size_t max_width =
       config.mode == Mode::StatisticsOnly ? 1 : 2 * config.patches;
-  const std::size_t critical_path = config.mode == Mode::Full
-                                        ? 6
-                                        : (config.mode == Mode::PatchOnly ? 2 : 4);
+  const std::size_t critical_path = config.mode == Mode::Full ? 4 : 2;
 
   std::cout << std::setprecision(9);
   std::cout << "CONFIG rows=" << config.rows << " cols=" << config.cols
             << " patches=" << config.patches << " steps=" << config.steps
             << " mode=" << mode_name(config.mode)
             << " layout=" << layout_name(config.stiffness_layout)
+            << " directional_layout="
+            << directional_layout_name(config.directional_layout)
             << " cold_substeps=" << config.cold_substeps
             << " hot_substeps=" << config.hot_substeps
+            << " reaction_channels=" << config.reaction_channels
             << " spectral_samples=" << config.spectral_samples
             << " split_parts=" << config.split_parts
             << " celerity_split="
@@ -993,6 +1096,9 @@ int main(int argc, char **argv) {
             << " chemistry_substeps_per_patch=" << chemistry_steps_per_patch
             << " chemistry_substeps_per_window="
             << chemistry_steps_per_patch * config.patches
+            << " reaction_channel_evals_per_window="
+            << chemistry_steps_per_patch * config.patches *
+                   config.reaction_channels
             << " spectral_quadrature_evals_per_window="
             << cells * config.spectral_samples * 3 << '\n';
   std::cout << "MEMORY bytes_per_patch=" << bytes_per_patch
@@ -1005,6 +1111,7 @@ int main(int argc, char **argv) {
     for (std::size_t patch = 0; patch < config.patches; ++patch) {
       patches.push_back(std::make_unique<PatchBuffers>(patch, config));
     }
+    MechanismBuffers mechanism(config);
     StatisticsBuffers statistics(config);
     const double init_end = get_time();
     celerity::distr_queue queue;
@@ -1015,12 +1122,17 @@ int main(int argc, char **argv) {
     for (std::size_t step = 0; step < config.steps; ++step) {
       const std::size_t next = 1 - current;
       if (config.mode != Mode::StatisticsOnly) {
+        const std::size_t orientation =
+            config.directional_layout == DirectionalLayout::Alternating
+                ? current
+                : 0;
         for (auto &patch : patches) {
           submit_transport(queue, *patch, current, config);
           if (config.wait_each_kernel) queue.slow_full_sync();
         }
         for (auto &patch : patches) {
-          submit_chemistry(queue, *patch, current, config);
+          submit_chemistry(queue, *patch, mechanism, current, orientation,
+                           config);
           if (config.wait_each_kernel) queue.slow_full_sync();
         }
         for (auto &patch : patches) {
@@ -1037,11 +1149,7 @@ int main(int argc, char **argv) {
           submit_moments8(queue, patches, statistics, stats_state, config);
         }
         if (config.wait_each_kernel) queue.slow_full_sync();
-        submit_opacity(queue, statistics, config);
-        if (config.wait_each_kernel) queue.slow_full_sync();
-        submit_source(queue, statistics, config);
-        if (config.wait_each_kernel) queue.slow_full_sync();
-        submit_risk(queue, statistics, config);
+        submit_radiation_risk(queue, statistics, config);
         if (config.wait_each_kernel) queue.slow_full_sync();
       }
       if (!config.wait_each_kernel) queue.slow_full_sync();

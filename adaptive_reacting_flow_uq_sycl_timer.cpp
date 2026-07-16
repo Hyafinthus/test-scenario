@@ -2,16 +2,16 @@
 //
 // One physical step exposes two kinds of parallelism in the same wait window:
 //
-//   per patch: transport(state) ----+
-//              chemistry(state) ---+--> combine --> next state
+//   per patch: directional transport(state, next layout) --+
+//              detailed chemistry(state, current layout) --+--> combine
 //
-//   all patches --> ensemble moments --> opacity --> source --> risk
+//   all patches --> ensemble moments --> fused radiation risk
 //
 // Chemistry integrates the same physical interval in every cell, but uses a
 // spatially varying number of adaptive micro-steps. A clustered flame zone is
 // deliberately kept contiguous because reacting-flow stiffness is spatially
-// localized in real meshes. Equal geometric chunks therefore have correct and
-// exact data mappings while carrying very different compute costs.
+// localized in real meshes. Alternating directional sweeps also transpose the
+// storage layout while preserving the same physical discretization.
 //
 // The ensemble/radiation tail is strict dim-0 partition-local dataflow. The
 // SFINAE helper below calls the experimental SNMD contract when the modified
@@ -34,30 +34,30 @@
 #include <sys/time.h>
 #include <vector>
 
-class ArfTransportKernel;
-class ArfChemistryKernel;
-class ArfCombineKernel;
+class ArfDirectionalTransportKernelV2;
+class ArfDetailedChemistryKernelV2;
+class ArfLayoutCombineKernelV2;
 class ArfEnsembleMoments4Kernel;
 class ArfEnsembleMoments8Kernel;
-class ArfSpectralOpacityKernel;
-class ArfSpectralSourceKernel;
-class ArfSpectralRiskKernel;
+class ArfFusedRadiationRiskKernel;
 
 namespace {
 
 using field_buffer_t = sycl::buffer<float, 2>;
 
-constexpr std::size_t kDefaultRows = 1024;
-constexpr std::size_t kDefaultCols = 1024;
+constexpr std::size_t kDefaultRows = 512;
+constexpr std::size_t kDefaultCols = 512;
 constexpr std::size_t kDefaultPatches = 8;
-constexpr std::size_t kDefaultSteps = 4;
-constexpr std::size_t kDefaultColdSubsteps = 8;
-constexpr std::size_t kDefaultHotSubsteps = 1024;
+constexpr std::size_t kDefaultSteps = 32;
+constexpr std::size_t kDefaultColdSubsteps = 64;
+constexpr std::size_t kDefaultHotSubsteps = 8192;
+constexpr std::size_t kDefaultReactionChannels = 512;
 constexpr std::size_t kDefaultSpectralSamples = 1024;
 constexpr std::size_t kDefaultSplitParts = 4;
 
 enum class Mode { Full, PatchOnly, StatisticsOnly };
 enum class StiffnessLayout { Clustered, Distributed, Uniform };
+enum class DirectionalLayout { Alternating, Aligned };
 
 struct Config {
   std::size_t rows = kDefaultRows;
@@ -66,11 +66,13 @@ struct Config {
   std::size_t steps = kDefaultSteps;
   std::size_t cold_substeps = kDefaultColdSubsteps;
   std::size_t hot_substeps = kDefaultHotSubsteps;
+  std::size_t reaction_channels = kDefaultReactionChannels;
   std::size_t spectral_samples = kDefaultSpectralSamples;
   std::size_t split_parts = kDefaultSplitParts;
   double memory_limit_gib = 0.0;
   Mode mode = Mode::Full;
   StiffnessLayout stiffness_layout = StiffnessLayout::Clustered;
+  DirectionalLayout directional_layout = DirectionalLayout::Alternating;
   bool wait_each_kernel = false;
   bool host_read_full = false;
   bool verify = true;
@@ -105,6 +107,10 @@ const char *layout_name(StiffnessLayout layout) {
     return "uniform";
   }
   return "unknown";
+}
+
+const char *directional_layout_name(DirectionalLayout layout) {
+  return layout == DirectionalLayout::Alternating ? "alternating" : "aligned";
 }
 
 bool checked_add(std::size_t lhs, std::size_t rhs, std::size_t &result) {
@@ -191,18 +197,32 @@ bool parse_layout(const std::string &text, StiffnessLayout &layout) {
   return true;
 }
 
+bool parse_directional_layout(const std::string &text,
+                              DirectionalLayout &layout) {
+  if (text == "alternating") {
+    layout = DirectionalLayout::Alternating;
+  } else if (text == "aligned") {
+    layout = DirectionalLayout::Aligned;
+  } else {
+    return false;
+  }
+  return true;
+}
+
 void print_usage(const char *program) {
   std::cout
       << "Usage: " << program << " [options]\n"
-      << "  --rows <int>                 Patch rows (default 1024)\n"
-      << "  --cols <int>                 Patch columns (default 1024)\n"
+      << "  --rows <int>                 Patch rows (default 512)\n"
+      << "  --cols <int>                 Patch columns (default 512)\n"
       << "  --patches <4|8>              Independent patches (default 8)\n"
-      << "  --steps <int>                Physical wait windows (default 4)\n"
-      << "  --cold-substeps <int>        Chemistry steps outside flame (default 8)\n"
-      << "  --hot-substeps <int>         Chemistry steps in flame (default 1024)\n"
+      << "  --steps <int>                Physical wait windows (default 32)\n"
+      << "  --cold-substeps <int>        Chemistry steps outside flame (default 64)\n"
+      << "  --hot-substeps <int>         Chemistry steps in flame (default 8192)\n"
+      << "  --reaction-channels <int>    Detailed kinetics channels (default 512)\n"
       << "  --spectral-samples <int>     Radiation quadrature samples (default 1024)\n"
       << "  --split-parts <int>          Validate dim-0 divisibility (default 4)\n"
       << "  --layout <clustered|distributed|uniform>\n"
+      << "  --directional-layout <alternating|aligned>\n"
       << "  --mode <full|patch-only|statistics-only>\n"
       << "  --memory-limit-gib <real>    Fail above estimate; 0 is unlimited\n"
       << "  --wait-each-kernel <0|1>     Debug serialization only\n"
@@ -236,6 +256,8 @@ bool parse_arguments(int argc, char **argv, Config &config,
       parsed = parse_size(value, config.cold_substeps);
     } else if (option == "--hot-substeps") {
       parsed = parse_size(value, config.hot_substeps);
+    } else if (option == "--reaction-channels") {
+      parsed = parse_size(value, config.reaction_channels);
     } else if (option == "--spectral-samples") {
       parsed = parse_size(value, config.spectral_samples);
     } else if (option == "--split-parts") {
@@ -244,6 +266,8 @@ bool parse_arguments(int argc, char **argv, Config &config,
       parsed = parse_double(value, config.memory_limit_gib);
     } else if (option == "--layout") {
       parsed = parse_layout(value, config.stiffness_layout);
+    } else if (option == "--directional-layout") {
+      parsed = parse_directional_layout(value, config.directional_layout);
     } else if (option == "--mode") {
       parsed = parse_mode(value, config.mode);
     } else if (option == "--wait-each-kernel") {
@@ -339,7 +363,8 @@ struct PatchBuffers {
   field_buffer_t chemistry_fuel;
   field_buffer_t chemistry_oxidizer;
   field_buffer_t chemistry_product;
-  sycl::buffer<std::uint16_t, 2> chemistry_steps;
+  sycl::buffer<std::uint16_t, 2> chemistry_steps0;
+  sycl::buffer<std::uint16_t, 2> chemistry_steps1;
 
   PatchBuffers(std::size_t id, const Config &config)
       : patch_id(id), rows(config.rows), cols(config.cols),
@@ -359,7 +384,8 @@ struct PatchBuffers {
         chemistry_fuel(sycl::range<2>(rows, cols)),
         chemistry_oxidizer(sycl::range<2>(rows, cols)),
         chemistry_product(sycl::range<2>(rows, cols)),
-        chemistry_steps(sycl::range<2>(rows, cols)) {
+        chemistry_steps0(sycl::range<2>(rows, cols)),
+        chemistry_steps1(sycl::range<2>(rows, cols)) {
     initialize(config);
   }
 
@@ -374,6 +400,9 @@ struct PatchBuffers {
   }
   field_buffer_t &product(std::size_t index) {
     return index == 0 ? product0 : product1;
+  }
+  sycl::buffer<std::uint16_t, 2> &chemistry_steps(std::size_t orientation) {
+    return orientation == 0 ? chemistry_steps0 : chemistry_steps1;
   }
 
 private:
@@ -394,7 +423,8 @@ private:
     auto ch_f = chemistry_fuel.get_host_access(sycl::write_only);
     auto ch_o = chemistry_oxidizer.get_host_access(sycl::write_only);
     auto ch_p = chemistry_product.get_host_access(sycl::write_only);
-    auto substeps = chemistry_steps.get_host_access(sycl::write_only);
+    auto substeps0 = chemistry_steps0.get_host_access(sycl::write_only);
+    auto substeps1 = chemistry_steps1.get_host_access(sycl::write_only);
 
     const float patch_phase = 0.17f * static_cast<float>(patch_id);
     for (std::size_t row = 0; row < rows; ++row) {
@@ -415,8 +445,46 @@ private:
         ch_t[id] = ch_f[id] = ch_o[id] = ch_p[id] = 0.0f;
         const std::size_t steps =
             chemistry_substeps_for_cell(row, col, config);
-        substeps[id] = static_cast<std::uint16_t>(steps);
+        substeps0[id] = static_cast<std::uint16_t>(steps);
+        substeps1[sycl::id<2>(col, row)] =
+            static_cast<std::uint16_t>(steps);
       }
+    }
+  }
+};
+
+struct MechanismBuffers {
+  sycl::buffer<float, 1> forward_activation;
+  sycl::buffer<float, 1> backward_activation;
+  sycl::buffer<float, 1> forward_weight;
+  sycl::buffer<float, 1> backward_weight;
+
+  explicit MechanismBuffers(const Config &config)
+      : forward_activation(sycl::range<1>(config.reaction_channels)),
+        backward_activation(sycl::range<1>(config.reaction_channels)),
+        forward_weight(sycl::range<1>(config.reaction_channels)),
+        backward_weight(sycl::range<1>(config.reaction_channels)) {
+    auto forward_e = forward_activation.get_host_access(sycl::write_only);
+    auto backward_e = backward_activation.get_host_access(sycl::write_only);
+    auto forward_w = forward_weight.get_host_access(sycl::write_only);
+    auto backward_w = backward_weight.get_host_access(sycl::write_only);
+    double forward_sum = 0.0;
+    double backward_sum = 0.0;
+    for (std::size_t channel = 0; channel < config.reaction_channels;
+         ++channel) {
+      const float x = (static_cast<float>(channel) + 0.5f) /
+                      static_cast<float>(config.reaction_channels);
+      forward_e[channel] = 4.2f + 1.2f * x;
+      backward_e[channel] = 0.8f + 0.6f * x;
+      forward_w[channel] = 0.9f + 0.1f * std::sin(6.28318530718f * x);
+      backward_w[channel] = 0.9f + 0.1f * std::cos(6.28318530718f * x);
+      forward_sum += forward_w[channel];
+      backward_sum += backward_w[channel];
+    }
+    for (std::size_t channel = 0; channel < config.reaction_channels;
+         ++channel) {
+      forward_w[channel] /= static_cast<float>(forward_sum);
+      backward_w[channel] /= static_cast<float>(backward_sum);
     }
   }
 };
@@ -424,8 +492,6 @@ private:
 struct StatisticsBuffers {
   field_buffer_t mean;
   field_buffer_t variance;
-  field_buffer_t opacity;
-  field_buffer_t source;
   field_buffer_t risk;
   sycl::buffer<float, 1> spectral_weight;
   sycl::buffer<float, 1> spectral_kappa;
@@ -433,8 +499,6 @@ struct StatisticsBuffers {
   explicit StatisticsBuffers(const Config &config)
       : mean(sycl::range<2>(config.rows, config.cols)),
         variance(sycl::range<2>(config.rows, config.cols)),
-        opacity(sycl::range<2>(config.rows, config.cols)),
-        source(sycl::range<2>(config.rows, config.cols)),
         risk(sycl::range<2>(config.rows, config.cols)),
         spectral_weight(sycl::range<1>(config.spectral_samples)),
         spectral_kappa(sycl::range<1>(config.spectral_samples)) {
@@ -452,12 +516,14 @@ struct StatisticsBuffers {
 };
 
 void submit_transport(sycl::queue &queue, PatchBuffers &patch,
-                      std::size_t current) {
+                      std::size_t current, DirectionalLayout layout) {
   const std::size_t rows = patch.rows;
   const std::size_t cols = patch.cols;
   const float velocity_x = 0.18f + 0.01f * static_cast<float>(patch.patch_id);
   const float velocity_y = -0.11f + 0.008f * static_cast<float>(patch.patch_id);
   const float diffusion = 0.025f;
+  const bool transpose = layout == DirectionalLayout::Alternating;
+  const bool axes_swapped = transpose && current == 1;
 
   queue.submit([&](sycl::handler &cgh) {
     auto temperature =
@@ -480,10 +546,13 @@ void submit_transport(sycl::queue &queue, PatchBuffers &patch,
     mark_partition_local(cgh, out_o);
     mark_partition_local(cgh, out_p);
 
-    cgh.parallel_for<ArfTransportKernel>(
+    cgh.parallel_for<ArfDirectionalTransportKernelV2>(
         sycl::range<2>(rows, cols), [=](sycl::id<2> id) {
-          const std::size_t row = id[0];
-          const std::size_t col = id[1];
+          // Alternating directional sweeps write the next state in transposed
+          // storage. This makes the swept dimension contiguous without a
+          // separate materialized-transpose kernel.
+          const std::size_t row = transpose ? id[1] : id[0];
+          const std::size_t col = transpose ? id[0] : id[1];
           // Zero-normal-gradient patch boundaries keep the exact read region
           // representable by Celerity's clamped neighborhood mapper.
           const std::size_t up = row == 0 ? 0 : row - 1;
@@ -491,35 +560,46 @@ void submit_transport(sycl::queue &queue, PatchBuffers &patch,
           const std::size_t left = col == 0 ? 0 : col - 1;
           const std::size_t right = col + 1 == cols ? col : col + 1;
 
-          const sycl::id<2> id_up(up, col);
-          const sycl::id<2> id_down(down, col);
-          const sycl::id<2> id_left(row, left);
-          const sycl::id<2> id_right(row, right);
+          const sycl::id<2> source(row, col);
+          const sycl::id<2> id_up =
+              axes_swapped ? sycl::id<2>(row, left) : sycl::id<2>(up, col);
+          const sycl::id<2> id_down =
+              axes_swapped ? sycl::id<2>(row, right)
+                           : sycl::id<2>(down, col);
+          const sycl::id<2> id_left =
+              axes_swapped ? sycl::id<2>(up, col)
+                           : sycl::id<2>(row, left);
+          const sycl::id<2> id_right =
+              axes_swapped ? sycl::id<2>(down, col)
+                           : sycl::id<2>(row, right);
 
           out_t[id] = transport_rhs(
-              temperature[id], temperature[id_up], temperature[id_down],
+              temperature[source], temperature[id_up], temperature[id_down],
               temperature[id_left], temperature[id_right], diffusion,
               velocity_x, velocity_y);
-          out_f[id] = transport_rhs(fuel[id], fuel[id_up], fuel[id_down],
+          out_f[id] = transport_rhs(fuel[source], fuel[id_up], fuel[id_down],
                                     fuel[id_left], fuel[id_right], diffusion,
                                     velocity_x, velocity_y);
           out_o[id] = transport_rhs(
-              oxidizer[id], oxidizer[id_up], oxidizer[id_down],
+              oxidizer[source], oxidizer[id_up], oxidizer[id_down],
               oxidizer[id_left], oxidizer[id_right], diffusion, velocity_x,
               velocity_y);
           out_p[id] = transport_rhs(
-              product[id], product[id_up], product[id_down], product[id_left],
-              product[id_right], diffusion, velocity_x, velocity_y);
+              product[source], product[id_up], product[id_down],
+              product[id_left], product[id_right], diffusion, velocity_x,
+              velocity_y);
         });
   });
 }
 
 void submit_chemistry(sycl::queue &queue, PatchBuffers &patch,
-                      std::size_t current) {
+                      MechanismBuffers &mechanism, std::size_t current,
+                      std::size_t orientation, const Config &config) {
   const std::size_t rows = patch.rows;
   const std::size_t cols = patch.cols;
   const float chemistry_dt = 0.0025f;
   const float rate_scale = 1.0f + 0.035f * static_cast<float>(patch.patch_id);
+  const std::size_t channels = config.reaction_channels;
 
   queue.submit([&](sycl::handler &cgh) {
     auto temperature =
@@ -529,8 +609,16 @@ void submit_chemistry(sycl::queue &queue, PatchBuffers &patch,
         patch.oxidizer(current).get_access<sycl::access::mode::read>(cgh);
     auto product =
         patch.product(current).get_access<sycl::access::mode::read>(cgh);
-    auto substeps =
-        patch.chemistry_steps.get_access<sycl::access::mode::read>(cgh);
+    auto substeps = patch.chemistry_steps(orientation)
+                        .get_access<sycl::access::mode::read>(cgh);
+    auto forward_e = mechanism.forward_activation
+                         .get_access<sycl::access::mode::read>(cgh);
+    auto backward_e = mechanism.backward_activation
+                          .get_access<sycl::access::mode::read>(cgh);
+    auto forward_w =
+        mechanism.forward_weight.get_access<sycl::access::mode::read>(cgh);
+    auto backward_w =
+        mechanism.backward_weight.get_access<sycl::access::mode::read>(cgh);
     auto out_t = patch.chemistry_temperature
                      .get_access<sycl::access::mode::discard_write>(cgh);
     auto out_f = patch.chemistry_fuel
@@ -550,7 +638,7 @@ void submit_chemistry(sycl::queue &queue, PatchBuffers &patch,
     mark_partition_local(cgh, out_o);
     mark_partition_local(cgh, out_p);
 
-    cgh.parallel_for<ArfChemistryKernel>(
+    cgh.parallel_for<ArfDetailedChemistryKernelV2>(
         sycl::range<2>(rows, cols), [=](sycl::id<2> id) {
           float temp = temperature[id];
           float f = fuel[id];
@@ -564,10 +652,17 @@ void submit_chemistry(sycl::queue &queue, PatchBuffers &patch,
           // stability in the hot zone while advancing the same macro interval.
           for (std::uint32_t step = 0; step < steps; ++step) {
             const float inv_temp = 1.0f / (temp + 0.20f);
+            float forward_kernel = 0.0f;
+            float backward_kernel = 0.0f;
+            for (std::size_t channel = 0; channel < channels; ++channel) {
+              forward_kernel += forward_w[channel] *
+                                sycl::exp(-forward_e[channel] * inv_temp);
+              backward_kernel += backward_w[channel] *
+                                 sycl::exp(-backward_e[channel] * inv_temp);
+            }
             const float forward_rate =
-                rate_scale * 24.0f * sycl::exp(-4.8f * inv_temp) * f * o;
-            const float backward_rate =
-                0.035f * sycl::exp(-1.1f * inv_temp) * p;
+                rate_scale * 24.0f * forward_kernel * f * o;
+            const float backward_rate = 0.035f * backward_kernel * p;
             float delta = dt * (forward_rate - backward_rate);
             const float positive_cap = 0.12f * sycl::fmin(f, 2.0f * o);
             const float negative_cap = 0.10f * p;
@@ -588,10 +683,11 @@ void submit_chemistry(sycl::queue &queue, PatchBuffers &patch,
 }
 
 void submit_combine(sycl::queue &queue, PatchBuffers &patch,
-                    std::size_t next) {
+                    std::size_t next, DirectionalLayout layout) {
   const std::size_t rows = patch.rows;
   const std::size_t cols = patch.cols;
   const float transport_dt = 0.0015f;
+  const bool transpose = layout == DirectionalLayout::Alternating;
 
   queue.submit([&](sycl::handler &cgh) {
     auto tr_t = patch.transport_temperature
@@ -623,23 +719,30 @@ void submit_combine(sycl::queue &queue, PatchBuffers &patch,
     mark_partition_local(cgh, tr_f);
     mark_partition_local(cgh, tr_o);
     mark_partition_local(cgh, tr_p);
-    mark_partition_local(cgh, ch_t);
-    mark_partition_local(cgh, ch_f);
-    mark_partition_local(cgh, ch_o);
-    mark_partition_local(cgh, ch_p);
+    if (!transpose) {
+      mark_partition_local(cgh, ch_t);
+      mark_partition_local(cgh, ch_f);
+      mark_partition_local(cgh, ch_o);
+      mark_partition_local(cgh, ch_p);
+    }
     mark_partition_local(cgh, out_t);
     mark_partition_local(cgh, out_f);
     mark_partition_local(cgh, out_o);
     mark_partition_local(cgh, out_p);
 
-    cgh.parallel_for<ArfCombineKernel>(
+    cgh.parallel_for<ArfLayoutCombineKernelV2>(
         sycl::range<2>(rows, cols), [=](sycl::id<2> id) {
+          const sycl::id<2> chemistry_id =
+              transpose ? sycl::id<2>(id[1], id[0]) : id;
           out_t[id] = sycl::fmin(4.0f,
-                                 sycl::fmax(0.2f, ch_t[id] +
+                                 sycl::fmax(0.2f, ch_t[chemistry_id] +
                                                      transport_dt * tr_t[id]));
-          out_f[id] = sycl::fmax(0.0f, ch_f[id] + transport_dt * tr_f[id]);
-          out_o[id] = sycl::fmax(0.0f, ch_o[id] + transport_dt * tr_o[id]);
-          out_p[id] = sycl::fmax(0.0f, ch_p[id] + transport_dt * tr_p[id]);
+          out_f[id] = sycl::fmax(
+              0.0f, ch_f[chemistry_id] + transport_dt * tr_f[id]);
+          out_o[id] = sycl::fmax(
+              0.0f, ch_o[chemistry_id] + transport_dt * tr_o[id]);
+          out_p[id] = sycl::fmax(
+              0.0f, ch_p[chemistry_id] + transport_dt * tr_p[id]);
         });
   });
 }
@@ -740,106 +843,47 @@ void submit_moments8(sycl::queue &queue,
   });
 }
 
-void submit_opacity(sycl::queue &queue, StatisticsBuffers &statistics,
-                    const Config &config) {
+void submit_radiation_risk(sycl::queue &queue,
+                           StatisticsBuffers &statistics,
+                           const Config &config) {
   const std::size_t samples = config.spectral_samples;
   queue.submit([&](sycl::handler &cgh) {
     auto mean = statistics.mean.get_access<sycl::access::mode::read>(cgh);
     auto variance =
         statistics.variance.get_access<sycl::access::mode::read>(cgh);
-    auto weights =
-        statistics.spectral_weight.get_access<sycl::access::mode::read>(cgh);
-    auto kappas =
-        statistics.spectral_kappa.get_access<sycl::access::mode::read>(cgh);
-    auto opacity = statistics.opacity
-                       .get_access<sycl::access::mode::discard_write>(cgh);
-    mark_partition_local(cgh, mean);
-    mark_partition_local(cgh, variance);
-    mark_partition_local(cgh, opacity);
-    cgh.parallel_for<ArfSpectralOpacityKernel>(
-        sycl::range<2>(config.rows, config.cols), [=](sycl::id<2> id) {
-          const float temp = mean[id];
-          const float var = variance[id];
-          float integral = 0.0f;
-          for (std::size_t sample = 0; sample < samples; ++sample) {
-            const float kappa = kappas[sample];
-            const float planck = sycl::exp(-kappa / (temp + 0.25f));
-            integral += weights[sample] * planck * (1.0f + kappa * var);
-          }
-          opacity[id] = integral;
-        });
-  });
-}
-
-void submit_source(sycl::queue &queue, StatisticsBuffers &statistics,
-                   const Config &config) {
-  const std::size_t samples = config.spectral_samples;
-  queue.submit([&](sycl::handler &cgh) {
-    auto mean = statistics.mean.get_access<sycl::access::mode::read>(cgh);
-    auto variance =
-        statistics.variance.get_access<sycl::access::mode::read>(cgh);
-    auto opacity =
-        statistics.opacity.get_access<sycl::access::mode::read>(cgh);
-    auto weights =
-        statistics.spectral_weight.get_access<sycl::access::mode::read>(cgh);
-    auto kappas =
-        statistics.spectral_kappa.get_access<sycl::access::mode::read>(cgh);
-    auto source = statistics.source
-                      .get_access<sycl::access::mode::discard_write>(cgh);
-    mark_partition_local(cgh, mean);
-    mark_partition_local(cgh, variance);
-    mark_partition_local(cgh, opacity);
-    mark_partition_local(cgh, source);
-    cgh.parallel_for<ArfSpectralSourceKernel>(
-        sycl::range<2>(config.rows, config.cols), [=](sycl::id<2> id) {
-          const float temp = mean[id];
-          const float var = variance[id];
-          const float base = opacity[id];
-          float integral = 0.0f;
-          for (std::size_t sample = 0; sample < samples; ++sample) {
-            const float kappa = kappas[sample];
-            const float transmission =
-                sycl::exp(-kappa * (0.12f + var));
-            integral += weights[sample] * (base + temp) *
-                        (1.0f - transmission) / (0.05f + kappa);
-          }
-          source[id] = integral;
-        });
-  });
-}
-
-void submit_risk(sycl::queue &queue, StatisticsBuffers &statistics,
-                 const Config &config) {
-  const std::size_t samples = config.spectral_samples;
-  queue.submit([&](sycl::handler &cgh) {
-    auto variance =
-        statistics.variance.get_access<sycl::access::mode::read>(cgh);
-    auto opacity =
-        statistics.opacity.get_access<sycl::access::mode::read>(cgh);
-    auto source =
-        statistics.source.get_access<sycl::access::mode::read>(cgh);
     auto weights =
         statistics.spectral_weight.get_access<sycl::access::mode::read>(cgh);
     auto kappas =
         statistics.spectral_kappa.get_access<sycl::access::mode::read>(cgh);
     auto risk = statistics.risk
                     .get_access<sycl::access::mode::discard_write>(cgh);
+    mark_partition_local(cgh, mean);
     mark_partition_local(cgh, variance);
-    mark_partition_local(cgh, opacity);
-    mark_partition_local(cgh, source);
     mark_partition_local(cgh, risk);
-    cgh.parallel_for<ArfSpectralRiskKernel>(
+    cgh.parallel_for<ArfFusedRadiationRiskKernel>(
         sycl::range<2>(config.rows, config.cols), [=](sycl::id<2> id) {
+          const float temp = mean[id];
           const float var = variance[id];
-          const float radiance = source[id];
-          const float base = opacity[id];
+          float opacity = 0.0f;
+          for (std::size_t sample = 0; sample < samples; ++sample) {
+            const float kappa = kappas[sample];
+            const float planck = sycl::exp(-kappa / (temp + 0.25f));
+            opacity += weights[sample] * planck * (1.0f + kappa * var);
+          }
+          float radiance = 0.0f;
+          for (std::size_t sample = 0; sample < samples; ++sample) {
+            const float kappa = kappas[sample];
+            const float transmission = sycl::exp(-kappa * (0.12f + var));
+            radiance += weights[sample] * (opacity + temp) *
+                        (1.0f - transmission) / (0.05f + kappa);
+          }
           float integral = 0.0f;
           for (std::size_t sample = 0; sample < samples; ++sample) {
             const float kappa = kappas[sample];
             const float weighted =
                 weights[sample] * radiance / (1.0f + kappa * var);
             integral += sycl::sqrt(sycl::fabs(weighted) + 1.0e-12f) *
-                        (0.5f + base * kappa);
+                        (0.5f + opacity * kappa);
           }
           risk[id] = integral;
         });
@@ -938,15 +982,19 @@ bool estimate_memory(const Config &config, std::size_t &bytes_per_patch,
   std::size_t all_patch_bytes = 0;
   std::size_t stats_bytes = 0;
   std::size_t coeff_bytes = 0;
-  // 16 float fields plus one uint16 chemistry-step field per patch.
+  std::size_t mechanism_bytes = 0;
+  // 16 float fields plus two orientation-specific uint16 step fields.
   if (!checked_mul(config.rows, config.cols, cells) ||
-      !checked_mul(cells, std::size_t{66}, patch_bytes) ||
+      !checked_mul(cells, std::size_t{68}, patch_bytes) ||
       !checked_mul(patch_bytes, config.patches, all_patch_bytes) ||
-      !checked_mul(cells, std::size_t{5 * sizeof(float)}, stats_bytes) ||
+      !checked_mul(cells, std::size_t{3 * sizeof(float)}, stats_bytes) ||
       !checked_mul(config.spectral_samples,
                    std::size_t{2 * sizeof(float)}, coeff_bytes) ||
+      !checked_mul(config.reaction_channels,
+                   std::size_t{4 * sizeof(float)}, mechanism_bytes) ||
       !checked_add(all_patch_bytes, stats_bytes, total_bytes) ||
-      !checked_add(total_bytes, coeff_bytes, total_bytes)) {
+      !checked_add(total_bytes, coeff_bytes, total_bytes) ||
+      !checked_add(total_bytes, mechanism_bytes, total_bytes)) {
     return false;
   }
   bytes_per_patch = patch_bytes;
@@ -957,6 +1005,11 @@ bool validate_config(const Config &config, std::size_t total_bytes,
                      std::string &error) {
   if (config.rows < 4 || config.cols < 4) {
     error = "rows and cols must both be at least 4";
+    return false;
+  }
+  if (config.directional_layout == DirectionalLayout::Alternating &&
+      config.rows != config.cols) {
+    error = "alternating directional layout requires square patches";
     return false;
   }
   if (config.patches != 4 && config.patches != 8) {
@@ -1029,22 +1082,23 @@ int main(int argc, char **argv) {
   const std::size_t patch_kernels = config.mode == Mode::StatisticsOnly
                                         ? 0
                                         : 3 * config.patches;
-  const std::size_t statistics_kernels = config.mode == Mode::PatchOnly ? 0 : 4;
+  const std::size_t statistics_kernels = config.mode == Mode::PatchOnly ? 0 : 2;
   const std::size_t kernels_per_window = patch_kernels + statistics_kernels;
   const std::size_t max_width = config.mode == Mode::StatisticsOnly
                                     ? 1
                                     : 2 * config.patches;
-  const std::size_t critical_path = config.mode == Mode::Full
-                                        ? 6
-                                        : (config.mode == Mode::PatchOnly ? 2 : 4);
+  const std::size_t critical_path = config.mode == Mode::Full ? 4 : 2;
 
   std::cout << std::setprecision(9);
   std::cout << "CONFIG rows=" << config.rows << " cols=" << config.cols
             << " patches=" << config.patches << " steps=" << config.steps
             << " mode=" << mode_name(config.mode)
             << " layout=" << layout_name(config.stiffness_layout)
+            << " directional_layout="
+            << directional_layout_name(config.directional_layout)
             << " cold_substeps=" << config.cold_substeps
             << " hot_substeps=" << config.hot_substeps
+            << " reaction_channels=" << config.reaction_channels
             << " spectral_samples=" << config.spectral_samples
             << " split_parts=" << config.split_parts
             << " wait_each_kernel=" << (config.wait_each_kernel ? 1 : 0)
@@ -1058,6 +1112,9 @@ int main(int argc, char **argv) {
             << " chemistry_substeps_per_patch=" << chemistry_steps_per_patch
             << " chemistry_substeps_per_window="
             << chemistry_steps_per_patch * config.patches
+            << " reaction_channel_evals_per_window="
+            << chemistry_steps_per_patch * config.patches *
+                   config.reaction_channels
             << " spectral_quadrature_evals_per_window="
             << cells * config.spectral_samples * 3 << '\n';
   std::cout << "MEMORY bytes_per_patch=" << bytes_per_patch
@@ -1070,6 +1127,7 @@ int main(int argc, char **argv) {
     for (std::size_t patch = 0; patch < config.patches; ++patch) {
       patches.push_back(std::make_unique<PatchBuffers>(patch, config));
     }
+    MechanismBuffers mechanism(config);
     StatisticsBuffers statistics(config);
     const double init_end = get_time();
     sycl::queue queue;
@@ -1081,20 +1139,26 @@ int main(int argc, char **argv) {
       const std::size_t next = 1 - current;
 
       if (config.mode != Mode::StatisticsOnly) {
+        const std::size_t orientation =
+            config.directional_layout == DirectionalLayout::Alternating
+                ? current
+                : 0;
         for (auto &patch : patches) {
-          submit_transport(queue, *patch, current);
+          submit_transport(queue, *patch, current,
+                           config.directional_layout);
           if (config.wait_each_kernel) {
             queue.wait_and_throw();
           }
         }
         for (auto &patch : patches) {
-          submit_chemistry(queue, *patch, current);
+          submit_chemistry(queue, *patch, mechanism, current, orientation,
+                           config);
           if (config.wait_each_kernel) {
             queue.wait_and_throw();
           }
         }
         for (auto &patch : patches) {
-          submit_combine(queue, *patch, next);
+          submit_combine(queue, *patch, next, config.directional_layout);
           if (config.wait_each_kernel) {
             queue.wait_and_throw();
           }
@@ -1112,15 +1176,7 @@ int main(int argc, char **argv) {
         if (config.wait_each_kernel) {
           queue.wait_and_throw();
         }
-        submit_opacity(queue, statistics, config);
-        if (config.wait_each_kernel) {
-          queue.wait_and_throw();
-        }
-        submit_source(queue, statistics, config);
-        if (config.wait_each_kernel) {
-          queue.wait_and_throw();
-        }
-        submit_risk(queue, statistics, config);
+        submit_radiation_risk(queue, statistics, config);
         if (config.wait_each_kernel) {
           queue.wait_and_throw();
         }
