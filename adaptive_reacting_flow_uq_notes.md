@@ -326,3 +326,145 @@ shape，而不是放宽检查后继续索引。
 当前代码已用顺序 CPU stub 做过严格警告编译和小规模数值对拍：SYCL/Celerity、aligned/
 alternating 在奇数步 full-read case 的 `RESULT` 一致。真实 DPC++、四 GPU 性能和 Celerity
 通信 trace 仍必须在目标 Docker 环境完成，本文不把预测写成测量结果。
+
+## 12. 2026-07-17 实测结论与运行时修复
+
+publication candidate 的最新 `run_sec` 为：
+
+| runtime | alternating | aligned |
+|---|---:|---:|
+| native SYCL，1 GPU | 31.906 s | 32.164 s |
+| Celerity，4 GPU | 31.453 s | 31.314 s |
+| 本系统，4 GPU，修复前 | 60.601 s | 61.984 s |
+| 本系统，4 GPU，dispatch 副本修复后 | - | 34.048 s |
+
+这组三组数据否定了“alternating 已经暴露 Celerity 通信缺陷”的假设。两种 layout 在每套
+runtime 内都只相差约 1%，目前只能作为负结果/消融，不能作为论文主优势。
+
+Celerity 基本只有一张 GPU 长时间计算并不是设备发现失败。`clustered` 布局把
+`128 x 128` 个 hot cell 放在一个 1-D row chunk 中。该 chunk 每窗口承担：
+
+```text
+16384 * 8192 + (65536 - 16384) * 64 = 137363456 micro-steps
+```
+
+其余三个 chunk 各承担 `65536 * 64 = 4194304` micro-steps。最重 chunk 占总 chemistry
+工作量约 91.6%，所以单 task 几何切分的理想加速上限只有约 `149946368 / 137363456 =
+1.092x`。Celerity 约 31.4 s、native 约 32.0 s 与这个上限一致，正是本 benchmark 想暴露
+的空间成本不均衡，而不是 Celerity 没有使用四张卡。
+
+本系统修复前的 60 s 则不是算法上限。`adaptive-result2.txt` 显示 daemon 已把第一批
+chemistry root 分到四张 GPU，且 `movement_bytes=0`；但是 handler 的相邻 `resubmit`
+耗时约 0.19--0.60 s，与单个 chemistry 的约 0.21 s device time 同阶。四个独立 task
+唯一共享的数据是 4 个只读 reaction-mechanism coefficient buffer。普通 DPC++ graph
+只为每个 buffer 维护一个 `MCurContext`，第二张 GPU 读取同一个表时会把它当成一次
+`read_write` 迁移；该迁移等待第一张 GPU 的 reader，最终把正确的四设备 HEFT placement
+串行化。
+
+`adaptive-result3.txt` 说明第一阶段修复已经生效，但还没有达到最终目标。首窗口的 8 个
+chemistry kernel 实际形成四卡两波：第一波约 204.9--221.3 ms，第二波约
+203.8--207.5 ms；这排除了“HEFT 仍只给一张卡派发重 kernel”。理想 chemistry 窗口约
+0.42 s，而 34.048 s / 32 steps = 1.064 s/window，仍有约 0.64 s/window 不是 device
+chemistry。当前 miniapp 每个 step 都有一次 `queue.wait_and_throw()`，旧实现又在每次 wait
+结尾清空 replica cache，因此四个 2048-byte 机理表在下一 step 会重新执行多次同步跨
+context 拷贝。这个生命周期错误比继续改 HEFT placement 更符合日志证据。
+
+`code-llvm-sycl/sycl/source/handler.cpp` 现增加 dispatch 级只读副本准备，规则是：
+
+1. 当前整个 wait batch 对该对象只能有 `read` accessor；
+2. 每次 accessor 必须覆盖完整 buffer，sub-buffer/局部区域不进入该路径；
+3. 当前 daemon dispatch 中至少两张设备读取它；
+4. 单对象默认不超过 65536 bytes；
+5. 所有副本在这一批 reader 提交前完成，后续 Single kernel 复用目标设备 allocation；
+6. 现有任意 write-access 失效逻辑继续保留；每个 `MemObjRecord` 还有单调递增的 write
+   version，跨 wait 只复用同一个活跃 record、同一个 version 的副本；host accessor 或
+   device kernel 的任意写入都会使旧副本失效。
+
+该条件对当前四个 2048-byte mechanism table 成立，对 patch state、chemistry output、
+transpose region 和其他可写数据均不成立。因此它修复的是共享不可变参数的
+`read/read` 假依赖，不放宽真正的 RAW/WAR/WAW 一致性。
+
+daemon 同时做了一个不改变调度决策的 fast reject。`adaptive-result3.txt` 仅首尾截取就有
+1047 条 `cold split probe rejected`：single 预测值已经低于硬阈值，但旧代码仍先枚举
+split device set、构造 transfer plan、估计 Split cost，最后才拒绝。现在最小 single
+cost gate 位于这些计算之前，completion-driven scheduler 不再为必定失败的 Split 候选
+制造派发空洞。该优化是控制路径减负，不应被解释成改变 benchmark 工作量或禁用 Split；
+有实测 Split profile 的候选仍按原逻辑比较。
+
+### 12.1 必须先做的 A/B
+
+重新构建 runtime 后建议做三档消融。完全关闭副本是原始 runtime baseline：
+
+```bash
+SYCL_SNMD_PROFILE_PERSIST=0 \
+SYCL_SNMD_READ_REPLICA_MAX_BYTES=0 \
+mpirun --bind-to none -n 1 sycl-daemon
+```
+
+只打开 dispatch 内副本、每个 wait 后清空，是 34.048 s 对应阶段的 baseline：
+
+```bash
+SYCL_SNMD_PROFILE_PERSIST=0 \
+SYCL_SNMD_READ_REPLICA_MAX_BYTES=65536 \
+SYCL_SNMD_READ_REPLICA_PERSIST=0 \
+mpirun --bind-to none -n 1 sycl-daemon
+```
+
+打开默认的版本化跨 wait 副本：
+
+```bash
+SYCL_SNMD_PROFILE_PERSIST=0 \
+SYCL_SNMD_READ_REPLICA_MAX_BYTES=65536 \
+SYCL_SNMD_READ_REPLICA_PERSIST=1 \
+mpirun --bind-to none -n 1 sycl-daemon
+```
+
+两次都用第 6 节同一组 `alternating` 参数。为排除随机调度和冷启动，先 warm-up 一次，
+随后至少计时 5 次。不要在 A/B 之间复用 profile store。
+
+正式测量应让 `PRINT_DAEMON_TRACE` 和 `PRINT_HANDLER_TRACE` 都处于关闭状态；同步输出数万
+条候选/profile 日志会进入 completion 控制路径。另跑一次启用 trace 的诊断 run 验证
+副本结构，不要把该 run 的 `run_sec` 放进性能图。`adaptive-result3.txt` 还显示 daemon
+加载了 16980 条持久 profile，因此它适合诊断但不是干净的论文计时；上述命令必须保留
+`SYCL_SNMD_PROFILE_PERSIST=0`。
+
+把 `PERSIST=0`、`PERSIST=1` 两组完整诊断 stdout/stderr 分别保存为
+`replica-window-local.txt` 和 `replica-cross-wait.txt`，可用分析器执行一致性与性能 gate：
+
+```bash
+python3 analyze_adaptive_read_replica.py \
+  --baseline replica-window-local.txt \
+  --fixed replica-cross-wait.txt \
+  --strict
+```
+
+默认要求 checksum 一致、所有 run 都通过 VERIFY、四个 2048-byte mechanism table 均在
+至少两个设备上建立副本、median speedup 不低于 1.20x，且修复后 chemistry median
+host-submit/device-time 比值不超过 0.50；同时要求每张设备/每次进程最多准备一次机理表，
+且至少在 `steps - 1` 个 wait 边界保留 4 个副本对象。阈值可通过 `--min-speedup` 和
+`--max-host-device-ratio` 调整，但正式结果应同时保留原始日志，不能只报告脚本 PASS。
+
+若启用了 handler trace，修复命中时应看到每个 mechanism buffer 向多个 device 的：
+
+```text
+prepared dispatch read replica ... bytes: 2048 device_index: ...
+reuse pending read replica for non-split kernel
+retained cross-wait read replica objects: 4
+```
+
+`prepared ... bytes: 2048` 应集中在第一个 window；后续 window 应主要出现 `retained=4`
+和 reuse，而不是再次 prepare。若 prepare 仍每 step 出现，先检查运行二进制是否确实包含
+write-version 修复、环境变量是否拼写正确，再判断 CUDA copy 路径。
+
+同时必须满足：
+
+- `RESULT checksum` 与修复前一致且 `VERIFY passed=1`；
+- 稳态 chemistry wave 的多个 `resubmit host_duration_ns` 不再依次接近 0.21 s；
+- GPU timeline 中四张卡的 chemistry kernel 出现真实重叠；
+- enabled 相对 disabled 的差距来自 overlap，而不是减少 chemistry 工作量；
+- `patch-only` enabled 应首先显著下降；`full` 还包含 statistics 尾部，不能要求严格 4x。
+
+如果副本日志存在但仍只有一张 GPU 计算，下一步应检查每个 patch 的 state/substep buffer
+是否被 daemon 在连续窗口间频繁换卡，以及 CUDA module/context 首次提交是否同步阻塞；
+此时再修数据亲和性或 context 初始化。不要继续修改 chemistry 数学或增加敌对 mapper，
+因为那会掩盖尚未解决的运行时问题。

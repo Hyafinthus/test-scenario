@@ -1,0 +1,1606 @@
+heyifu@a6000-docker:~$ mpirun -n 1 sycl-daemon
+No protocol specified
+No protocol specified
+MPI_Rank 0: a6000-docker of 1 started
+ProfileStore: loaded 16980 records from /tmp/sycl-snmd-profile-observations-v1-rank0.tsv namespace default
+MPI_Rank 0: Established
+SystemSchedulerMonitor: MONITOR_Rank 0 started.
+MPI_Rank 0: SystemSchedulerSubmit started
+SystemSchedulerSubmit: SUBMIT_Rank 0 started.
+Number of GPUs: 4
+GPU 0: PCI Bus ID: 00000000:3A:00.0 int: 58
+GPU 1: PCI Bus ID: 00000000:3C:00.0 int: 60
+GPU 2: PCI Bus ID: 00000000:AD:00.0 int: 173
+GPU 3: PCI Bus ID: 00000000:BE:00.0 int: 190
+SYCL Device 0 (INTEL(R) XEON(R) GOLD 6530): PCI Bus ID: -1
+SYCL Device 1 (NVIDIA RTX 6000 Ada Generation): PCI Bus ID: 58
+SYCL Device 2 (NVIDIA RTX 6000 Ada Generation): PCI Bus ID: 60
+SYCL Device 3 (NVIDIA RTX 6000 Ada Generation): PCI Bus ID: 173
+SYCL Device 4 (NVIDIA RTX 6000 Ada Generation): PCI Bus ID: 190
+SYCL Device 1 mapped to GPU 1 fp32 capability 11.39 fp64 capability 5.56
+SYCL Device 2 mapped to GPU 2 fp32 capability 11.39 fp64 capability 5.56
+SYCL Device 3 mapped to GPU 3 fp32 capability 11.39 fp64 capability 5.56
+SYCL Device 4 mapped to GPU 4 fp32 capability 11.39 fp64 capability 5.56
+SUBMIT_Rank 0: Received submit command: /home/heyifu/SYCL/test-scenario/adaptive_reacting_flow_uq_sycl_timer_our --rows 512 --cols 512 --patches 8 --steps 32 --cold-substeps 64 --hot-substeps 8192 --reaction-channels 512 --spectral-samples 1024 --split-parts 4 --layout clustered --mode full --wait-each-kernel 0 --host-read-full 1 --verify 1 --directional-layout aligned
+SystemSchedulerScale: SUBMIT_Rank 0 SYCLAPP_Rank 0 SYCLAPP_Size 1 DAEMON_Rank 0 DAEMON_Size 1
+SUBMIT_Rank 0 SYCLAPP_Rank 0: Launched binary with PID 745395
+SystemSchedulerScale: SYCLAPP_Rank 0 waiting DAEMON NOTIFY
+EstablishDaemon: Rank 0 created mq_id_daemon: 126
+waiting
+waiting
+waiting
+waiting
+waiting
+waiting
+waiting
+waiting
+waiting
+waiting
+waiting
+waiting
+waiting
+waiting
+waiting
+waiting
+Process 745395: ProgramManager SCHEDULE register
+waiting
+waiting
+SystemSchedulerDaemonOffline: Rank 0 for PID 745395 opened mq_id_program: /sycl_mq_program_745395
+SystemSchedulerDaemonOffline: Rank 0 for PID 745395 send to ProgramManager scale_count: 0 ret: 0
+SystemSchedulerDaemonOffline: Rank 0 for PID 745395 started.
+SystemSchedulerDaemonOffline: Rank 0: waiting reqs from handler
+Process 745395: ProgramManager SCHEDULE scale_count = 0
+Process 745395: ProgramManager SCHEDULE waiting mq_id_daemon
+Process 745395: ProgramManager SCHEDULE opened mq_id_daemon
+CONFIG rows=512 cols=512 patches=8 steps=32 mode=full layout=clustered directional_layout=aligned cold_substeps=64 hot_substeps=8192 reaction_channels=512 spectral_samples=1024 split_parts=4 wait_each_kernel=0 partition_contract=auto_detect
+DAG kernels_per_window=26 max_width=16 critical_path_levels=4 total_kernels=832
+WORK cells_per_patch=262144 hot_cells_per_patch=16384 chemistry_substeps_per_patch=149946368 chemistry_substeps_per_window=1199570944 reaction_channel_evals_per_window=614180323328 spectral_quadrature_evals_per_window=805306368
+MEMORY bytes_per_patch=17825792 total_estimated_bytes=145768448
+offline kernel_req batch multipart mq_receive payload_size: 17336 chunks: 3
+Rank 0: mq_receive kernel_req_datas size: 26
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 1 req_count: 1 pointer: 0x3093760
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 1 req_count: 2 pointer: 0x3093960
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 1 req_count: 3 pointer: 0x3093b60
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 1 req_count: 4 pointer: 0x3093d60
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 1 req_count: 5 pointer: 0x3093f60
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 1 req_count: 6 pointer: 0x3094060
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 1 req_count: 7 pointer: 0x3094160
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 1 req_count: 8 pointer: 0x3094260
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 2 req_count: 1 pointer: 0x3ba62a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 2 req_count: 2 pointer: 0x3da9430
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 2 req_count: 3 pointer: 0x3fac530
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 2 req_count: 4 pointer: 0x412f770
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 2 req_count: 5 pointer: 0x3399d30
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 2 req_count: 6 pointer: 0x349b620
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 2 req_count: 7 pointer: 0x359cf10
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 2 req_count: 8 pointer: 0x369e7b0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 3 req_count: 1 pointer: 0x4cc2340
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 3 req_count: 2 pointer: 0x4ec53c0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 3 req_count: 3 pointer: 0x50c8700
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 3 req_count: 4 pointer: 0x524b830
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 3 req_count: 5 pointer: 0x44b5e40
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 3 req_count: 6 pointer: 0x45b7730
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 3 req_count: 7 pointer: 0x46b8f70
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 3 req_count: 8 pointer: 0x47ba860
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 4 req_count: 1 pointer: 0x5dddeb0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 4 req_count: 2 pointer: 0x5fe0f30
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 4 req_count: 3 pointer: 0x61e3fb0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 4 req_count: 4 pointer: 0x6367030
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 4 req_count: 5 pointer: 0x55d1cb0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 4 req_count: 6 pointer: 0x56d3440
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 4 req_count: 7 pointer: 0x57d4d30
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 4 req_count: 8 pointer: 0x58d64c0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 5 req_count: 1 pointer: 0x6ef9ac0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 5 req_count: 2 pointer: 0x70fc9c0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 5 req_count: 3 pointer: 0x72ffb10
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 5 req_count: 4 pointer: 0x7482b90
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 5 req_count: 5 pointer: 0x66ed4b0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 5 req_count: 6 pointer: 0x67eec40
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 5 req_count: 7 pointer: 0x68f0530
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 5 req_count: 8 pointer: 0x69f1cc0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 6 req_count: 1 pointer: 0x8015210
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 6 req_count: 2 pointer: 0x8218290
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 6 req_count: 3 pointer: 0x841b310
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 6 req_count: 4 pointer: 0x859e390
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 6 req_count: 5 pointer: 0x7809010
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 6 req_count: 6 pointer: 0x790a7a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 6 req_count: 7 pointer: 0x7a0c090
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 6 req_count: 8 pointer: 0x7b0d820
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 7 req_count: 1 pointer: 0x9130a10
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 7 req_count: 2 pointer: 0x9333a90
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 7 req_count: 3 pointer: 0x9536b10
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 7 req_count: 4 pointer: 0x96b9b90
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 7 req_count: 5 pointer: 0x8924810
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 7 req_count: 6 pointer: 0x8a25fa0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 7 req_count: 7 pointer: 0x8b27890
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 7 req_count: 8 pointer: 0x8c29020
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 8 req_count: 1 pointer: 0xa24c210
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 8 req_count: 2 pointer: 0xa44f290
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 8 req_count: 3 pointer: 0xa652310
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 8 req_count: 4 pointer: 0xa7d5390
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 8 req_count: 5 pointer: 0x9a40010
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 8 req_count: 6 pointer: 0x9b417a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 8 req_count: 7 pointer: 0x9c43090
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 8 req_count: 8 pointer: 0x9d44820
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 9 req_count: 1 pointer: 0x3093760
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 9 req_count: 2 pointer: 0x3093960
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 9 req_count: 3 pointer: 0x3093b60
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 9 req_count: 4 pointer: 0x3093d60
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 9 req_count: 5 pointer: 0x3094760
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 9 req_count: 6 pointer: 0xb368220
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 9 req_count: 7 pointer: 0xb469b10
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 9 req_count: 8 pointer: 0xb56b2a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 9 req_count: 9 pointer: 0xb66cb90
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 9 req_count: 10 pointer: 0x3094360
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 9 req_count: 11 pointer: 0x3094460
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 9 req_count: 12 pointer: 0x3094560
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 9 req_count: 13 pointer: 0x3094660
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 10 req_count: 1 pointer: 0x3ba62a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 10 req_count: 2 pointer: 0x3da9430
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 10 req_count: 3 pointer: 0x3fac530
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 10 req_count: 4 pointer: 0x412f770
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 10 req_count: 5 pointer: 0x3094940
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 10 req_count: 6 pointer: 0xb368220
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 10 req_count: 7 pointer: 0xb469b10
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 10 req_count: 8 pointer: 0xb56b2a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 10 req_count: 9 pointer: 0xb66cb90
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 10 req_count: 10 pointer: 0x37a0030
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 10 req_count: 11 pointer: 0x38a18b0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 10 req_count: 12 pointer: 0x39a30e0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 10 req_count: 13 pointer: 0x32984a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 11 req_count: 1 pointer: 0x4cc2340
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 11 req_count: 2 pointer: 0x4ec53c0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 11 req_count: 3 pointer: 0x50c8700
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 11 req_count: 4 pointer: 0x524b830
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 11 req_count: 5 pointer: 0x41b13e0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 11 req_count: 6 pointer: 0xb368220
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 11 req_count: 7 pointer: 0xb469b10
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 11 req_count: 8 pointer: 0xb56b2a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 11 req_count: 9 pointer: 0xb66cb90
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 11 req_count: 10 pointer: 0x48bc130
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 11 req_count: 11 pointer: 0x49bda20
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 11 req_count: 12 pointer: 0x4abf2c0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 11 req_count: 13 pointer: 0x43b45a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 12 req_count: 1 pointer: 0x5dddeb0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 12 req_count: 2 pointer: 0x5fe0f30
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 12 req_count: 3 pointer: 0x61e3fb0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 12 req_count: 4 pointer: 0x6367030
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 12 req_count: 5 pointer: 0x52cd340
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 12 req_count: 6 pointer: 0xb368220
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 12 req_count: 7 pointer: 0xb469b10
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 12 req_count: 8 pointer: 0xb56b2a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 12 req_count: 9 pointer: 0xb66cb90
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 12 req_count: 10 pointer: 0x59d7db0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 12 req_count: 11 pointer: 0x5ad9540
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 12 req_count: 12 pointer: 0x5bdae30
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 12 req_count: 13 pointer: 0x54d03c0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 13 req_count: 1 pointer: 0x6ef9ac0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 13 req_count: 2 pointer: 0x70fc9c0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 13 req_count: 3 pointer: 0x72ffb10
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 13 req_count: 4 pointer: 0x7482b90
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 13 req_count: 5 pointer: 0x63e8b40
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 13 req_count: 6 pointer: 0xb368220
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 13 req_count: 7 pointer: 0xb469b10
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 13 req_count: 8 pointer: 0xb56b2a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 13 req_count: 9 pointer: 0xb66cb90
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 13 req_count: 10 pointer: 0x6af35b0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 13 req_count: 11 pointer: 0x6bf4d40
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 13 req_count: 12 pointer: 0x6cf6630
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 13 req_count: 13 pointer: 0x65ebbc0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 14 req_count: 1 pointer: 0x8015210
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 14 req_count: 2 pointer: 0x8218290
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 14 req_count: 3 pointer: 0x841b310
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 14 req_count: 4 pointer: 0x859e390
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 14 req_count: 5 pointer: 0x75046a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 14 req_count: 6 pointer: 0xb368220
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 14 req_count: 7 pointer: 0xb469b10
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 14 req_count: 8 pointer: 0xb56b2a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 14 req_count: 9 pointer: 0xb66cb90
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 14 req_count: 10 pointer: 0x7c0f110
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 14 req_count: 11 pointer: 0x7d108a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 14 req_count: 12 pointer: 0x7e12190
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 14 req_count: 13 pointer: 0x7707720
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 15 req_count: 1 pointer: 0x9130a10
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 15 req_count: 2 pointer: 0x9333a90
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 15 req_count: 3 pointer: 0x9536b10
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 15 req_count: 4 pointer: 0x96b9b90
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 15 req_count: 5 pointer: 0x861fea0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 15 req_count: 6 pointer: 0xb368220
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 15 req_count: 7 pointer: 0xb469b10
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 15 req_count: 8 pointer: 0xb56b2a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 15 req_count: 9 pointer: 0xb66cb90
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 15 req_count: 10 pointer: 0x8d2a910
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 15 req_count: 11 pointer: 0x8e2c0a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 15 req_count: 12 pointer: 0x8f2d990
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 15 req_count: 13 pointer: 0x8822f20
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 16 req_count: 1 pointer: 0xa24c210
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 16 req_count: 2 pointer: 0xa44f290
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 16 req_count: 3 pointer: 0xa652310
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 16 req_count: 4 pointer: 0xa7d5390
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 16 req_count: 5 pointer: 0x973b6a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 16 req_count: 6 pointer: 0xb368220
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 16 req_count: 7 pointer: 0xb469b10
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 16 req_count: 8 pointer: 0xb56b2a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 16 req_count: 9 pointer: 0xb66cb90
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 16 req_count: 10 pointer: 0x9e46110
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 16 req_count: 11 pointer: 0x9f478a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 16 req_count: 12 pointer: 0xa049190
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 16 req_count: 13 pointer: 0x993e720
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 17 req_count: 1 pointer: 0x3093f60
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 17 req_count: 2 pointer: 0x3094060
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 17 req_count: 3 pointer: 0x3094160
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 17 req_count: 4 pointer: 0x3094260
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 17 req_count: 5 pointer: 0x3094360
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 17 req_count: 6 pointer: 0x3094460
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 17 req_count: 7 pointer: 0x3094560
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 17 req_count: 8 pointer: 0x3094660
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 17 req_count: 9 pointer: 0x3093860
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 17 req_count: 10 pointer: 0x3093a60
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 17 req_count: 11 pointer: 0x3093c60
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 17 req_count: 12 pointer: 0x3093e60
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 18 req_count: 1 pointer: 0x3399d30
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 18 req_count: 2 pointer: 0x349b620
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 18 req_count: 3 pointer: 0x359cf10
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 18 req_count: 4 pointer: 0x369e7b0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 18 req_count: 5 pointer: 0x37a0030
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 18 req_count: 6 pointer: 0x38a18b0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 18 req_count: 7 pointer: 0x39a30e0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 18 req_count: 8 pointer: 0x32984a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 18 req_count: 9 pointer: 0x3ca7b40
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 18 req_count: 10 pointer: 0x3eaacb0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 18 req_count: 11 pointer: 0x40add70
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 18 req_count: 12 pointer: 0x3aa49b0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 19 req_count: 1 pointer: 0x44b5e40
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 19 req_count: 2 pointer: 0x45b7730
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 19 req_count: 3 pointer: 0x46b8f70
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 19 req_count: 4 pointer: 0x47ba860
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 19 req_count: 5 pointer: 0x48bc130
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 19 req_count: 6 pointer: 0x49bda20
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 19 req_count: 7 pointer: 0x4abf2c0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 19 req_count: 8 pointer: 0x43b45a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 19 req_count: 9 pointer: 0x4dc3c30
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 19 req_count: 10 pointer: 0x4fc6cb0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 19 req_count: 11 pointer: 0x51c9f40
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 19 req_count: 12 pointer: 0x4bc0bb0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 20 req_count: 1 pointer: 0x55d1cb0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 20 req_count: 2 pointer: 0x56d3440
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 20 req_count: 3 pointer: 0x57d4d30
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 20 req_count: 4 pointer: 0x58d64c0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 20 req_count: 5 pointer: 0x59d7db0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 20 req_count: 6 pointer: 0x5ad9540
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 20 req_count: 7 pointer: 0x5bdae30
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 20 req_count: 8 pointer: 0x54d03c0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 20 req_count: 9 pointer: 0x5edf640
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 20 req_count: 10 pointer: 0x60e26c0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 20 req_count: 11 pointer: 0x62e5740
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 20 req_count: 12 pointer: 0x5cdc5c0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 21 req_count: 1 pointer: 0x66ed4b0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 21 req_count: 2 pointer: 0x67eec40
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 21 req_count: 3 pointer: 0x68f0530
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 21 req_count: 4 pointer: 0x69f1cc0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 21 req_count: 5 pointer: 0x6af35b0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 21 req_count: 6 pointer: 0x6bf4d40
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 21 req_count: 7 pointer: 0x6cf6630
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 21 req_count: 8 pointer: 0x65ebbc0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 21 req_count: 9 pointer: 0x6ffb1a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 21 req_count: 10 pointer: 0x71fe240
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 21 req_count: 11 pointer: 0x74012a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 21 req_count: 12 pointer: 0x6df7dc0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 22 req_count: 1 pointer: 0x7809010
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 22 req_count: 2 pointer: 0x790a7a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 22 req_count: 3 pointer: 0x7a0c090
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 22 req_count: 4 pointer: 0x7b0d820
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 22 req_count: 5 pointer: 0x7c0f110
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 22 req_count: 6 pointer: 0x7d108a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 22 req_count: 7 pointer: 0x7e12190
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 22 req_count: 8 pointer: 0x7707720
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 22 req_count: 9 pointer: 0x81169a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 22 req_count: 10 pointer: 0x8319a20
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 22 req_count: 11 pointer: 0x851caa0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 22 req_count: 12 pointer: 0x7f13920
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 23 req_count: 1 pointer: 0x8924810
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 23 req_count: 2 pointer: 0x8a25fa0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 23 req_count: 3 pointer: 0x8b27890
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 23 req_count: 4 pointer: 0x8c29020
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 23 req_count: 5 pointer: 0x8d2a910
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 23 req_count: 6 pointer: 0x8e2c0a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 23 req_count: 7 pointer: 0x8f2d990
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 23 req_count: 8 pointer: 0x8822f20
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 23 req_count: 9 pointer: 0x92321a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 23 req_count: 10 pointer: 0x9435220
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 23 req_count: 11 pointer: 0x96382a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 23 req_count: 12 pointer: 0x902f120
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 24 req_count: 1 pointer: 0x9a40010
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 24 req_count: 2 pointer: 0x9b417a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 24 req_count: 3 pointer: 0x9c43090
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 24 req_count: 4 pointer: 0x9d44820
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 24 req_count: 5 pointer: 0x9e46110
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 24 req_count: 6 pointer: 0x9f478a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 24 req_count: 7 pointer: 0xa049190
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 24 req_count: 8 pointer: 0x993e720
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 24 req_count: 9 pointer: 0xa34d9a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 24 req_count: 10 pointer: 0xa550a20
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 24 req_count: 11 pointer: 0xa753aa0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 24 req_count: 12 pointer: 0xa14a920
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 25 req_count: 1 pointer: 0x3093860
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 25 req_count: 2 pointer: 0x3ca7b40
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 25 req_count: 3 pointer: 0x4dc3c30
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 25 req_count: 4 pointer: 0x5edf640
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 25 req_count: 5 pointer: 0x6ffb1a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 25 req_count: 6 pointer: 0x81169a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 25 req_count: 7 pointer: 0x92321a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 25 req_count: 8 pointer: 0xa34d9a0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 25 req_count: 9 pointer: 0xb76e320
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 25 req_count: 10 pointer: 0xb86fc10
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 26 req_count: 1 pointer: 0xb76e320
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 26 req_count: 2 pointer: 0xb86fc10
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 26 req_count: 3 pointer: 0xab5c020
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 26 req_count: 4 pointer: 0xa856ea0
+Rank 0: mq_receive kernel_req_data pid: 745395 count: 26 req_count: 5 pointer: 0xb8f13a0
+ensureOfflineDeviceModel: Rank 0 Proc 0 FP32Capability 1.8622 FP64Capability 1 Util 2.38524 FreshProfile 0 ServiceTimeScale 1 AvailableTime 0
+ensureOfflineDeviceModel: Rank 0 Proc 1 FP32Capability 21.2104 FP64Capability 10.3538 Util 0 FreshProfile 0 ServiceTimeScale 1 AvailableTime 0
+ensureOfflineDeviceModel: Rank 0 Proc 2 FP32Capability 21.2104 FP64Capability 10.3538 Util 0 FreshProfile 0 ServiceTimeScale 1 AvailableTime 0
+ensureOfflineDeviceModel: Rank 0 Proc 3 FP32Capability 21.2104 FP64Capability 10.3538 Util 0 FreshProfile 0 ServiceTimeScale 1 AvailableTime 0
+ensureOfflineDeviceModel: Rank 0 Proc 4 FP32Capability 21.2104 FP64Capability 10.3538 Util 0 FreshProfile 0 ServiceTimeScale 1 AvailableTime 0
+algorithmHEFT: Kernel 1 identity b722f3c910e0b662 total_elem: 2.09715e+06 precision: fp32
+algorithmHEFT: Kernel 2 identity b722f3c910e0b662 total_elem: 2.09715e+06 precision: fp32
+algorithmHEFT: Kernel 3 identity b722f3c910e0b662 total_elem: 2.09715e+06 precision: fp32
+algorithmHEFT: Kernel 4 identity b722f3c910e0b662 total_elem: 2.09715e+06 precision: fp32
+algorithmHEFT: Kernel 5 identity b722f3c910e0b662 total_elem: 2.09715e+06 precision: fp32
+algorithmHEFT: Kernel 6 identity b722f3c910e0b662 total_elem: 2.09715e+06 precision: fp32
+algorithmHEFT: Kernel 7 identity b722f3c910e0b662 total_elem: 2.09715e+06 precision: fp32
+algorithmHEFT: Kernel 8 identity b722f3c910e0b662 total_elem: 2.09715e+06 precision: fp32
+algorithmHEFT: Kernel 9 identity bce2caf8b5e8e34b total_elem: 2.36134e+06 precision: fp32
+algorithmHEFT: Kernel 10 identity bce2caf8b5e8e34b total_elem: 2.36134e+06 precision: fp32
+algorithmHEFT: Kernel 11 identity bce2caf8b5e8e34b total_elem: 2.36134e+06 precision: fp32
+algorithmHEFT: Kernel 12 identity bce2caf8b5e8e34b total_elem: 2.36134e+06 precision: fp32
+algorithmHEFT: Kernel 13 identity bce2caf8b5e8e34b total_elem: 2.36134e+06 precision: fp32
+algorithmHEFT: Kernel 14 identity bce2caf8b5e8e34b total_elem: 2.36134e+06 precision: fp32
+algorithmHEFT: Kernel 15 identity bce2caf8b5e8e34b total_elem: 2.36134e+06 precision: fp32
+algorithmHEFT: Kernel 16 identity bce2caf8b5e8e34b total_elem: 2.36134e+06 precision: fp32
+algorithmHEFT: Kernel 17 identity 85918f8b5ff0cffe total_elem: 3.14573e+06 precision: fp32
+algorithmHEFT: Kernel 17 depends on Kernel 1 pre_comm_elem: 1048576
+algorithmHEFT: Kernel 17 depends on Kernel 9 pre_comm_elem: 1048576
+algorithmHEFT: Kernel 18 identity 85918f8b5ff0cffe total_elem: 3.14573e+06 precision: fp32
+algorithmHEFT: Kernel 18 depends on Kernel 2 pre_comm_elem: 1048576
+algorithmHEFT: Kernel 18 depends on Kernel 10 pre_comm_elem: 1048576
+algorithmHEFT: Kernel 19 identity 85918f8b5ff0cffe total_elem: 3.14573e+06 precision: fp32
+algorithmHEFT: Kernel 19 depends on Kernel 3 pre_comm_elem: 1048576
+algorithmHEFT: Kernel 19 depends on Kernel 11 pre_comm_elem: 1048576
+algorithmHEFT: Kernel 20 identity 85918f8b5ff0cffe total_elem: 3.14573e+06 precision: fp32
+algorithmHEFT: Kernel 20 depends on Kernel 4 pre_comm_elem: 1048576
+algorithmHEFT: Kernel 20 depends on Kernel 12 pre_comm_elem: 1048576
+algorithmHEFT: Kernel 21 identity 85918f8b5ff0cffe total_elem: 3.14573e+06 precision: fp32
+algorithmHEFT: Kernel 21 depends on Kernel 5 pre_comm_elem: 1048576
+algorithmHEFT: Kernel 21 depends on Kernel 13 pre_comm_elem: 1048576
+algorithmHEFT: Kernel 22 identity 85918f8b5ff0cffe total_elem: 3.14573e+06 precision: fp32
+algorithmHEFT: Kernel 22 depends on Kernel 6 pre_comm_elem: 1048576
+algorithmHEFT: Kernel 22 depends on Kernel 14 pre_comm_elem: 1048576
+algorithmHEFT: Kernel 23 identity 85918f8b5ff0cffe total_elem: 3.14573e+06 precision: fp32
+algorithmHEFT: Kernel 23 depends on Kernel 7 pre_comm_elem: 1048576
+algorithmHEFT: Kernel 23 depends on Kernel 15 pre_comm_elem: 1048576
+algorithmHEFT: Kernel 24 identity 85918f8b5ff0cffe total_elem: 3.14573e+06 precision: fp32
+algorithmHEFT: Kernel 24 depends on Kernel 8 pre_comm_elem: 1048576
+algorithmHEFT: Kernel 24 depends on Kernel 16 pre_comm_elem: 1048576
+algorithmHEFT: Kernel 25 identity f365eeab0350b2a8 total_elem: 2.62144e+06 precision: fp32
+algorithmHEFT: Kernel 25 depends on Kernel 17 pre_comm_elem: 262144
+algorithmHEFT: Kernel 25 depends on Kernel 18 pre_comm_elem: 262144
+algorithmHEFT: Kernel 25 depends on Kernel 19 pre_comm_elem: 262144
+algorithmHEFT: Kernel 25 depends on Kernel 20 pre_comm_elem: 262144
+algorithmHEFT: Kernel 25 depends on Kernel 21 pre_comm_elem: 262144
+algorithmHEFT: Kernel 25 depends on Kernel 22 pre_comm_elem: 262144
+algorithmHEFT: Kernel 25 depends on Kernel 23 pre_comm_elem: 262144
+algorithmHEFT: Kernel 25 depends on Kernel 24 pre_comm_elem: 262144
+algorithmHEFT: Kernel 26 identity 93ac58e5279bbeb total_elem: 788480 precision: fp32
+algorithmHEFT: Kernel 26 depends on Kernel 25 pre_comm_elem: 524288
+algorithmHEFT: Kernel 26 is exit node rank_u: 129.811
+algorithmHEFT: Kernel 9 cold split probe rejected: split 12094.8 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 9 cold split probe rejected: split 12156.1 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 9 cold split probe rejected: split 12096.2 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 9 cold split probe rejected: split 12289.1 single 20872.9 min_single 500000
+algorithmHEFT: Kernel 9 cold split probe rejected: split 12096.3 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 9 cold split probe rejected: split 12154.7 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 9 cold split probe rejected: split 6058.52 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 9 assigned to Rank 0 Proc 2 NumParts 1 PersistentSplit 0 SplitDevices 2 start_time 0 exec_cost 20545.2 exec_uncertainty 5142.72 transfer_uncertainty 0 cost_source persisted-profile profile_samples 632 risk_score 30625 movement_bytes 0 transfer_reservations 0 finish_time 20545.2
+algorithmHEFT: Kernel 10 cold split probe rejected: split 12094.8 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 10 cold split probe rejected: split 12156.1 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 10 cold split probe rejected: split 12096.2 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 10 cold split probe rejected: split 12289.1 single 20872.9 min_single 500000
+algorithmHEFT: Kernel 10 cold split probe rejected: split 12096.3 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 10 cold split probe rejected: split 12154.7 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 10 cold split probe rejected: split 6058.52 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 10 assigned to Rank 0 Proc 3 NumParts 1 PersistentSplit 0 SplitDevices 3 start_time 0 exec_cost 20647.1 exec_uncertainty 5166.52 transfer_uncertainty 0 cost_source persisted-profile profile_samples 1123 risk_score 30773.5 movement_bytes 0 transfer_reservations 0 finish_time 20647.1
+algorithmHEFT: Kernel 16 cold split probe rejected: split 12094.8 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 12156.1 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 12096.2 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 12289.1 single 20872.9 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 12096.3 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 12154.7 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 6058.52 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 16 assigned to Rank 0 Proc 4 NumParts 1 PersistentSplit 0 SplitDevices 4 start_time 0 exec_cost 20872.9 exec_uncertainty 5248.13 transfer_uncertainty 0 cost_source persisted-profile profile_samples 59 risk_score 31159.2 movement_bytes 0 transfer_reservations 0 finish_time 20872.9
+algorithmHEFT: Kernel 15 cold split probe rejected: split 12094.8 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 15 cold split probe rejected: split 12156.1 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 15 cold split probe rejected: split 12096.2 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 15 cold split probe rejected: split 12289.1 single 20872.9 min_single 500000
+algorithmHEFT: Kernel 15 cold split probe rejected: split 12096.3 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 15 cold split probe rejected: split 12154.7 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 15 cold split probe rejected: split 6058.52 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 15 assigned to Rank 0 Proc 1 NumParts 1 PersistentSplit 0 SplitDevices 1 start_time 0 exec_cost 20975.6 exec_uncertainty 5248.83 transfer_uncertainty 0 cost_source persisted-profile profile_samples 305 risk_score 31263.3 movement_bytes 0 transfer_reservations 0 finish_time 20975.6
+algorithmHEFT: Kernel 14 cold split probe rejected: split 12094.8 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 14 cold split probe rejected: split 12156.1 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 14 cold split probe rejected: split 12096.2 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 14 cold split probe rejected: split 12289.1 single 20872.9 min_single 500000
+algorithmHEFT: Kernel 14 cold split probe rejected: split 12096.3 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 14 cold split probe rejected: split 12154.7 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 14 cold split probe rejected: split 6058.52 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 14 assigned to Rank 0 Proc 2 NumParts 1 PersistentSplit 0 SplitDevices 2 start_time 20545.2 exec_cost 20545.2 exec_uncertainty 5142.72 transfer_uncertainty 0 cost_source persisted-profile profile_samples 632 risk_score 51170.2 movement_bytes 0 transfer_reservations 0 finish_time 41090.5
+algorithmHEFT: Kernel 13 cold split probe rejected: split 12094.8 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 13 cold split probe rejected: split 12156.1 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 13 cold split probe rejected: split 12096.2 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 13 cold split probe rejected: split 12289.1 single 20872.9 min_single 500000
+algorithmHEFT: Kernel 13 cold split probe rejected: split 12096.3 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 13 cold split probe rejected: split 12154.7 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 13 cold split probe rejected: split 6058.52 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 13 assigned to Rank 0 Proc 3 NumParts 1 PersistentSplit 0 SplitDevices 3 start_time 20647.1 exec_cost 20647.1 exec_uncertainty 5166.52 transfer_uncertainty 0 cost_source persisted-profile profile_samples 1123 risk_score 51420.5 movement_bytes 0 transfer_reservations 0 finish_time 41294.2
+algorithmHEFT: Kernel 12 cold split probe rejected: split 12094.8 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 12 cold split probe rejected: split 12156.1 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 12 cold split probe rejected: split 12096.2 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 12 cold split probe rejected: split 12289.1 single 20872.9 min_single 500000
+algorithmHEFT: Kernel 12 cold split probe rejected: split 12096.3 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 12 cold split probe rejected: split 12154.7 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 12 cold split probe rejected: split 6058.52 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 12 assigned to Rank 0 Proc 4 NumParts 1 PersistentSplit 0 SplitDevices 4 start_time 20872.9 exec_cost 20872.9 exec_uncertainty 5248.13 transfer_uncertainty 0 cost_source persisted-profile profile_samples 59 risk_score 52032.2 movement_bytes 0 transfer_reservations 0 finish_time 41745.8
+algorithmHEFT: Kernel 11 cold split probe rejected: split 12094.8 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 11 cold split probe rejected: split 12156.1 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 11 cold split probe rejected: split 12096.2 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 11 cold split probe rejected: split 12289.1 single 20872.9 min_single 500000
+algorithmHEFT: Kernel 11 cold split probe rejected: split 12096.3 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 11 cold split probe rejected: split 12154.7 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 11 cold split probe rejected: split 6058.52 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 11 assigned to Rank 0 Proc 1 NumParts 1 PersistentSplit 0 SplitDevices 1 start_time 20975.6 exec_cost 20975.6 exec_uncertainty 5248.83 transfer_uncertainty 0 cost_source persisted-profile profile_samples 305 risk_score 52238.8 movement_bytes 0 transfer_reservations 0 finish_time 41951.1
+algorithmHEFT: Kernel 1 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 1 assigned to Rank 0 Proc 2 NumParts 1 PersistentSplit 0 SplitDevices 2 start_time 41090.5 exec_cost 1.20507 exec_uncertainty 1.09358 transfer_uncertainty 0 cost_source persisted-profile profile_samples 651 risk_score 41093.8 movement_bytes 0 transfer_reservations 0 finish_time 41091.7
+algorithmHEFT: Kernel 2 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 2 assigned to Rank 0 Proc 2 NumParts 1 PersistentSplit 0 SplitDevices 2 start_time 41091.7 exec_cost 1.20507 exec_uncertainty 1.09358 transfer_uncertainty 0 cost_source persisted-profile profile_samples 651 risk_score 41095 movement_bytes 0 transfer_reservations 0 finish_time 41092.9
+algorithmHEFT: Kernel 3 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 3 assigned to Rank 0 Proc 2 NumParts 1 PersistentSplit 0 SplitDevices 2 start_time 41092.9 exec_cost 1.20507 exec_uncertainty 1.09358 transfer_uncertainty 0 cost_source persisted-profile profile_samples 651 risk_score 41096.2 movement_bytes 0 transfer_reservations 0 finish_time 41094.1
+algorithmHEFT: Kernel 4 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 4 assigned to Rank 0 Proc 2 NumParts 1 PersistentSplit 0 SplitDevices 2 start_time 41094.1 exec_cost 1.20507 exec_uncertainty 1.09358 transfer_uncertainty 0 cost_source persisted-profile profile_samples 651 risk_score 41097.4 movement_bytes 0 transfer_reservations 0 finish_time 41095.3
+algorithmHEFT: Kernel 5 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 5 assigned to Rank 0 Proc 2 NumParts 1 PersistentSplit 0 SplitDevices 2 start_time 41095.3 exec_cost 1.20507 exec_uncertainty 1.09358 transfer_uncertainty 0 cost_source persisted-profile profile_samples 651 risk_score 41098.6 movement_bytes 0 transfer_reservations 0 finish_time 41096.5
+algorithmHEFT: Kernel 6 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 6 assigned to Rank 0 Proc 2 NumParts 1 PersistentSplit 0 SplitDevices 2 start_time 41096.5 exec_cost 1.20507 exec_uncertainty 1.09358 transfer_uncertainty 0 cost_source persisted-profile profile_samples 651 risk_score 41099.9 movement_bytes 0 transfer_reservations 0 finish_time 41097.7
+algorithmHEFT: Kernel 7 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 7 assigned to Rank 0 Proc 2 NumParts 1 PersistentSplit 0 SplitDevices 2 start_time 41097.7 exec_cost 1.20507 exec_uncertainty 1.09358 transfer_uncertainty 0 cost_source persisted-profile profile_samples 651 risk_score 41101.1 movement_bytes 0 transfer_reservations 0 finish_time 41098.9
+algorithmHEFT: Kernel 8 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 8 assigned to Rank 0 Proc 2 NumParts 1 PersistentSplit 0 SplitDevices 2 start_time 41098.9 exec_cost 1.20507 exec_uncertainty 1.09358 transfer_uncertainty 0 cost_source persisted-profile profile_samples 651 risk_score 41102.3 movement_bytes 0 transfer_reservations 0 finish_time 41100.1
+algorithmHEFT: Kernel 17 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 17 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 17 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 17 cold split probe rejected: split 1.54584 single 1.94792 min_single 500000
+algorithmHEFT: Kernel 17 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 17 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 17 cold split probe rejected: split 1.09726 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 17 assigned to Rank 0 Proc 2 NumParts 1 PersistentSplit 0 SplitDevices 2 start_time 41100.1 exec_cost 1.01067 exec_uncertainty 0.620998 transfer_uncertainty 0 cost_source persisted-profile profile_samples 578 risk_score 41102.3 movement_bytes 0 transfer_reservations 0 finish_time 41101.1
+algorithmHEFT: Kernel 18 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 1.54584 single 1.94792 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 1.09726 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 18 assigned to Rank 0 Proc 2 NumParts 1 PersistentSplit 0 SplitDevices 2 start_time 41312.6 exec_cost 1.01067 exec_uncertainty 0.620998 transfer_uncertainty 2.76125 cost_source persisted-profile profile_samples 578 risk_score 41319.1 movement_bytes 4.1943e+06 transfer_reservations 2 finish_time 41313.6
+algorithmHEFT: Kernel 19 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 19 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 19 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 19 cold split probe rejected: split 1.54584 single 1.94792 min_single 500000
+algorithmHEFT: Kernel 19 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 19 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 19 cold split probe rejected: split 1.09726 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 19 assigned to Rank 0 Proc 2 NumParts 1 PersistentSplit 0 SplitDevices 2 start_time 41967 exec_cost 1.01067 exec_uncertainty 0.620998 transfer_uncertainty 2.3838 cost_source persisted-profile profile_samples 578 risk_score 41972.9 movement_bytes 4.1943e+06 transfer_reservations 2 finish_time 41968
+algorithmHEFT: Kernel 20 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 20 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 20 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 20 cold split probe rejected: split 1.54584 single 1.94792 min_single 500000
+algorithmHEFT: Kernel 20 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 20 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 20 cold split probe rejected: split 1.09726 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 20 assigned to Rank 0 Proc 2 NumParts 1 PersistentSplit 0 SplitDevices 2 start_time 41986.5 exec_cost 1.01067 exec_uncertainty 0.620998 transfer_uncertainty 2.77039 cost_source persisted-profile profile_samples 578 risk_score 41993.1 movement_bytes 4.1943e+06 transfer_reservations 2 finish_time 41987.5
+algorithmHEFT: Kernel 21 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.54584 single 1.94792 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.09726 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 21 assigned to Rank 0 Proc 2 NumParts 1 PersistentSplit 0 SplitDevices 2 start_time 42005.9 exec_cost 1.01067 exec_uncertainty 0.620998 transfer_uncertainty 2.76125 cost_source persisted-profile profile_samples 578 risk_score 42012.5 movement_bytes 4.1943e+06 transfer_reservations 2 finish_time 42006.9
+algorithmHEFT: Kernel 22 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 22 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 22 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 22 cold split probe rejected: split 1.54584 single 1.94792 min_single 500000
+algorithmHEFT: Kernel 22 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 22 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 22 cold split probe rejected: split 1.09726 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 22 assigned to Rank 0 Proc 2 NumParts 1 PersistentSplit 0 SplitDevices 2 start_time 42006.9 exec_cost 1.01067 exec_uncertainty 0.620998 transfer_uncertainty 0 cost_source persisted-profile profile_samples 578 risk_score 42009.2 movement_bytes 0 transfer_reservations 0 finish_time 42007.9
+algorithmHEFT: Kernel 23 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.54584 single 1.94792 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.09726 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 23 assigned to Rank 0 Proc 2 NumParts 1 PersistentSplit 0 SplitDevices 2 start_time 42023.8 exec_cost 1.01067 exec_uncertainty 0.620998 transfer_uncertainty 2.3838 cost_source persisted-profile profile_samples 578 risk_score 42029.7 movement_bytes 4.1943e+06 transfer_reservations 2 finish_time 42024.8
+algorithmHEFT: Kernel 24 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 24 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 24 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 24 cold split probe rejected: split 1.54584 single 1.94792 min_single 500000
+algorithmHEFT: Kernel 24 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 24 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 24 cold split probe rejected: split 1.09726 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 24 assigned to Rank 0 Proc 2 NumParts 1 PersistentSplit 0 SplitDevices 2 start_time 42043.3 exec_cost 1.01067 exec_uncertainty 0.620998 transfer_uncertainty 2.77039 cost_source persisted-profile profile_samples 578 risk_score 42049.9 movement_bytes 4.1943e+06 transfer_reservations 2 finish_time 42044.3
+algorithmHEFT: Kernel 25 cold split probe rejected: split 1.18472 single 1.33402 min_single 500000
+algorithmHEFT: Kernel 25 cold split probe rejected: split 1.9644 single 2.65947 min_single 500000
+algorithmHEFT: Kernel 25 cold split probe rejected: split 1.18472 single 1.33402 min_single 500000
+algorithmHEFT: Kernel 25 cold split probe rejected: split 1.71702 single 2.23894 min_single 500000
+algorithmHEFT: Kernel 25 cold split probe rejected: split 1.18472 single 1.33402 min_single 500000
+algorithmHEFT: Kernel 25 cold split probe rejected: split 1.71702 single 2.23894 min_single 500000
+algorithmHEFT: Kernel 25 cold split probe rejected: split 1.19236 single 1.33402 min_single 500000
+algorithmHEFT: Kernel 25 assigned to Rank 0 Proc 2 NumParts 1 PersistentSplit 0 SplitDevices 2 start_time 42044.3 exec_cost 1.33402 exec_uncertainty 0.91253 transfer_uncertainty 0 cost_source persisted-profile profile_samples 91 risk_score 42047.4 movement_bytes 0 transfer_reservations 0 finish_time 42045.7
+algorithmHEFT: Kernel 26 cold split probe rejected: split 50.339 single 81.4666 min_single 500000
+algorithmHEFT: Kernel 26 cold split probe rejected: split 50.6585 single 81.4666 min_single 500000
+algorithmHEFT: Kernel 26 cold split probe rejected: split 50.6585 single 81.4666 min_single 500000
+algorithmHEFT: Kernel 26 cold split probe rejected: split 50.6612 single 81.4666 min_single 500000
+algorithmHEFT: Kernel 26 cold split probe rejected: split 50.6665 single 81.4666 min_single 500000
+algorithmHEFT: Kernel 26 cold split probe rejected: split 50.3392 single 81.4666 min_single 500000
+algorithmHEFT: Kernel 26 cold split probe rejected: split 28.1596 single 81.4666 min_single 500000
+algorithmHEFT: Kernel 26 assigned to Rank 0 Proc 2 NumParts 1 PersistentSplit 0 SplitDevices 2 start_time 42045.7 exec_cost 81.4666 exec_uncertainty 20.3817 transfer_uncertainty 0 cost_source persisted-profile profile_samples 264 risk_score 42167.1 movement_bytes 0 transfer_reservations 0 finish_time 42127.1
+Rank 0 TEST kernel_sched_order_infos size: 26
+algorithmHEFT: Kernel 9 cold split probe rejected: split 12094.8 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 9 cold split probe rejected: split 12156.1 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 9 cold split probe rejected: split 12096.2 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 9 cold split probe rejected: split 12289.1 single 20872.9 min_single 500000
+algorithmHEFT: Kernel 9 cold split probe rejected: split 12096.3 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 9 cold split probe rejected: split 12154.7 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 9 cold split probe rejected: split 6058.52 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 10 cold split probe rejected: split 12094.8 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 10 cold split probe rejected: split 12156.1 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 10 cold split probe rejected: split 12096.2 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 10 cold split probe rejected: split 12289.1 single 20872.9 min_single 500000
+algorithmHEFT: Kernel 10 cold split probe rejected: split 12096.3 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 10 cold split probe rejected: split 12154.7 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 10 cold split probe rejected: split 6058.52 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 11 cold split probe rejected: split 12094.8 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 11 cold split probe rejected: split 12156.1 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 11 cold split probe rejected: split 12096.2 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 11 cold split probe rejected: split 12289.1 single 20872.9 min_single 500000
+algorithmHEFT: Kernel 11 cold split probe rejected: split 12096.3 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 11 cold split probe rejected: split 12154.7 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 11 cold split probe rejected: split 6058.52 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 12 cold split probe rejected: split 12094.8 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 12 cold split probe rejected: split 12156.1 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 12 cold split probe rejected: split 12096.2 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 12 cold split probe rejected: split 12289.1 single 20872.9 min_single 500000
+algorithmHEFT: Kernel 12 cold split probe rejected: split 12096.3 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 12 cold split probe rejected: split 12154.7 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 12 cold split probe rejected: split 6058.52 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 13 cold split probe rejected: split 12094.8 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 13 cold split probe rejected: split 12156.1 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 13 cold split probe rejected: split 12096.2 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 13 cold split probe rejected: split 12289.1 single 20872.9 min_single 500000
+algorithmHEFT: Kernel 13 cold split probe rejected: split 12096.3 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 13 cold split probe rejected: split 12154.7 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 13 cold split probe rejected: split 6058.52 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 14 cold split probe rejected: split 12094.8 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 14 cold split probe rejected: split 12156.1 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 14 cold split probe rejected: split 12096.2 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 14 cold split probe rejected: split 12289.1 single 20872.9 min_single 500000
+algorithmHEFT: Kernel 14 cold split probe rejected: split 12096.3 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 14 cold split probe rejected: split 12154.7 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 14 cold split probe rejected: split 6058.52 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 15 cold split probe rejected: split 12094.8 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 15 cold split probe rejected: split 12156.1 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 15 cold split probe rejected: split 12096.2 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 15 cold split probe rejected: split 12289.1 single 20872.9 min_single 500000
+algorithmHEFT: Kernel 15 cold split probe rejected: split 12096.3 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 15 cold split probe rejected: split 12154.7 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 15 cold split probe rejected: split 6058.52 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 12094.8 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 12156.1 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 12096.2 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 12289.1 single 20872.9 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 12096.3 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 12154.7 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 6058.52 single 20545.2 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+CompletionQueue: dispatch_order 1 kernel 9 rank 0 proc 2 parts 1 persistent 0 movement_bytes 0 reserved_devices 1
+CompletionQueue: dispatch_order 2 kernel 10 rank 0 proc 3 parts 1 persistent 0 movement_bytes 0 reserved_devices 1
+CompletionQueue: dispatch_order 3 kernel 11 rank 0 proc 4 parts 1 persistent 0 movement_bytes 0 reserved_devices 1
+CompletionQueue: dispatch_order 4 kernel 12 rank 0 proc 1 parts 1 persistent 0 movement_bytes 0 reserved_devices 1
+ProfileCostTable: key kid=bce2caf8b5e8e34b|dims=2:512x512x1|reqs=13|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:2:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:512:512x1x1:a512x1x1:o0x0x0:sub0:pl0;1024:4:512:512x1x1:a512x1x1:o0x0x0:sub0:pl0;1024:4:512:512x1x1:a512x1x1:o0x0x0:sub0:pl0;1024:4:512:512x1x1:a512x1x1:o0x0x0:sub0:pl0;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=4726784|wb=4194304 rank 0 device 2 parts 1 persistent 0 sample_cost 20485.7 ewma_cost 20527.4 mean_cost 20515 stddev_cost 248.909 min_cost 20275.7 samples 633 live_samples 1
+CompletionQueue: complete kernel 9 device 2 parts 1 persistent 0 duration_ns 204856934
+algorithmHEFT: Kernel 13 cold split probe rejected: split 12084.3 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 13 cold split probe rejected: split 12156.1 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 13 cold split probe rejected: split 12085.7 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 13 cold split probe rejected: split 12289.1 single 20872.9 min_single 500000
+algorithmHEFT: Kernel 13 cold split probe rejected: split 12085.8 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 13 cold split probe rejected: split 12154.7 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 13 cold split probe rejected: split 6053.26 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 14 cold split probe rejected: split 12084.3 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 14 cold split probe rejected: split 12156.1 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 14 cold split probe rejected: split 12085.7 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 14 cold split probe rejected: split 12289.1 single 20872.9 min_single 500000
+algorithmHEFT: Kernel 14 cold split probe rejected: split 12085.8 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 14 cold split probe rejected: split 12154.7 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 14 cold split probe rejected: split 6053.26 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 15 cold split probe rejected: split 12084.3 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 15 cold split probe rejected: split 12156.1 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 15 cold split probe rejected: split 12085.7 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 15 cold split probe rejected: split 12289.1 single 20872.9 min_single 500000
+algorithmHEFT: Kernel 15 cold split probe rejected: split 12085.8 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 15 cold split probe rejected: split 12154.7 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 15 cold split probe rejected: split 6053.26 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 12084.3 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 12156.1 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 12085.7 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 12289.1 single 20872.9 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 12085.8 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 12154.7 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 6053.26 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+CompletionQueue: dispatch_order 5 kernel 13 rank 0 proc 2 parts 1 persistent 0 movement_bytes 0 reserved_devices 1
+ProfileCostTable: key kid=bce2caf8b5e8e34b|dims=2:512x512x1|reqs=13|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:2:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:512:512x1x1:a512x1x1:o0x0x0:sub0:pl0;1024:4:512:512x1x1:a512x1x1:o0x0x0:sub0:pl0;1024:4:512:512x1x1:a512x1x1:o0x0x0:sub0:pl0;1024:4:512:512x1x1:a512x1x1:o0x0x0:sub0:pl0;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=4726784|wb=4194304 rank 0 device 1 parts 1 persistent 0 sample_cost 20751.4 ewma_cost 20908.3 mean_cost 20987 stddev_cost 212.667 min_cost 20704.5 samples 306 live_samples 1
+CompletionQueue: complete kernel 12 device 1 parts 1 persistent 0 duration_ns 207513672
+algorithmHEFT: Kernel 14 cold split probe rejected: split 12084.3 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 14 cold split probe rejected: split 12309.8 single 20908.3 min_single 500000
+algorithmHEFT: Kernel 14 cold split probe rejected: split 12085.7 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 14 cold split probe rejected: split 12309.9 single 20908.3 min_single 500000
+algorithmHEFT: Kernel 14 cold split probe rejected: split 12085.8 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 14 cold split probe rejected: split 12154.7 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 14 cold split probe rejected: split 6053.26 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 15 cold split probe rejected: split 12084.3 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 15 cold split probe rejected: split 12309.8 single 20908.3 min_single 500000
+algorithmHEFT: Kernel 15 cold split probe rejected: split 12085.7 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 15 cold split probe rejected: split 12309.9 single 20908.3 min_single 500000
+algorithmHEFT: Kernel 15 cold split probe rejected: split 12085.8 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 15 cold split probe rejected: split 12154.7 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 15 cold split probe rejected: split 6053.26 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 12084.3 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 12309.8 single 20908.3 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 12085.7 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 12309.9 single 20908.3 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 12085.8 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 12154.7 single 20647.1 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 6053.26 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+CompletionQueue: dispatch_order 6 kernel 14 rank 0 proc 1 parts 1 persistent 0 movement_bytes 0 reserved_devices 1
+ProfileCostTable: key kid=bce2caf8b5e8e34b|dims=2:512x512x1|reqs=13|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:2:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:512:512x1x1:a512x1x1:o0x0x0:sub0:pl0;1024:4:512:512x1x1:a512x1x1:o0x0x0:sub0:pl0;1024:4:512:512x1x1:a512x1x1:o0x0x0:sub0:pl0;1024:4:512:512x1x1:a512x1x1:o0x0x0:sub0:pl0;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=4726784|wb=4194304 rank 0 device 3 parts 1 persistent 0 sample_cost 21898.7 ewma_cost 21022.6 mean_cost 20492.7 stddev_cost 218.251 min_cost 20111.4 samples 1124 live_samples 1
+CompletionQueue: complete kernel 10 device 3 parts 1 persistent 0 duration_ns 218986573
+ProfileCostTable: key kid=bce2caf8b5e8e34b|dims=2:512x512x1|reqs=13|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:2:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:512:512x1x1:a512x1x1:o0x0x0:sub0:pl0;1024:4:512:512x1x1:a512x1x1:o0x0x0:sub0:pl0;1024:4:512:512x1x1:a512x1x1:o0x0x0:sub0:pl0;1024:4:512:512x1x1:a512x1x1:o0x0x0:sub0:pl0;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=4726784|wb=4194304 rank 0 device 4 parts 1 persistent 0 sample_cost 22132.4 ewma_cost 21250.8 mean_cost 20784.3 stddev_cost 563.679 min_cost 20371.7 samples 60 live_samples 1
+CompletionQueue: complete kernel 11 device 4 parts 1 persistent 0 duration_ns 221323731
+algorithmHEFT: Kernel 15 cold split probe rejected: split 12084.3 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 15 cold split probe rejected: split 12309.8 single 20908.3 min_single 500000
+algorithmHEFT: Kernel 15 cold split probe rejected: split 12085.7 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 15 cold split probe rejected: split 12309.9 single 20908.3 min_single 500000
+algorithmHEFT: Kernel 15 cold split probe rejected: split 12085.8 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 15 cold split probe rejected: split 12375.6 single 21022.6 min_single 500000
+algorithmHEFT: Kernel 15 cold split probe rejected: split 6053.26 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 12084.3 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 12309.8 single 20908.3 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 12085.7 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 12309.9 single 20908.3 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 12085.8 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 12375.6 single 21022.6 min_single 500000
+algorithmHEFT: Kernel 16 cold split probe rejected: split 6053.26 single 20527.4 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+CompletionQueue: dispatch_order 7 kernel 15 rank 0 proc 3 parts 1 persistent 0 movement_bytes 0 reserved_devices 1
+CompletionQueue: dispatch_order 8 kernel 16 rank 0 proc 4 parts 1 persistent 0 movement_bytes 0 reserved_devices 1
+ProfileCostTable: key kid=bce2caf8b5e8e34b|dims=2:512x512x1|reqs=13|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:2:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:512:512x1x1:a512x1x1:o0x0x0:sub0:pl0;1024:4:512:512x1x1:a512x1x1:o0x0x0:sub0:pl0;1024:4:512:512x1x1:a512x1x1:o0x0x0:sub0:pl0;1024:4:512:512x1x1:a512x1x1:o0x0x0:sub0:pl0;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=4726784|wb=4194304 rank 0 device 2 parts 1 persistent 0 sample_cost 20375.5 ewma_cost 20481.8 mean_cost 20514.8 stddev_cost 248.774 min_cost 20275.7 samples 634 live_samples 2
+CompletionQueue: complete kernel 13 device 2 parts 1 persistent 0 duration_ns 203754639
+algorithmHEFT: Kernel 1 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 1 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 17.0008 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 19.5172 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 19.7367 single 1.20507 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 54.1182 single 1.20507 min_single 500000
+CompletionQueue: dispatch_order 9 kernel 1 rank 0 proc 2 parts 1 persistent 0 movement_bytes 0 reserved_devices 1
+ProfileCostTable: key kid=b722f3c910e0b662|dims=2:512x512x1|reqs=8|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=4194304|wb=4194304 rank 0 device 2 parts 1 persistent 0 sample_cost 4.8096 ewma_cost 2.28643 mean_cost 2.07186 stddev_cost 1.05592 min_cost 0.6836 samples 652 live_samples 1
+CompletionQueue: complete kernel 1 device 2 parts 1 persistent 0 duration_ns 48096
+ProfileCostTable: key kid=bce2caf8b5e8e34b|dims=2:512x512x1|reqs=13|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:2:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:512:512x1x1:a512x1x1:o0x0x0:sub0:pl0;1024:4:512:512x1x1:a512x1x1:o0x0x0:sub0:pl0;1024:4:512:512x1x1:a512x1x1:o0x0x0:sub0:pl0;1024:4:512:512x1x1:a512x1x1:o0x0x0:sub0:pl0;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=4726784|wb=4194304 rank 0 device 1 parts 1 persistent 0 sample_cost 20754.2 ewma_cost 20862.1 mean_cost 20986.2 stddev_cost 212.735 min_cost 20704.5 samples 307 live_samples 2
+CompletionQueue: complete kernel 14 device 1 parts 1 persistent 0 duration_ns 207542480
+ProfileCostTable: key kid=bce2caf8b5e8e34b|dims=2:512x512x1|reqs=13|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:2:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:512:512x1x1:a512x1x1:o0x0x0:sub0:pl0;1024:4:512:512x1x1:a512x1x1:o0x0x0:sub0:pl0;1024:4:512:512x1x1:a512x1x1:o0x0x0:sub0:pl0;1024:4:512:512x1x1:a512x1x1:o0x0x0:sub0:pl0;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=4726784|wb=4194304 rank 0 device 3 parts 1 persistent 0 sample_cost 20508.6 ewma_cost 20868.4 mean_cost 20492.8 stddev_cost 218.154 min_cost 20111.4 samples 1125 live_samples 2
+CompletionQueue: complete kernel 15 device 3 parts 1 persistent 0 duration_ns 205086181
+ProfileCostTable: key kid=bce2caf8b5e8e34b|dims=2:512x512x1|reqs=13|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:2:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:512:512x1x1:a512x1x1:o0x0x0:sub0:pl0;1024:4:512:512x1x1:a512x1x1:o0x0x0:sub0:pl0;1024:4:512:512x1x1:a512x1x1:o0x0x0:sub0:pl0;1024:4:512:512x1x1:a512x1x1:o0x0x0:sub0:pl0;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=4726784|wb=4194304 rank 0 device 4 parts 1 persistent 0 sample_cost 20698.6 ewma_cost 21085.1 mean_cost 20782.9 stddev_cost 559.07 min_cost 20371.7 samples 61 live_samples 2
+CompletionQueue: complete kernel 16 device 4 parts 1 persistent 0 duration_ns 206985596
+algorithmHEFT: Kernel 2 cold split probe rejected: split 17.6369 single 2.28643 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 20.1533 single 2.28643 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 20.3728 single 2.28643 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 2 cold split probe rejected: split 54.4362 single 2.28643 min_single 500000
+selectUnifiedTaskCandidate: Kernel 2 risk objective selected Rank 0 Proc 2 NumParts 1 finish 2.28643 uncertainty 1.05593 risk 4.35606 over mean-best Rank 0 Proc 3 NumParts 1 finish 2.13983 uncertainty 1.22533 risk 4.54147
+algorithmHEFT: Kernel 3 cold split probe rejected: split 17.6369 single 2.28643 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 20.1533 single 2.28643 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 20.3728 single 2.28643 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 3 cold split probe rejected: split 54.4362 single 2.28643 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 17.6369 single 2.28643 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 20.1533 single 2.28643 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 20.3728 single 2.28643 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 4 cold split probe rejected: split 54.4362 single 2.28643 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 17.6369 single 2.28643 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 20.1533 single 2.28643 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 20.3728 single 2.28643 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 5 cold split probe rejected: split 54.4362 single 2.28643 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 17.6369 single 2.28643 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 20.1533 single 2.28643 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 20.3728 single 2.28643 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 54.4362 single 2.28643 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 17.6369 single 2.28643 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 20.1533 single 2.28643 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 20.3728 single 2.28643 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 54.4362 single 2.28643 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 17.6369 single 2.28643 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 20.0671 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 20.1533 single 2.28643 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 20.621 single 2.64786 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 20.3728 single 2.28643 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 17.6156 single 2.13983 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 54.4362 single 2.28643 min_single 500000
+algorithmHEFT: Kernel 17 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 17 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 17 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 17 cold split probe rejected: split 1.54584 single 1.94792 min_single 500000
+algorithmHEFT: Kernel 17 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 17 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 17 cold split probe rejected: split 1.09726 single 1.01067 min_single 500000
+CompletionQueue: dispatch_order 10 kernel 2 rank 0 proc 2 parts 1 persistent 0 movement_bytes 0 reserved_devices 1
+CompletionQueue: dispatch_order 11 kernel 3 rank 0 proc 3 parts 1 persistent 0 movement_bytes 0 reserved_devices 1
+CompletionQueue: dispatch_order 12 kernel 4 rank 0 proc 1 parts 1 persistent 0 movement_bytes 0 reserved_devices 1
+CompletionQueue: dispatch_order 13 kernel 5 rank 0 proc 4 parts 1 persistent 0 movement_bytes 0 reserved_devices 1
+ProfileCostTable: key kid=b722f3c910e0b662|dims=2:512x512x1|reqs=8|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=4194304|wb=4194304 rank 0 device 2 parts 1 persistent 0 sample_cost 3.3691 ewma_cost 2.61123 mean_cost 2.07385 stddev_cost 1.05633 min_cost 0.6836 samples 653 live_samples 2
+CompletionQueue: complete kernel 2 device 2 parts 1 persistent 0 duration_ns 33691
+ProfileCostTable: key kid=b722f3c910e0b662|dims=2:512x512x1|reqs=8|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=4194304|wb=4194304 rank 0 device 3 parts 1 persistent 0 sample_cost 3.125 ewma_cost 2.43538 mean_cost 2.36635 stddev_cost 1.1021 min_cost 0.7812 samples 1066 live_samples 1
+CompletionQueue: complete kernel 3 device 3 parts 1 persistent 0 duration_ns 31250
+ProfileCostTable: key kid=b722f3c910e0b662|dims=2:512x512x1|reqs=8|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=4194304|wb=4194304 rank 0 device 1 parts 1 persistent 0 sample_cost 2.4414 ewma_cost 2.58592 mean_cost 2.58083 stddev_cost 1.30821 min_cost 0.7813 samples 339 live_samples 1
+CompletionQueue: complete kernel 4 device 1 parts 1 persistent 0 duration_ns 24414
+ProfileCostTable: key kid=b722f3c910e0b662|dims=2:512x512x1|reqs=8|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=4194304|wb=4194304 rank 0 device 4 parts 1 persistent 0 sample_cost 2.5146 ewma_cost 2.82001 mean_cost 2.43083 stddev_cost 1.361 min_cost 1.0743 samples 60 live_samples 1
+CompletionQueue: complete kernel 5 device 4 parts 1 persistent 0 duration_ns 25146
+algorithmHEFT: Kernel 6 cold split probe rejected: split 17.828 single 2.61123 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 20.2409 single 2.43538 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 20.2409 single 2.43538 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 20.5845 single 2.58592 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 20.5638 single 2.61123 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 17.7895 single 2.43538 min_single 500000
+algorithmHEFT: Kernel 6 cold split probe rejected: split 54.48 single 2.43538 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 17.828 single 2.61123 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 20.2409 single 2.43538 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 20.2409 single 2.43538 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 20.5845 single 2.58592 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 20.5638 single 2.61123 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 17.7895 single 2.43538 min_single 500000
+algorithmHEFT: Kernel 7 cold split probe rejected: split 54.48 single 2.43538 min_single 500000
+selectUnifiedTaskCandidate: Kernel 7 risk objective selected Rank 0 Proc 2 NumParts 1 finish 2.61123 uncertainty 1.05635 risk 4.68167 over mean-best Rank 0 Proc 1 NumParts 1 finish 2.58592 uncertainty 1.30823 risk 5.15006
+algorithmHEFT: Kernel 8 cold split probe rejected: split 17.828 single 2.61123 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 20.2409 single 2.43538 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 20.2409 single 2.43538 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 20.5845 single 2.58592 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 20.5638 single 2.61123 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 17.7895 single 2.43538 min_single 500000
+algorithmHEFT: Kernel 8 cold split probe rejected: split 54.48 single 2.43538 min_single 500000
+algorithmHEFT: Kernel 17 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 17 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 17 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 17 cold split probe rejected: split 1.54584 single 1.94792 min_single 500000
+algorithmHEFT: Kernel 17 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 17 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 17 cold split probe rejected: split 1.09726 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 1.54584 single 1.94792 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 1.09726 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 19 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 19 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 19 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 19 cold split probe rejected: split 1.54584 single 1.94792 min_single 500000
+algorithmHEFT: Kernel 19 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 19 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 19 cold split probe rejected: split 1.09726 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 20 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 20 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 20 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 20 cold split probe rejected: split 1.54584 single 1.94792 min_single 500000
+algorithmHEFT: Kernel 20 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 20 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 20 cold split probe rejected: split 1.09726 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.54584 single 1.94792 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.09726 single 1.01067 min_single 500000
+CompletionQueue: dispatch_order 14 kernel 6 rank 0 proc 3 parts 1 persistent 0 movement_bytes 0 reserved_devices 1
+CompletionQueue: dispatch_order 15 kernel 7 rank 0 proc 2 parts 1 persistent 0 movement_bytes 0 reserved_devices 1
+CompletionQueue: dispatch_order 16 kernel 8 rank 0 proc 1 parts 1 persistent 0 movement_bytes 0 reserved_devices 1
+ProfileCostTable: key kid=b722f3c910e0b662|dims=2:512x512x1|reqs=8|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=4194304|wb=4194304 rank 0 device 3 parts 1 persistent 0 sample_cost 3.418 ewma_cost 2.73017 mean_cost 2.36734 stddev_cost 1.10205 min_cost 0.7812 samples 1067 live_samples 2
+CompletionQueue: complete kernel 6 device 3 parts 1 persistent 0 duration_ns 34180
+ProfileCostTable: key kid=b722f3c910e0b662|dims=2:512x512x1|reqs=8|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=4194304|wb=4194304 rank 0 device 2 parts 1 persistent 0 sample_cost 2.6123 ewma_cost 2.61155 mean_cost 2.07467 stddev_cost 1.05573 min_cost 0.6836 samples 654 live_samples 3
+CompletionQueue: complete kernel 7 device 2 parts 1 persistent 0 duration_ns 26123
+ProfileCostTable: key kid=b722f3c910e0b662|dims=2:512x512x1|reqs=8|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=4194304|wb=4194304 rank 0 device 1 parts 1 persistent 0 sample_cost 2.2461 ewma_cost 2.48398 mean_cost 2.57984 stddev_cost 1.30641 min_cost 0.7813 samples 340 live_samples 2
+CompletionQueue: complete kernel 8 device 1 parts 1 persistent 0 duration_ns 22461
+algorithmHEFT: Kernel 17 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 17 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 17 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 17 cold split probe rejected: split 1.54584 single 1.94792 min_single 500000
+algorithmHEFT: Kernel 17 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 17 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 17 cold split probe rejected: split 1.09726 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 1.54584 single 1.94792 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 1.09726 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 19 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 19 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 19 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 19 cold split probe rejected: split 1.54584 single 1.94792 min_single 500000
+algorithmHEFT: Kernel 19 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 19 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 19 cold split probe rejected: split 1.09726 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 1.54584 single 1.94792 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 1.09726 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 20 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 20 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 20 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 20 cold split probe rejected: split 1.54584 single 1.94792 min_single 500000
+algorithmHEFT: Kernel 20 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 20 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 20 cold split probe rejected: split 1.09726 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 1.54584 single 1.94792 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 1.09726 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.54584 single 1.94792 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.09726 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 22 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 22 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 22 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 22 cold split probe rejected: split 1.54584 single 1.94792 min_single 500000
+algorithmHEFT: Kernel 22 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 22 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 22 cold split probe rejected: split 1.09726 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.54584 single 1.94792 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.09726 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 24 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 24 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 24 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 24 cold split probe rejected: split 1.54584 single 1.94792 min_single 500000
+algorithmHEFT: Kernel 24 cold split probe rejected: split 0.994511 single 1.01067 min_single 500000
+algorithmHEFT: Kernel 24 cold split probe rejected: split 1.01978 single 1.05363 min_single 500000
+algorithmHEFT: Kernel 24 cold split probe rejected: split 1.09726 single 1.01067 min_single 500000
+CompletionQueue: dispatch_order 17 kernel 17 rank 0 proc 2 parts 1 persistent 0 movement_bytes 0 reserved_devices 1
+CompletionQueue: dispatch_order 18 kernel 20 rank 0 proc 1 parts 1 persistent 0 movement_bytes 0 reserved_devices 1
+CompletionQueue: dispatch_order 19 kernel 19 rank 0 proc 3 parts 1 persistent 0 movement_bytes 4.1943e+06 reserved_devices 1
+ProfileCostTable: key kid=85918f8b5ff0cffe|dims=2:512x512x1|reqs=12|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=8388608|wb=4194304 rank 0 device 2 parts 1 persistent 0 sample_cost 2.1485 ewma_cost 1.35202 mean_cost 1.48466 stddev_cost 0.567447 min_cost 0.586 samples 579 live_samples 1
+CompletionQueue: complete kernel 17 device 2 parts 1 persistent 0 duration_ns 21485
+ProfileCostTable: key kid=85918f8b5ff0cffe|dims=2:512x512x1|reqs=12|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=8388608|wb=4194304 rank 0 device 3 parts 1 persistent 0 sample_cost 2.3682 ewma_cost 1.448 mean_cost 1.50681 stddev_cost 0.552418 min_cost 0.7812 samples 779 live_samples 1
+CompletionQueue: complete kernel 19 device 3 parts 1 persistent 0 duration_ns 23682
+ProfileCostTable: key kid=85918f8b5ff0cffe|dims=2:512x512x1|reqs=12|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=8388608|wb=4194304 rank 0 device 1 parts 1 persistent 0 sample_cost 1.8555 ewma_cost 1.92019 mean_cost 1.79643 stddev_cost 0.686632 min_cost 0.9766 samples 208 live_samples 1
+CompletionQueue: complete kernel 20 device 1 parts 1 persistent 0 duration_ns 18555
+algorithmHEFT: Kernel 18 cold split probe rejected: split 1.1953 single 1.35202 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 1.25177 single 1.448 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 1.1953 single 1.35202 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 1.52953 single 1.92019 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 1.1953 single 1.35202 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 1.25177 single 1.448 min_single 500000
+algorithmHEFT: Kernel 18 cold split probe rejected: split 1.19765 single 1.35202 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.1953 single 1.35202 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.25177 single 1.448 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.1953 single 1.35202 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.52953 single 1.92019 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.1953 single 1.35202 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.25177 single 1.448 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.19765 single 1.35202 min_single 500000
+algorithmHEFT: Kernel 22 cold split probe rejected: split 1.1953 single 1.35202 min_single 500000
+algorithmHEFT: Kernel 22 cold split probe rejected: split 1.25177 single 1.448 min_single 500000
+algorithmHEFT: Kernel 22 cold split probe rejected: split 1.1953 single 1.35202 min_single 500000
+algorithmHEFT: Kernel 22 cold split probe rejected: split 1.52953 single 1.92019 min_single 500000
+algorithmHEFT: Kernel 22 cold split probe rejected: split 1.1953 single 1.35202 min_single 500000
+algorithmHEFT: Kernel 22 cold split probe rejected: split 1.25177 single 1.448 min_single 500000
+algorithmHEFT: Kernel 22 cold split probe rejected: split 1.19765 single 1.35202 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.1953 single 1.35202 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.25177 single 1.448 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.1953 single 1.35202 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.52953 single 1.92019 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.1953 single 1.35202 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.25177 single 1.448 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.19765 single 1.35202 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.1953 single 1.35202 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.25177 single 1.448 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.1953 single 1.35202 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.52953 single 1.92019 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.1953 single 1.35202 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.25177 single 1.448 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.19765 single 1.35202 min_single 500000
+algorithmHEFT: Kernel 24 cold split probe rejected: split 1.1953 single 1.35202 min_single 500000
+algorithmHEFT: Kernel 24 cold split probe rejected: split 1.25177 single 1.448 min_single 500000
+algorithmHEFT: Kernel 24 cold split probe rejected: split 1.1953 single 1.35202 min_single 500000
+algorithmHEFT: Kernel 24 cold split probe rejected: split 1.52953 single 1.92019 min_single 500000
+algorithmHEFT: Kernel 24 cold split probe rejected: split 1.1953 single 1.35202 min_single 500000
+algorithmHEFT: Kernel 24 cold split probe rejected: split 1.25177 single 1.448 min_single 500000
+algorithmHEFT: Kernel 24 cold split probe rejected: split 1.19765 single 1.35202 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.1953 single 1.35202 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.25177 single 1.448 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.1953 single 1.35202 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.52953 single 1.92019 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.1953 single 1.35202 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.25177 single 1.448 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.19765 single 1.35202 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.1953 single 1.35202 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.25177 single 1.448 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.1953 single 1.35202 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.52953 single 1.92019 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.1953 single 1.35202 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.25177 single 1.448 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.19765 single 1.35202 min_single 500000
+CompletionQueue: dispatch_order 20 kernel 18 rank 0 proc 2 parts 1 persistent 0 movement_bytes 4.1943e+06 reserved_devices 1
+CompletionQueue: dispatch_order 21 kernel 22 rank 0 proc 3 parts 1 persistent 0 movement_bytes 4.1943e+06 reserved_devices 1
+CompletionQueue: dispatch_order 22 kernel 24 rank 0 proc 1 parts 1 persistent 0 movement_bytes 4.1943e+06 reserved_devices 1
+ProfileCostTable: key kid=85918f8b5ff0cffe|dims=2:512x512x1|reqs=12|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=8388608|wb=4194304 rank 0 device 2 parts 1 persistent 0 sample_cost 2.6367 ewma_cost 1.73742 mean_cost 1.48665 stddev_cost 0.568971 min_cost 0.586 samples 580 live_samples 2
+CompletionQueue: complete kernel 18 device 2 parts 1 persistent 0 duration_ns 26367
+ProfileCostTable: key kid=85918f8b5ff0cffe|dims=2:512x512x1|reqs=12|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=8388608|wb=4194304 rank 0 device 3 parts 1 persistent 0 sample_cost 2.6612 ewma_cost 1.81196 mean_cost 1.50829 stddev_cost 0.553609 min_cost 0.7812 samples 780 live_samples 2
+CompletionQueue: complete kernel 22 device 3 parts 1 persistent 0 duration_ns 26612
+ProfileCostTable: key kid=85918f8b5ff0cffe|dims=2:512x512x1|reqs=12|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=8388608|wb=4194304 rank 0 device 1 parts 1 persistent 0 sample_cost 2.2949 ewma_cost 2.03261 mean_cost 1.79882 stddev_cost 0.685847 min_cost 0.9766 samples 209 live_samples 2
+CompletionQueue: complete kernel 24 device 1 parts 1 persistent 0 duration_ns 22949
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.42201 single 1.73742 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.46586 single 1.81196 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.42201 single 1.73742 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.59565 single 2.03261 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.42201 single 1.73742 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.46586 single 1.81196 min_single 500000
+algorithmHEFT: Kernel 21 cold split probe rejected: split 1.31101 single 1.73742 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.42201 single 1.73742 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.46586 single 1.81196 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.42201 single 1.73742 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.59565 single 2.03261 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.42201 single 1.73742 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.46586 single 1.81196 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.31101 single 1.73742 min_single 500000
+CompletionQueue: dispatch_order 23 kernel 21 rank 0 proc 2 parts 1 persistent 0 movement_bytes 4.1943e+06 reserved_devices 1
+ProfileCostTable: key kid=85918f8b5ff0cffe|dims=2:512x512x1|reqs=12|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=8388608|wb=4194304 rank 0 device 2 parts 1 persistent 0 sample_cost 2.6855 ewma_cost 2.02185 mean_cost 1.48871 stddev_cost 0.570652 min_cost 0.586 samples 581 live_samples 3
+CompletionQueue: complete kernel 21 device 2 parts 1 persistent 0 duration_ns 26855
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.58932 single 2.02185 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.46586 single 1.81196 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.46586 single 1.81196 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.59565 single 2.03261 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.58932 single 2.02185 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.46586 single 1.81196 min_single 500000
+algorithmHEFT: Kernel 23 cold split probe rejected: split 1.33293 single 1.81196 min_single 500000
+CompletionQueue: dispatch_order 24 kernel 23 rank 0 proc 3 parts 1 persistent 0 movement_bytes 4.1943e+06 reserved_devices 1
+ProfileCostTable: key kid=85918f8b5ff0cffe|dims=2:512x512x1|reqs=12|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=8388608|wb=4194304 rank 0 device 3 parts 1 persistent 0 sample_cost 2.6123 ewma_cost 2.05206 mean_cost 1.5097 stddev_cost 0.554662 min_cost 0.7812 samples 781 live_samples 3
+CompletionQueue: complete kernel 23 device 3 parts 1 persistent 0 duration_ns 26123
+algorithmHEFT: Kernel 25 cold split probe rejected: split 1.18472 single 1.33402 min_single 500000
+algorithmHEFT: Kernel 25 cold split probe rejected: split 1.9644 single 2.65947 min_single 500000
+algorithmHEFT: Kernel 25 cold split probe rejected: split 1.18472 single 1.33402 min_single 500000
+algorithmHEFT: Kernel 25 cold split probe rejected: split 1.71702 single 2.23894 min_single 500000
+algorithmHEFT: Kernel 25 cold split probe rejected: split 1.18472 single 1.33402 min_single 500000
+algorithmHEFT: Kernel 25 cold split probe rejected: split 1.71702 single 2.23894 min_single 500000
+algorithmHEFT: Kernel 25 cold split probe rejected: split 1.19236 single 1.33402 min_single 500000
+CompletionQueue: dispatch_order 25 kernel 25 rank 0 proc 2 parts 1 persistent 0 movement_bytes 5.24288e+06 reserved_devices 1
+ProfileCostTable: key kid=f365eeab0350b2a8|dims=2:512x512x1|reqs=10|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=8388608|wb=2097152 rank 0 device 2 parts 1 persistent 0 sample_cost 2.2949 ewma_cost 1.62229 mean_cost 2.10757 stddev_cost 0.84492 min_cost 0.7812 samples 92 live_samples 1
+CompletionQueue: complete kernel 25 device 2 parts 1 persistent 0 duration_ns 22949
+algorithmHEFT: Kernel 26 cold split probe rejected: split 50.339 single 81.4666 min_single 500000
+algorithmHEFT: Kernel 26 cold split probe rejected: split 50.6585 single 81.4666 min_single 500000
+algorithmHEFT: Kernel 26 cold split probe rejected: split 50.6585 single 81.4666 min_single 500000
+algorithmHEFT: Kernel 26 cold split probe rejected: split 50.6612 single 81.4666 min_single 500000
+algorithmHEFT: Kernel 26 cold split probe rejected: split 50.6665 single 81.4666 min_single 500000
+algorithmHEFT: Kernel 26 cold split probe rejected: split 50.3392 single 81.4666 min_single 500000
+algorithmHEFT: Kernel 26 cold split probe rejected: split 28.1596 single 81.4666 min_single 500000
+CompletionQueue: dispatch_order 26 kernel 26 rank 0 proc 2 parts 1 persistent 0 movement_bytes 0 reserved_devices 1
+ProfileCostTable: key kid=93ac58e5279bbeb|dims=2:512x512x1|reqs=5|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:1024:1024x1x1:a1024x1x1:o0x0x0:sub0:pl0;1024:4:1024:1024x1x1:a1024x1x1:o0x0x0:sub0:pl0;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=2105344|wb=1048576 rank 0 device 2 parts 1 persistent 0 sample_cost 81.9336 ewma_cost 81.6067 mean_cost 81.0543 stddev_cost 0.720757 min_cost 79.6875 samples 265 live_samples 1
+CompletionQueue: complete kernel 26 device 2 parts 1 persistent 0 duration_ns 819336
+CompletionQueue: wait 1 complete kernels 26
+Rank 0 scale_ranks: 0
+SystemSchedulerDaemonOffline: Rank 0: waiting reqs from handler
+offline kernel_req batch multipart mq_receive payload_size: 17421 chunks: 3
+Rank 0: mq_receive kernel_req_datas size: 26
+
+
+......
+
+
+algorithmHEFT: Kernel 814 cold split probe rejected: split 1.19283 single 1.34782 min_single 500000
+algorithmHEFT: Kernel 814 cold split probe rejected: split 1.25176 single 1.44799 min_single 500000
+algorithmHEFT: Kernel 814 cold split probe rejected: split 1.15493 single 1.28339 min_single 500000
+algorithmHEFT: Kernel 814 cold split probe rejected: split 1.17747 single 1.28339 min_single 500000
+algorithmHEFT: Kernel 823 cold split probe rejected: split 1.05923 single 1.12069 min_single 500000
+algorithmHEFT: Kernel 823 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 823 cold split probe rejected: split 1.05923 single 1.12069 min_single 500000
+algorithmHEFT: Kernel 823 cold split probe rejected: split 1.32685 single 1.57564 min_single 500000
+algorithmHEFT: Kernel 823 cold split probe rejected: split 1.05923 single 1.12069 min_single 500000
+algorithmHEFT: Kernel 823 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 823 cold split probe rejected: split 1.12961 single 1.12069 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.05923 single 1.12069 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.05923 single 1.12069 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.32685 single 1.57564 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.05923 single 1.12069 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.12961 single 1.12069 min_single 500000
+algorithmHEFT: Kernel 827 cold split probe rejected: split 1.05923 single 1.12069 min_single 500000
+algorithmHEFT: Kernel 827 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 827 cold split probe rejected: split 1.05923 single 1.12069 min_single 500000
+algorithmHEFT: Kernel 827 cold split probe rejected: split 1.32685 single 1.57564 min_single 500000
+algorithmHEFT: Kernel 827 cold split probe rejected: split 1.05923 single 1.12069 min_single 500000
+algorithmHEFT: Kernel 827 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 827 cold split probe rejected: split 1.12961 single 1.12069 min_single 500000
+algorithmHEFT: Kernel 829 cold split probe rejected: split 1.05923 single 1.12069 min_single 500000
+algorithmHEFT: Kernel 829 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 829 cold split probe rejected: split 1.05923 single 1.12069 min_single 500000
+algorithmHEFT: Kernel 829 cold split probe rejected: split 1.32685 single 1.57564 min_single 500000
+algorithmHEFT: Kernel 829 cold split probe rejected: split 1.05923 single 1.12069 min_single 500000
+algorithmHEFT: Kernel 829 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 829 cold split probe rejected: split 1.12961 single 1.12069 min_single 500000
+CompletionQueue: dispatch_order 16 kernel 812 rank 0 proc 3 parts 1 persistent 0 movement_bytes 0 reserved_devices 1
+CompletionQueue: dispatch_order 17 kernel 824 rank 0 proc 2 parts 1 persistent 0 movement_bytes 0 reserved_devices 1
+ProfileCostTable: key kid=b722f3c910e0b662|dims=2:512x512x1|reqs=8|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=4194304|wb=4194304 rank 0 device 3 parts 1 persistent 0 sample_cost 1.5625 ewma_cost 1.36712 mean_cost 2.32604 stddev_cost 1.0868 min_cost 0.7812 samples 1154 live_samples 89
+CompletionQueue: complete kernel 812 device 3 parts 1 persistent 0 duration_ns 15625
+ProfileCostTable: key kid=85918f8b5ff0cffe|dims=2:512x512x1|reqs=12|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=8388608|wb=4194304 rank 0 device 2 parts 1 persistent 0 sample_cost 1.1718 ewma_cost 1.13602 mean_cost 1.48528 stddev_cost 0.600243 min_cost 0.586 samples 688 live_samples 110
+CompletionQueue: complete kernel 824 device 2 parts 1 persistent 0 duration_ns 11718
+algorithmHEFT: Kernel 814 cold split probe rejected: split 1.25176 single 1.44799 min_single 500000
+algorithmHEFT: Kernel 814 cold split probe rejected: split 1.20419 single 1.36712 min_single 500000
+algorithmHEFT: Kernel 814 cold split probe rejected: split 1.25176 single 1.44799 min_single 500000
+algorithmHEFT: Kernel 814 cold split probe rejected: split 1.19283 single 1.34782 min_single 500000
+algorithmHEFT: Kernel 814 cold split probe rejected: split 1.25176 single 1.44799 min_single 500000
+algorithmHEFT: Kernel 814 cold split probe rejected: split 1.20419 single 1.36712 min_single 500000
+algorithmHEFT: Kernel 814 cold split probe rejected: split 1.22588 single 1.44799 min_single 500000
+algorithmHEFT: Kernel 823 cold split probe rejected: split 1.06825 single 1.13602 min_single 500000
+algorithmHEFT: Kernel 823 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 823 cold split probe rejected: split 1.06825 single 1.13602 min_single 500000
+algorithmHEFT: Kernel 823 cold split probe rejected: split 1.32685 single 1.57564 min_single 500000
+algorithmHEFT: Kernel 823 cold split probe rejected: split 1.06825 single 1.13602 min_single 500000
+algorithmHEFT: Kernel 823 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 823 cold split probe rejected: split 1.13412 single 1.13602 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.06825 single 1.13602 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.06825 single 1.13602 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.32685 single 1.57564 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.06825 single 1.13602 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.13412 single 1.13602 min_single 500000
+algorithmHEFT: Kernel 827 cold split probe rejected: split 1.06825 single 1.13602 min_single 500000
+algorithmHEFT: Kernel 827 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 827 cold split probe rejected: split 1.06825 single 1.13602 min_single 500000
+algorithmHEFT: Kernel 827 cold split probe rejected: split 1.32685 single 1.57564 min_single 500000
+algorithmHEFT: Kernel 827 cold split probe rejected: split 1.06825 single 1.13602 min_single 500000
+algorithmHEFT: Kernel 827 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 827 cold split probe rejected: split 1.13412 single 1.13602 min_single 500000
+algorithmHEFT: Kernel 823 cold split probe rejected: split 1.06825 single 1.13602 min_single 500000
+algorithmHEFT: Kernel 823 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 823 cold split probe rejected: split 1.06825 single 1.13602 min_single 500000
+algorithmHEFT: Kernel 823 cold split probe rejected: split 1.32685 single 1.57564 min_single 500000
+algorithmHEFT: Kernel 823 cold split probe rejected: split 1.06825 single 1.13602 min_single 500000
+algorithmHEFT: Kernel 823 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 823 cold split probe rejected: split 1.13412 single 1.13602 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.06825 single 1.13602 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.06825 single 1.13602 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.32685 single 1.57564 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.06825 single 1.13602 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.13412 single 1.13602 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.06825 single 1.13602 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.06825 single 1.13602 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.32685 single 1.57564 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.06825 single 1.13602 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.13412 single 1.13602 min_single 500000
+algorithmHEFT: Kernel 829 cold split probe rejected: split 1.06825 single 1.13602 min_single 500000
+algorithmHEFT: Kernel 829 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 829 cold split probe rejected: split 1.06825 single 1.13602 min_single 500000
+algorithmHEFT: Kernel 829 cold split probe rejected: split 1.32685 single 1.57564 min_single 500000
+algorithmHEFT: Kernel 829 cold split probe rejected: split 1.06825 single 1.13602 min_single 500000
+algorithmHEFT: Kernel 829 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 829 cold split probe rejected: split 1.13412 single 1.13602 min_single 500000
+CompletionQueue: dispatch_order 18 kernel 814 rank 0 proc 3 parts 1 persistent 0 movement_bytes 0 reserved_devices 1
+CompletionQueue: dispatch_order 19 kernel 827 rank 0 proc 2 parts 1 persistent 0 movement_bytes 0 reserved_devices 1
+ProfileCostTable: key kid=b722f3c910e0b662|dims=2:512x512x1|reqs=8|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl0;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=4194304|wb=4194304 rank 0 device 3 parts 1 persistent 0 sample_cost 1.5625 ewma_cost 1.42573 mean_cost 2.32538 stddev_cost 1.08656 min_cost 0.7812 samples 1155 live_samples 90
+CompletionQueue: complete kernel 814 device 3 parts 1 persistent 0 duration_ns 15625
+ProfileCostTable: key kid=85918f8b5ff0cffe|dims=2:512x512x1|reqs=12|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=8388608|wb=4194304 rank 0 device 2 parts 1 persistent 0 sample_cost 1.1719 ewma_cost 1.14679 mean_cost 1.48483 stddev_cost 0.599926 min_cost 0.586 samples 689 live_samples 111
+CompletionQueue: complete kernel 827 device 2 parts 1 persistent 0 duration_ns 11719
+algorithmHEFT: Kernel 823 cold split probe rejected: split 1.07458 single 1.14679 min_single 500000
+algorithmHEFT: Kernel 823 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 823 cold split probe rejected: split 1.07458 single 1.14679 min_single 500000
+algorithmHEFT: Kernel 823 cold split probe rejected: split 1.32685 single 1.57564 min_single 500000
+algorithmHEFT: Kernel 823 cold split probe rejected: split 1.07458 single 1.14679 min_single 500000
+algorithmHEFT: Kernel 823 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 823 cold split probe rejected: split 1.13729 single 1.14679 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.07458 single 1.14679 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.07458 single 1.14679 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.32685 single 1.57564 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.07458 single 1.14679 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.13729 single 1.14679 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.07458 single 1.14679 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.07458 single 1.14679 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.32685 single 1.57564 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.07458 single 1.14679 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.13729 single 1.14679 min_single 500000
+algorithmHEFT: Kernel 829 cold split probe rejected: split 1.07458 single 1.14679 min_single 500000
+algorithmHEFT: Kernel 829 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 829 cold split probe rejected: split 1.07458 single 1.14679 min_single 500000
+algorithmHEFT: Kernel 829 cold split probe rejected: split 1.32685 single 1.57564 min_single 500000
+algorithmHEFT: Kernel 829 cold split probe rejected: split 1.07458 single 1.14679 min_single 500000
+algorithmHEFT: Kernel 829 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 829 cold split probe rejected: split 1.13729 single 1.14679 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.07458 single 1.14679 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.07458 single 1.14679 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.32685 single 1.57564 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.07458 single 1.14679 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.13729 single 1.14679 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.07458 single 1.14679 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.07458 single 1.14679 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.32685 single 1.57564 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.07458 single 1.14679 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.13729 single 1.14679 min_single 500000
+algorithmHEFT: Kernel 830 cold split probe rejected: split 1.07458 single 1.14679 min_single 500000
+algorithmHEFT: Kernel 830 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 830 cold split probe rejected: split 1.07458 single 1.14679 min_single 500000
+algorithmHEFT: Kernel 830 cold split probe rejected: split 1.32685 single 1.57564 min_single 500000
+algorithmHEFT: Kernel 830 cold split probe rejected: split 1.07458 single 1.14679 min_single 500000
+algorithmHEFT: Kernel 830 cold split probe rejected: split 1.14573 single 1.26775 min_single 500000
+algorithmHEFT: Kernel 830 cold split probe rejected: split 1.13729 single 1.14679 min_single 500000
+CompletionQueue: dispatch_order 20 kernel 823 rank 0 proc 3 parts 1 persistent 0 movement_bytes 0 reserved_devices 1
+CompletionQueue: dispatch_order 21 kernel 829 rank 0 proc 2 parts 1 persistent 0 movement_bytes 0 reserved_devices 1
+ProfileCostTable: key kid=85918f8b5ff0cffe|dims=2:512x512x1|reqs=12|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=8388608|wb=4194304 rank 0 device 3 parts 1 persistent 0 sample_cost 2.3437 ewma_cost 1.59053 mean_cost 1.51128 stddev_cost 0.55067 min_cost 0.7812 samples 867 live_samples 89
+CompletionQueue: complete kernel 823 device 3 parts 1 persistent 0 duration_ns 23437
+ProfileCostTable: key kid=85918f8b5ff0cffe|dims=2:512x512x1|reqs=12|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=8388608|wb=4194304 rank 0 device 2 parts 1 persistent 0 sample_cost 1.1719 ewma_cost 1.15432 mean_cost 1.48438 stddev_cost 0.599608 min_cost 0.586 samples 690 live_samples 112
+CompletionQueue: complete kernel 829 device 2 parts 1 persistent 0 duration_ns 11719
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.07901 single 1.15432 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.33561 single 1.59053 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.07901 single 1.15432 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.32685 single 1.57564 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.07901 single 1.15432 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.33561 single 1.59053 min_single 500000
+algorithmHEFT: Kernel 825 cold split probe rejected: split 1.13951 single 1.15432 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.07901 single 1.15432 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.33561 single 1.59053 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.07901 single 1.15432 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.32685 single 1.57564 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.07901 single 1.15432 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.33561 single 1.59053 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.13951 single 1.15432 min_single 500000
+algorithmHEFT: Kernel 830 cold split probe rejected: split 1.07901 single 1.15432 min_single 500000
+algorithmHEFT: Kernel 830 cold split probe rejected: split 1.33561 single 1.59053 min_single 500000
+algorithmHEFT: Kernel 830 cold split probe rejected: split 1.07901 single 1.15432 min_single 500000
+algorithmHEFT: Kernel 830 cold split probe rejected: split 1.32685 single 1.57564 min_single 500000
+algorithmHEFT: Kernel 830 cold split probe rejected: split 1.07901 single 1.15432 min_single 500000
+algorithmHEFT: Kernel 830 cold split probe rejected: split 1.33561 single 1.59053 min_single 500000
+algorithmHEFT: Kernel 830 cold split probe rejected: split 1.13951 single 1.15432 min_single 500000
+CompletionQueue: dispatch_order 22 kernel 825 rank 0 proc 3 parts 1 persistent 0 movement_bytes 0 reserved_devices 1
+ProfileCostTable: key kid=85918f8b5ff0cffe|dims=2:512x512x1|reqs=12|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=8388608|wb=4194304 rank 0 device 3 parts 1 persistent 0 sample_cost 2.3438 ewma_cost 1.81651 mean_cost 1.51224 stddev_cost 0.551077 min_cost 0.7812 samples 868 live_samples 90
+CompletionQueue: complete kernel 825 device 3 parts 1 persistent 0 duration_ns 23438
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.07901 single 1.15432 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.32685 single 1.57564 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.07901 single 1.15432 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.32685 single 1.57564 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.07901 single 1.15432 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.46854 single 1.81651 min_single 500000
+algorithmHEFT: Kernel 828 cold split probe rejected: split 1.13951 single 1.15432 min_single 500000
+algorithmHEFT: Kernel 830 cold split probe rejected: split 1.07901 single 1.15432 min_single 500000
+algorithmHEFT: Kernel 830 cold split probe rejected: split 1.32685 single 1.57564 min_single 500000
+algorithmHEFT: Kernel 830 cold split probe rejected: split 1.07901 single 1.15432 min_single 500000
+algorithmHEFT: Kernel 830 cold split probe rejected: split 1.32685 single 1.57564 min_single 500000
+algorithmHEFT: Kernel 830 cold split probe rejected: split 1.07901 single 1.15432 min_single 500000
+algorithmHEFT: Kernel 830 cold split probe rejected: split 1.46854 single 1.81651 min_single 500000
+algorithmHEFT: Kernel 830 cold split probe rejected: split 1.13951 single 1.15432 min_single 500000
+CompletionQueue: dispatch_order 23 kernel 828 rank 0 proc 3 parts 1 persistent 0 movement_bytes 0 reserved_devices 1
+ProfileCostTable: key kid=85918f8b5ff0cffe|dims=2:512x512x1|reqs=12|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=8388608|wb=4194304 rank 0 device 3 parts 1 persistent 0 sample_cost 1.1718 ewma_cost 1.6231 mean_cost 1.51185 stddev_cost 0.550881 min_cost 0.7812 samples 869 live_samples 91
+CompletionQueue: complete kernel 828 device 3 parts 1 persistent 0 duration_ns 11718
+algorithmHEFT: Kernel 830 cold split probe rejected: split 1.07901 single 1.15432 min_single 500000
+algorithmHEFT: Kernel 830 cold split probe rejected: split 1.35476 single 1.6231 min_single 500000
+algorithmHEFT: Kernel 830 cold split probe rejected: split 1.07901 single 1.15432 min_single 500000
+algorithmHEFT: Kernel 830 cold split probe rejected: split 1.32685 single 1.57564 min_single 500000
+algorithmHEFT: Kernel 830 cold split probe rejected: split 1.07901 single 1.15432 min_single 500000
+algorithmHEFT: Kernel 830 cold split probe rejected: split 1.35476 single 1.6231 min_single 500000
+algorithmHEFT: Kernel 830 cold split probe rejected: split 1.13951 single 1.15432 min_single 500000
+CompletionQueue: dispatch_order 24 kernel 830 rank 0 proc 3 parts 1 persistent 0 movement_bytes 0 reserved_devices 1
+ProfileCostTable: key kid=85918f8b5ff0cffe|dims=2:512x512x1|reqs=12|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=8388608|wb=4194304 rank 0 device 3 parts 1 persistent 0 sample_cost 1.1719 ewma_cost 1.48774 mean_cost 1.51146 stddev_cost 0.550684 min_cost 0.7812 samples 870 live_samples 92
+CompletionQueue: complete kernel 830 device 3 parts 1 persistent 0 duration_ns 11719
+algorithmHEFT: Kernel 831 cold split probe rejected: split 1.54243 single 1.94214 min_single 500000
+algorithmHEFT: Kernel 831 cold split probe rejected: split 1.58771 single 2.0191 min_single 500000
+algorithmHEFT: Kernel 831 cold split probe rejected: split 1.58771 single 2.0191 min_single 500000
+algorithmHEFT: Kernel 831 cold split probe rejected: split 1.5766 single 2.00021 min_single 500000
+algorithmHEFT: Kernel 831 cold split probe rejected: split 1.54243 single 1.94214 min_single 500000
+algorithmHEFT: Kernel 831 cold split probe rejected: split 1.58771 single 2.0191 min_single 500000
+algorithmHEFT: Kernel 831 cold split probe rejected: split 1.39385 single 2.0191 min_single 500000
+CompletionQueue: dispatch_order 25 kernel 831 rank 0 proc 3 parts 1 persistent 0 movement_bytes 4.1943e+06 reserved_devices 1
+ProfileCostTable: key kid=f365eeab0350b2a8|dims=2:512x512x1|reqs=10|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=8388608|wb=2097152 rank 0 device 3 parts 1 persistent 0 sample_cost 2.7344 ewma_cost 2.23369 mean_cost 2.2083 stddev_cost 0.768553 min_cost 0.7812 samples 177 live_samples 9
+CompletionQueue: complete kernel 831 device 3 parts 1 persistent 0 duration_ns 27344
+algorithmHEFT: Kernel 832 cold split probe rejected: split 50.3855 single 81.5455 min_single 500000
+algorithmHEFT: Kernel 832 cold split probe rejected: split 50.7049 single 81.5455 min_single 500000
+algorithmHEFT: Kernel 832 cold split probe rejected: split 50.7049 single 81.5455 min_single 500000
+algorithmHEFT: Kernel 832 cold split probe rejected: split 50.7076 single 81.5455 min_single 500000
+algorithmHEFT: Kernel 832 cold split probe rejected: split 50.713 single 81.5455 min_single 500000
+algorithmHEFT: Kernel 832 cold split probe rejected: split 50.3856 single 81.5455 min_single 500000
+algorithmHEFT: Kernel 832 cold split probe rejected: split 28.1828 single 81.5455 min_single 500000
+selectUnifiedTaskCandidate: Kernel 832 risk objective selected Rank 0 Proc 2 NumParts 1 finish 90.7496 uncertainty 1.57252 risk 93.8318 over mean-best Rank 0 Proc 3 NumParts 1 finish 81.5455 uncertainty 16.3265 risk 113.545
+CompletionQueue: dispatch_order 26 kernel 832 rank 0 proc 2 parts 1 persistent 0 movement_bytes 2.09715e+06 reserved_devices 1
+ProfileCostTable: key kid=93ac58e5279bbeb|dims=2:512x512x1|reqs=5|1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;1024:4:1024:1024x1x1:a1024x1x1:o0x0x0:sub0:pl0;1024:4:1024:1024x1x1:a1024x1x1:o0x0x0:sub0:pl0;1027:4:262144:512x512x1:a512x512x1:o0x0x0:sub0:pl1;|rb=2105344|wb=1048576 rank 0 device 2 parts 1 persistent 0 sample_cost 81.25 ewma_cost 81.4568 mean_cost 81.0938 stddev_cost 0.713221 min_cost 79.6875 samples 296 live_samples 32
+CompletionQueue: complete kernel 832 device 2 parts 1 persistent 0 duration_ns 812500
+CompletionQueue: wait 32 complete kernels 26
+Rank 0 scale_ranks: 0
+SystemSchedulerDaemonOffline: Rank 0: waiting reqs from handler
+TIMING init_sec=1.807243
+TIMING queue_sec=0.000034
+TIMING run_sec=34.048036
+TIMING host_sec=0.509567
+TIMING total_sec=36.364881
+RESULT checksum=4709839.521576 checked_cells=2359296 min_temperature=0.845921 max_temperature=2.349159 min_species=0.042111 min_risk=9.362382
+VERIFY passed=1 nonfinite=0
+Process 745395: Message queue closed
+Rank 0: SYCLAPP finish
