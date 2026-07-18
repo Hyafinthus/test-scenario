@@ -244,38 +244,38 @@ void submit_reverse_panel(celerity::distr_queue &queue, BandBuffers &band,
           norm_squared += value * value;
         }
         scratch[lane] = norm_squared;
-        item.barrier(sycl::access::fence_space::local_space);
+        celerity::group_barrier(item.get_group());
         for (std::size_t stride = local_size / 2; stride > 0; stride /= 2) {
           if (lane < stride) {
             scratch[lane] += scratch[lane + stride];
           }
-          item.barrier(sycl::access::fence_space::local_space);
+          celerity::group_barrier(item.get_group());
         }
         const float inverse_norm =
             sycl::rsqrt(sycl::fmax(scratch[0], 1.0e-20f));
         for (std::size_t col = lane; col < antennas; col += local_size) {
           basis[{pivot, col}] *= inverse_norm;
         }
-        item.barrier(sycl::access::fence_space::global_and_local);
+        celerity::group_barrier(item.get_group());
         for (std::size_t row = panel_begin; row < pivot; ++row) {
           float projection = 0.0f;
           for (std::size_t col = lane; col < antennas; col += local_size) {
             projection += basis[{row, col}] * basis[{pivot, col}];
           }
           scratch[lane] = projection;
-          item.barrier(sycl::access::fence_space::local_space);
+          celerity::group_barrier(item.get_group());
           for (std::size_t stride = local_size / 2; stride > 0;
                stride /= 2) {
             if (lane < stride) {
               scratch[lane] += scratch[lane + stride];
             }
-            item.barrier(sycl::access::fence_space::local_space);
+            celerity::group_barrier(item.get_group());
           }
           projection = scratch[0];
           for (std::size_t col = lane; col < antennas; col += local_size) {
             basis[{row, col}] -= projection * basis[{pivot, col}];
           }
-          item.barrier(sycl::access::fence_space::global_and_local);
+          celerity::group_barrier(item.get_group());
         }
       }
     });
