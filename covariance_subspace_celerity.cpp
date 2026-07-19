@@ -23,10 +23,14 @@ class CovarianceMeanKernel;
 class CovarianceStddevKernel;
 class CovarianceNormalizeKernel;
 class CovarianceTriangleKernel;
+class CovarianceTrianglePairKernel;
 class ReverseBlockGSPanelKernel;
 class ReverseBlockGSUpdateKernel;
 
 struct BandBuffers {
+  // One independent observation tile. The flat id is
+  // time_block * config.bands + frequency_band.
+  std::size_t tile_id;
   std::vector<float> data_host;
   std::vector<float> mean_host;
   std::vector<float> stddev_host;
@@ -36,8 +40,8 @@ struct BandBuffers {
   celerity::buffer<float, 1> stddev;
   celerity::buffer<float, 2> basis;
 
-  BandBuffers(std::size_t band, const cs::Config &config)
-      : data_host(cs::make_samples(band, config)),
+  BandBuffers(std::size_t tile, const cs::Config &config)
+      : tile_id(tile), data_host(cs::make_samples(tile, config)),
         mean_host(config.antennas, 0.0f),
         stddev_host(config.antennas, 0.0f),
         basis_host(config.mode == cs::Mode::OrthogonalizeOnly
@@ -149,7 +153,7 @@ void submit_normalize(celerity::distr_queue &queue, BandBuffers &band,
   maybe_wait(queue, config);
 }
 
-void submit_triangular_correlation(celerity::distr_queue &queue,
+void submit_row_serial_correlation(celerity::distr_queue &queue,
                                    BandBuffers &band,
                                    const cs::Config &config) {
   const std::size_t antennas = config.antennas;
@@ -215,6 +219,86 @@ void submit_triangular_correlation(celerity::distr_queue &queue,
         });
   });
   maybe_wait(queue, config);
+}
+
+void submit_pair_parallel_correlation(celerity::distr_queue &queue,
+                                      BandBuffers &band,
+                                      const cs::Config &config) {
+  const std::size_t antennas = config.antennas;
+  const std::size_t snapshots = config.snapshots;
+  const bool folded =
+      config.covariance_order == cs::CovarianceOrder::Folded;
+  queue.submit([&](celerity::handler &cgh) {
+    using namespace celerity;
+    apply_hints(cgh, config);
+    // A pair-parallel chunk reads the sample rows selected by its work-row
+    // interval and by its column interval. The smallest qualifying work row
+    // through the last column is their tight contiguous envelope.
+    accessor data{band.data, cgh,
+                  [antennas, snapshots, folded](chunk<2> chunk) {
+                    if (chunk.range[0] == 0 || chunk.range[1] == 0) {
+                      return subrange<2>{{0, 0}, {0, snapshots}};
+                    }
+                    const std::size_t last_column =
+                        chunk.offset[1] + chunk.range[1] - 1;
+                    std::size_t first = antennas;
+                    const std::size_t row_end =
+                        chunk.offset[0] + chunk.range[0];
+                    for (std::size_t work_row = chunk.offset[0];
+                         work_row < row_end; ++work_row) {
+                      const std::size_t antenna0 =
+                          folded ? ((work_row & 1U) == 0U
+                                        ? work_row / 2
+                                        : antennas - 1 - work_row / 2)
+                                 : work_row;
+                      if (antenna0 <= last_column) {
+                        first = std::min(first, antenna0);
+                      }
+                    }
+                    if (first == antennas) {
+                      return subrange<2>{{0, 0}, {0, snapshots}};
+                    }
+                    return subrange<2>{{first, 0},
+                                       {last_column - first + 1, snapshots}};
+                  },
+                  read_only};
+    accessor basis{band.basis, cgh, access::one_to_one{}, write_only,
+                   no_init};
+    cgh.parallel_for<CovarianceTrianglePairKernel>(
+        range<2>(antennas, antennas), [=](item<2> item) {
+          const std::size_t work_row = item[0];
+          const std::size_t antenna1 = item[1];
+          const std::size_t antenna0 =
+              folded ? ((work_row & 1U) == 0U
+                            ? work_row / 2
+                            : antennas - 1 - work_row / 2)
+                     : work_row;
+          if (antenna1 < antenna0) {
+            basis[item] = 0.0f;
+            return;
+          }
+          float dot = 0.0f;
+          for (std::size_t sample = 0; sample < snapshots; ++sample) {
+            dot += data[{antenna0, sample}] * data[{antenna1, sample}];
+          }
+          float correlation = dot / static_cast<float>(snapshots);
+          if (antenna1 == antenna0) {
+            correlation += 0.25f;
+          }
+          basis[item] = correlation;
+        });
+  });
+  maybe_wait(queue, config);
+}
+
+void submit_triangular_correlation(celerity::distr_queue &queue,
+                                   BandBuffers &band,
+                                   const cs::Config &config) {
+  if (config.correlation_layout == cs::CorrelationLayout::PairParallel) {
+    submit_pair_parallel_correlation(queue, band, config);
+  } else {
+    submit_row_serial_correlation(queue, band, config);
+  }
 }
 
 void submit_reverse_panel(celerity::distr_queue &queue, BandBuffers &band,
@@ -356,7 +440,7 @@ cs::VerificationResult read_result(
     celerity::distr_queue &queue,
     std::vector<std::unique_ptr<BandBuffers>> &bands,
     const cs::Config &config) {
-  std::vector<cs::VerificationResult> band_results(config.bands);
+  std::vector<cs::VerificationResult> band_results(bands.size());
   for (std::size_t index = 0; index < bands.size(); ++index) {
     BandBuffers &band = *bands[index];
     cs::VerificationResult *result = &band_results[index];
@@ -389,9 +473,14 @@ int main(int argc, char **argv) {
 
     const auto total_begin = clock_type::now();
     std::vector<std::unique_ptr<BandBuffers>> bands;
-    bands.reserve(config.bands);
-    for (std::size_t band = 0; band < config.bands; ++band) {
-      bands.push_back(std::make_unique<BandBuffers>(band, config));
+    const std::size_t tiles = cs::tile_count(config);
+    bands.reserve(tiles);
+    for (std::size_t time_block = 0; time_block < config.time_blocks;
+         ++time_block) {
+      for (std::size_t band = 0; band < config.bands; ++band) {
+        const std::size_t tile = time_block * config.bands + band;
+        bands.push_back(std::make_unique<BandBuffers>(tile, config));
+      }
     }
     const auto init_end = clock_type::now();
 

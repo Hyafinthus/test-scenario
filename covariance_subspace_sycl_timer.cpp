@@ -23,10 +23,14 @@ class CovarianceMeanKernel;
 class CovarianceStddevKernel;
 class CovarianceNormalizeKernel;
 class CovarianceTriangleKernel;
+class CovarianceTrianglePairKernel;
 class ReverseBlockGSPanelKernel;
 class ReverseBlockGSUpdateKernel;
 
 struct BandBuffers {
+  // One independent observation tile. The flat id is
+  // time_block * config.bands + frequency_band.
+  std::size_t tile_id;
   std::vector<float> data_host;
   std::vector<float> mean_host;
   std::vector<float> stddev_host;
@@ -36,8 +40,8 @@ struct BandBuffers {
   sycl::buffer<float, 1> stddev;
   sycl::buffer<float, 2> basis;
 
-  BandBuffers(std::size_t band, const cs::Config &config)
-      : data_host(cs::make_samples(band, config)),
+  BandBuffers(std::size_t tile, const cs::Config &config)
+      : tile_id(tile), data_host(cs::make_samples(tile, config)),
         mean_host(config.antennas, 0.0f),
         stddev_host(config.antennas, 0.0f),
         basis_host(config.mode == cs::Mode::OrthogonalizeOnly
@@ -121,7 +125,7 @@ void submit_normalize(sycl::queue &queue, BandBuffers &band,
   maybe_wait(queue, config);
 }
 
-void submit_triangular_correlation(sycl::queue &queue, BandBuffers &band,
+void submit_row_serial_correlation(sycl::queue &queue, BandBuffers &band,
                                    const cs::Config &config) {
   const std::size_t antennas = config.antennas;
   const std::size_t snapshots = config.snapshots;
@@ -158,6 +162,52 @@ void submit_triangular_correlation(sycl::queue &queue, BandBuffers &band,
         });
   });
   maybe_wait(queue, config);
+}
+
+void submit_pair_parallel_correlation(sycl::queue &queue, BandBuffers &band,
+                                      const cs::Config &config) {
+  const std::size_t antennas = config.antennas;
+  const std::size_t snapshots = config.snapshots;
+  const bool folded =
+      config.covariance_order == cs::CovarianceOrder::Folded;
+  queue.submit([&](sycl::handler &cgh) {
+    auto data = band.data.get_access<sycl::access::mode::read>(cgh);
+    auto basis =
+        band.basis.get_access<sycl::access::mode::discard_write>(cgh);
+    cgh.parallel_for<CovarianceTrianglePairKernel>(
+        sycl::range<2>(antennas, antennas), [=](sycl::id<2> item) {
+          const std::size_t work_row = item[0];
+          const std::size_t antenna1 = item[1];
+          const std::size_t antenna0 =
+              folded ? ((work_row & 1U) == 0U
+                            ? work_row / 2
+                            : antennas - 1 - work_row / 2)
+                     : work_row;
+          if (antenna1 < antenna0) {
+            basis[item] = 0.0f;
+            return;
+          }
+          float dot = 0.0f;
+          for (std::size_t sample = 0; sample < snapshots; ++sample) {
+            dot += data[{antenna0, sample}] * data[{antenna1, sample}];
+          }
+          float correlation = dot / static_cast<float>(snapshots);
+          if (antenna1 == antenna0) {
+            correlation += 0.25f;
+          }
+          basis[item] = correlation;
+        });
+  });
+  maybe_wait(queue, config);
+}
+
+void submit_triangular_correlation(sycl::queue &queue, BandBuffers &band,
+                                   const cs::Config &config) {
+  if (config.correlation_layout == cs::CorrelationLayout::PairParallel) {
+    submit_pair_parallel_correlation(queue, band, config);
+  } else {
+    submit_row_serial_correlation(queue, band, config);
+  }
 }
 
 void submit_reverse_panel(sycl::queue &queue, BandBuffers &band,
@@ -304,17 +354,22 @@ int main(int argc, char **argv) {
 
     const auto total_begin = clock_type::now();
     std::vector<std::unique_ptr<BandBuffers>> bands;
-    bands.reserve(config.bands);
-    for (std::size_t band = 0; band < config.bands; ++band) {
-      bands.push_back(std::make_unique<BandBuffers>(band, config));
+    const std::size_t tiles = cs::tile_count(config);
+    bands.reserve(tiles);
+    for (std::size_t time_block = 0; time_block < config.time_blocks;
+         ++time_block) {
+      for (std::size_t band = 0; band < config.bands; ++band) {
+        const std::size_t tile = time_block * config.bands + band;
+        bands.push_back(std::make_unique<BandBuffers>(tile, config));
+      }
     }
     const auto init_end = clock_type::now();
 
     sycl::queue queue;
     const auto queue_end = clock_type::now();
-    std::cout << "DEVICE name="
-              << queue.get_device().get_info<sycl::info::device::name>()
-              << '\n';
+    // std::cout << "DEVICE name="
+    //           << queue.get_device().get_info<sycl::info::device::name>()
+    //           << '\n';
 
     std::vector<double> epoch_seconds;
     epoch_seconds.reserve(config.epochs);

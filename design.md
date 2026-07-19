@@ -1032,6 +1032,8 @@ dataflow 兑现局部性，profile 再把结果反馈给下一轮预测。
 - `completion-driven-split-runtime.md`：completion protocol 与 resident Split 细节；
 - `remaining-contributions-and-next-route.md`：当前缺口和下一阶段协议；
 - `mc-result3-design-analysis.md`：已有 radio 结果对应的功能判断。
+- `covariance_subspace_notes.md`：128-way time-frequency RFI covariance/subspace 场景、
+  row/pair correlation 控制与 Celerity 对照设计。
 
 本文只描述当前代码所实现的功能和设计边界；性能收益、置信区间 calibration、长期
 profile store 稳定性以及 SplitHalo 的效果仍需要后续实验或实现验证，不能由设计描述
